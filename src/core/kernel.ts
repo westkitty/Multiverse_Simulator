@@ -259,21 +259,22 @@ export class SimulationKernel<
   flushCurrentTickCommands(
     phase: 'pre_systems' | 'post_systems' = 'post_systems',
   ): SimulationCommand[] {
-    const due: SimulationCommand[] = [];
-    const remaining: SimulationCommand[] = [];
+    // Consume only successful commands. A failure must not silently discard later
+    // due commands or leave a false "command applied" event in the causal journal.
+    const due = this.pendingCommands.filter((cmd) => cmd.tick <= this._tick);
+    const completed: SimulationCommand[] = [];
 
-    for (const cmd of this.pendingCommands) {
-      if (cmd.tick <= this._tick) {
-        due.push(cmd);
-      } else {
-        remaining.push(cmd);
-      }
-    }
-    this.pendingCommands = remaining;
+    for (const queued of due) {
+      const cmd: SimulationCommand = { ...queued, executedAtTick: this._tick, replayPhase: phase };
+      // Commands are infrequent; copy authoritative transaction surfaces so even a
+      // plugin that mutates state, RNG, config and emits an event before throwing
+      // cannot leak partial changes into a timeline or its archive.
+      const stateBefore = structuredClone(this.state);
+      const configBefore = structuredClone(this.currentConfig);
+      const rngBefore = structuredClone(this.rng.serialize());
+      const journalBefore = this.journal.serialize();
 
-    for (const cmd of due) {
-      cmd.executedAtTick = this._tick;
-      cmd.replayPhase = phase;
+      try {
       const cmdEvent = this.journal.append(this.runId, this._tick, {
         type: `command:${cmd.type}`,
         severity: 'info',
@@ -307,15 +308,36 @@ export class SimulationKernel<
           }),
       };
 
-      this.plugin.applyCommand(this.state, cmd, cmdCtx);
-      this.executedCommands.push(cmd);
+        this.plugin.applyCommand(this.state, cmd, cmdCtx);
+        this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
+        this.executedCommands.push(cmd);
+        completed.push(cmd);
+      } catch (error) {
+        this.state = stateBefore;
+        this.currentConfig = configBefore;
+        this.rng.restore(rngBefore);
+        this.journal.restore(journalBefore);
+        // A rejected command is not replayed, retried forever, or marked applied.
+        // Later commands remain queued in their original stable order.
+        this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
+        const reason = error instanceof Error ? error.message : String(error);
+        this.journal.append(this.runId, this._tick, {
+          type: 'command_rejected',
+          severity: 'warning',
+          title: `Rejected command: ${cmd.label}`,
+          description: `Command "${cmd.type}" was rejected without changing world state: ${reason}`,
+          sourceSystem: 'command_bus',
+          causalLinkType: 'direct',
+          causalExplanation: 'Command validation or execution failed; authoritative state and RNG were rolled back.',
+          payload: { commandId: cmd.id, commandType: cmd.type, reason },
+        });
+        if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
+        throw error;
+      }
     }
 
-    if (due.length > 0) {
-      this.recordMetricsAtCurrentTick(true);
-    }
-
-    return due;
+    if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
+    return completed;
   }
 
   /**

@@ -17,7 +17,8 @@
     "measure:baseline": "RECORD_BASELINE=1 vitest run src/test/baselineManifest.test.ts",
     "test:acceptance": "RUN_ACCEPTANCE=1 RUN_SEMANTIC_ACCEPTANCE=1 vitest run src/test/defaultBalance.test.ts src/test/semanticAcceptance.test.ts src/test/historicalArchives.test.ts",
     "fixtures:historical": "node scripts/acceptance/generate-historical.mjs",
-    "fixtures:atlas:verify": "node scripts/acceptance/reconstruct-atlas-compat.mjs"
+    "fixtures:atlas:verify": "node scripts/acceptance/reconstruct-atlas-compat.mjs",
+    "test:performance": "RUN_BENCHMARK=1 vitest run src/test/adversarialStress.test.ts"
   },
   "dependencies": {
     "fflate": "^0.8.2",
