@@ -1,8 +1,10 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ command, isPreview }) => ({
+  base: (command === 'build' || isPreview) ? '/Multiverse_Simulator/' : '/',
   plugins: [react()],
+  define: { __RELEASE_COMMIT__: JSON.stringify(process.env.GITHUB_SHA ?? 'local') },
   server: {
     host: '0.0.0.0',
     port: 5173,
@@ -54,4 +56,4 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}'],
     testTimeout: 20000,
   },
-});
+}));
