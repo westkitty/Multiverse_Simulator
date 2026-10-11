@@ -1,0 +1,544 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-11T09:34:35.903Z",
+  "startingCommit": "b4e57734873df0af4f0bd760a9283557b0e8c977",
+  "implementationBranch": "arena/1b370858-multiverse-simulator",
+  "implementationCommit": "632e7503fa00b7698f77a0a973d990a2a2b8c410",
+  "workingBranch": "arena/37f107b8-multiverse-simulator",
+  "environment": {
+    "node": "v22.22.3",
+    "platform": "linux",
+    "runner": "Vitest/jsdom; headless CPU, not browser FPS"
+  },
+  "versions": {
+    "engine": "1.0.0",
+    "stateSchema": 1,
+    "archive": 1,
+    "indexedDb": 1
+  },
+  "baselineChecks": "typecheck, lint, 24 existing tests, build PASS before changes",
+  "initialPages": {
+    "siteGet": 404,
+    "workflows": 0,
+    "activationPost": 403,
+    "status": "BLOCKED"
+  },
+  "measurementNotes": [
+    "Default config, fixed seed; collections are disjoint field counts, not summed content.",
+    "Civilization has 9 initialized settlements plus 6 predefined founding sites (15 baseline regional sites); target is 45 sites and 27 settlements.",
+    "Ocean render zones are horizontal sectors; each contains 3 depth layers.",
+    "Original scaleMetadata describes an earlier expansion, NOT progress against OMNIVERSE II targets."
+  ],
+  "worlds": [
+    {
+      "id": "ecosystem",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "zones": 48,
+          "organisms": 86
+        },
+        "renderZones": 48,
+        "renderEntities": 86,
+        "renderLinks": 12,
+        "scenarios": 9,
+        "interventions": 21,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "active habitat zones (10,800 m² ecological basin)",
+          "baselinePlayableArea": 16,
+          "expandedPlayableArea": 48,
+          "baselineTerritoryScalar": 3600,
+          "expandedTerritoryScalar": 10800,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 7,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 48,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 7.201770000000124,
+        "p95StepMs": 12.514480000000049,
+        "archiveBytesAtTick100": 66562
+      }
+    },
+    {
+      "id": "station",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "rooms": 18,
+          "hatches": 24,
+          "crew": 12
+        },
+        "renderZones": 18,
+        "renderEntities": 12,
+        "renderLinks": 24,
+        "scenarios": 9,
+        "interventions": 21,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "functional pressurized compartments (3,810 m³ orbital complex)",
+          "baselinePlayableArea": 6,
+          "expandedPlayableArea": 18,
+          "baselineTerritoryScalar": 1270,
+          "expandedTerritoryScalar": 3810,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 7,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 18,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.5259970000001886,
+        "p95StepMs": 2.3748149999996713,
+        "archiveBytesAtTick100": 15246
+      }
+    },
+    {
+      "id": "civilization",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "settlements": 9,
+          "routes": 16
+        },
+        "renderZones": 9,
+        "renderEntities": 9,
+        "renderLinks": 16,
+        "scenarios": 9,
+        "interventions": 24,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "starting settlements (4,800 km² continental network + 6 frontier sites)",
+          "baselinePlayableArea": 3,
+          "expandedPlayableArea": 9,
+          "baselineTerritoryScalar": 1600,
+          "expandedTerritoryScalar": 4800,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 8,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 45,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 9,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.8942080000001624,
+        "p95StepMs": 1.5406770000004144,
+        "archiveBytesAtTick100": 20106
+      }
+    },
+    {
+      "id": "atmosphere",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "cells": 48,
+          "storms": 1
+        },
+        "renderZones": 48,
+        "renderEntities": 2,
+        "renderLinks": 12,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "active climate cells (10,800 km² synoptic basin)",
+          "baselinePlayableArea": 16,
+          "expandedPlayableArea": 48,
+          "baselineTerritoryScalar": 3600,
+          "expandedTerritoryScalar": 10800,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 48,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.9734250000001339,
+        "p95StepMs": 4.006394,
+        "archiveBytesAtTick100": 26815
+      }
+    },
+    {
+      "id": "ocean",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "sectors": 48,
+          "shoals": 19
+        },
+        "renderZones": 48,
+        "renderEntities": 19,
+        "renderLinks": 12,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "horizontal marine sectors (144 volumetric depth cells)",
+          "baselinePlayableArea": 16,
+          "expandedPlayableArea": 48,
+          "baselineTerritoryScalar": 48,
+          "expandedTerritoryScalar": 144,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 48,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 5.881160999999793,
+        "p95StepMs": 9.456619000000046,
+        "archiveBytesAtTick100": 42084
+      }
+    },
+    {
+      "id": "celestial",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "systems": 3,
+          "bodies": 18
+        },
+        "renderZones": 3,
+        "renderEntities": 18,
+        "renderLinks": 15,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "celestial bodies across 3 explorable star systems",
+          "baselinePlayableArea": 6,
+          "expandedPlayableArea": 18,
+          "baselineTerritoryScalar": 1,
+          "expandedTerritoryScalar": 3,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 9,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 3,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.2124880000001212,
+        "p95StepMs": 2.285910999999942,
+        "archiveBytesAtTick100": 18241
+      }
+    },
+    {
+      "id": "megacity",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "districts": 18,
+          "corridors": 27
+        },
+        "renderZones": 18,
+        "renderEntities": 18,
+        "renderLinks": 27,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "interconnected metropolitan districts (5,040 km² metro basin)",
+          "baselinePlayableArea": 6,
+          "expandedPlayableArea": 18,
+          "baselineTerritoryScalar": 1680,
+          "expandedTerritoryScalar": 5040,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 18,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.2553530000000137,
+        "p95StepMs": 2.411323999999695,
+        "archiveBytesAtTick100": 17605
+      }
+    },
+    {
+      "id": "industrial",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "nodes": 18,
+          "routes": 24,
+          "shipments": 0
+        },
+        "renderZones": 18,
+        "renderEntities": 18,
+        "renderLinks": 24,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "interconnected production & distribution nodes (24 logistics corridors)",
+          "baselinePlayableArea": 6,
+          "expandedPlayableArea": 18,
+          "baselineTerritoryScalar": 8,
+          "expandedTerritoryScalar": 24,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 18,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.6396770000001197,
+        "p95StepMs": 3.1070159999999305,
+        "archiveBytesAtTick100": 18115
+      }
+    },
+    {
+      "id": "geology",
+      "schemaVersion": 1,
+      "baseline": {
+        "seed": 424242,
+        "collections": {
+          "cells": 48
+        },
+        "renderZones": 48,
+        "renderEntities": 12,
+        "renderLinks": 20,
+        "scenarios": 9,
+        "interventions": 18,
+        "metrics": 18,
+        "scaleMetadata": {
+          "areaUnitLabel": "active geological cells across 6 tectonic provinces",
+          "baselinePlayableArea": 16,
+          "expandedPlayableArea": 48,
+          "baselineTerritoryScalar": 16,
+          "expandedTerritoryScalar": 48,
+          "baselineScenarioCount": 3,
+          "baselineInterventionCount": 6,
+          "baselineMetricCount": 6
+        }
+      },
+      "target": {
+        "spatialUnits": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "actorArchetypes": 6,
+        "structureArchetypes": 6,
+        "discoveryChains": 3
+      },
+      "observed": {
+        "spatialUnits": 48,
+        "normalizedPois": 0,
+        "linkedDiscoveryChains": 0
+      },
+      "contentAudit": "No normalized persistent POI/discovery contract exists. Existing simulated entities are not counted as POIs. Structure/actor archetypes require a domain inventory; UNVERIFIED.",
+      "proofStatus": {
+        "baseline": "PASS",
+        "expansion": "FAIL"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.8510320000004867,
+        "p95StepMs": 3.1328229999999166,
+        "archiveBytesAtTick100": 24102
+      }
+    }
+  ],
+  "unimplementedWorlds": [
+    {
+      "id": "wild-meridian",
+      "baselineTarget": 16,
+      "finalTarget": 48,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    },
+    {
+      "id": "hollow-deep",
+      "baselineTarget": 16,
+      "finalTarget": 48,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    },
+    {
+      "id": "timeworn-empire",
+      "baselineTarget": 12,
+      "finalTarget": 36,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    },
+    {
+      "id": "terraforming-frontier",
+      "baselineTarget": 16,
+      "finalTarget": 48,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    },
+    {
+      "id": "machine-wilderness",
+      "baselineTarget": 16,
+      "finalTarget": 48,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    },
+    {
+      "id": "signal-expanse",
+      "baselineTarget": 12,
+      "finalTarget": 36,
+      "observed": 0,
+      "proofStatus": "FAIL",
+      "note": "Proposed IDs, not registered plugins or functional baselines"
+    }
+  ]
+}
