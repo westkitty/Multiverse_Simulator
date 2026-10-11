@@ -258,64 +258,94 @@ export class SimulationKernel<
    */
   flushCurrentTickCommands(
     phase: 'pre_systems' | 'post_systems' = 'post_systems',
+    onRejected: 'throw' | 'continue' = 'throw',
   ): SimulationCommand[] {
-    const due: SimulationCommand[] = [];
-    const remaining: SimulationCommand[] = [];
+    // Consume only successful commands. A failure must not silently discard later
+    // due commands or leave a false "command applied" event in the causal journal.
+    const due = this.pendingCommands.filter((cmd) => cmd.tick <= this._tick);
+    const completed: SimulationCommand[] = [];
 
-    for (const cmd of this.pendingCommands) {
-      if (cmd.tick <= this._tick) {
-        due.push(cmd);
-      } else {
-        remaining.push(cmd);
+    for (const queued of due) {
+      const cmd: SimulationCommand = { ...queued, executedAtTick: this._tick, replayPhase: phase };
+      // Commands are infrequent; copy authoritative transaction surfaces so even a
+      // plugin that mutates state, RNG, config and emits an event before throwing
+      // cannot leak partial changes into a timeline or its archive.
+      const stateBefore = structuredClone(this.state);
+      const configBefore = structuredClone(this.currentConfig);
+      const rngBefore = structuredClone(this.rng.serialize());
+      const journalBefore = this.journal.serialize();
+
+      try {
+        const cmdEvent = this.journal.append(this.runId, this._tick, {
+          type: `command:${cmd.type}`,
+          severity: 'info',
+          title: `Command: ${cmd.label}`,
+          description: cmd.provenance
+            ? `Cross-world command via adapter "${cmd.provenance.adapterId}" from run ${cmd.provenance.sourceRunId}.`
+            : `User or scenario intervention command "${cmd.label}" (${cmd.type}) applied at tick ${this._tick}.`,
+          sourceSystem: 'command_bus',
+          causalLinkType: 'direct',
+          causalExplanation: cmd.provenance
+            ? `Translated explicitly from ${cmd.provenance.sourceWorldId} event ${cmd.provenance.sourceEventId}.`
+            : 'Explicit user/scenario command injected into simulation command bus.',
+          payload: {
+            commandId: cmd.id,
+            commandType: cmd.type,
+            ...cmd.payload,
+          },
+        });
+
+        const cmdCtx: CommandExecutionContext<TConfig> = {
+          runId: this.runId,
+          tick: this._tick,
+          config: this.currentConfig,
+          rng: this.rng,
+          emitEvent: (eventInput: EmitEventInput) =>
+            this.journal.append(this.runId, this._tick, {
+              ...eventInput,
+              causedByEventId: eventInput.causedByEventId ?? cmdEvent.id,
+              causalLinkType: eventInput.causalLinkType ?? 'direct',
+              correlationId: eventInput.correlationId ?? cmdEvent.correlationId,
+            }),
+        };
+
+        this.plugin.applyCommand(this.state, cmd, cmdCtx);
+        this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
+        // Preserve enqueueCommand's returned object identity and completion metadata.
+        queued.executedAtTick = this._tick;
+        queued.replayPhase = phase;
+        this.executedCommands.push(queued);
+        completed.push(queued);
+      } catch (error) {
+        this.state = stateBefore;
+        this.currentConfig = configBefore;
+        this.rng.restore(rngBefore);
+        this.journal.restore(journalBefore);
+        // A rejected command is not replayed, retried forever, or marked applied.
+        // Later commands remain queued in their original stable order.
+        this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
+        const reason = error instanceof Error ? error.message : String(error);
+        this.journal.append(this.runId, this._tick, {
+          type: 'command_rejected',
+          severity: 'warning',
+          title: `Rejected command: ${cmd.label}`,
+          description: `Command "${cmd.type}" was rejected without changing world state: ${reason}`,
+          sourceSystem: 'command_bus',
+          causalLinkType: 'direct',
+          causalExplanation: 'Command validation or execution failed; authoritative state and RNG were rolled back.',
+          payload: { commandId: cmd.id, commandType: cmd.type, reason },
+        });
+        if (onRejected === 'throw') {
+          if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
+          throw error;
+        }
+        // Fixed-tick background progress is not allowed to skip a tick because
+        // a scheduled command failed; the event preserves the rejection cause.
       }
     }
-    this.pendingCommands = remaining;
 
-    for (const cmd of due) {
-      cmd.executedAtTick = this._tick;
-      cmd.replayPhase = phase;
-      const cmdEvent = this.journal.append(this.runId, this._tick, {
-        type: `command:${cmd.type}`,
-        severity: 'info',
-        title: `Command: ${cmd.label}`,
-        description: cmd.provenance
-          ? `Cross-world command via adapter "${cmd.provenance.adapterId}" from run ${cmd.provenance.sourceRunId}.`
-          : `User or scenario intervention command "${cmd.label}" (${cmd.type}) applied at tick ${this._tick}.`,
-        sourceSystem: 'command_bus',
-        causalLinkType: 'direct',
-        causalExplanation: cmd.provenance
-          ? `Translated explicitly from ${cmd.provenance.sourceWorldId} event ${cmd.provenance.sourceEventId}.`
-          : 'Explicit user/scenario command injected into simulation command bus.',
-        payload: {
-          commandId: cmd.id,
-          commandType: cmd.type,
-          ...cmd.payload,
-        },
-      });
-
-      const cmdCtx: CommandExecutionContext<TConfig> = {
-        runId: this.runId,
-        tick: this._tick,
-        config: this.currentConfig,
-        rng: this.rng,
-        emitEvent: (eventInput: EmitEventInput) =>
-          this.journal.append(this.runId, this._tick, {
-            ...eventInput,
-            causedByEventId: eventInput.causedByEventId ?? cmdEvent.id,
-            causalLinkType: eventInput.causalLinkType ?? 'direct',
-            correlationId: eventInput.correlationId ?? cmdEvent.correlationId,
-          }),
-      };
-
-      this.plugin.applyCommand(this.state, cmd, cmdCtx);
-      this.executedCommands.push(cmd);
-    }
-
-    if (due.length > 0) {
-      this.recordMetricsAtCurrentTick(true);
-    }
-
-    return due;
+    if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
+    return completed;
   }
 
   /**
@@ -331,13 +361,13 @@ export class SimulationKernel<
     const eventsBeforeCount = this.journal.count();
 
     // 1. Flush commands scheduled at current tick before advancing (post_systems of previous tick)
-    this.flushCurrentTickCommands('post_systems');
+    this.flushCurrentTickCommands('post_systems', 'continue');
 
     // 2. Advance simulation clock
     this._tick += 1;
 
     // 3. Flush commands scheduled specifically for the new tick (pre_systems of new tick)
-    this.flushCurrentTickCommands('pre_systems');
+    this.flushCurrentTickCommands('pre_systems', 'continue');
 
     // 4. Execute ordered systems deterministically
     const emittedThisTick: CausalEvent[] = [];

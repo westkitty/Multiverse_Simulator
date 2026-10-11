@@ -29,6 +29,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
+      - name: Isolated reproducible 265-entity performance gate
+        run: npm run test:performance
       - name: Content, default-stock and historical archive acceptance
         run: npm run test:acceptance
       - run: npm run build
