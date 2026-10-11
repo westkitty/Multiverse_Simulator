@@ -16,11 +16,14 @@ test('production baseline: nine worlds, worker, history, inspection, archive and
   const worker = workers[0];
   expect(worker.url()).toMatch(/\/Multiverse_Simulator\/assets\/simulation\.worker-.*\.js$/);
   // Confirm the production module initialized; exercise its protocol below.
-  expect(await worker.evaluate(() => typeof self.onmessage)).toBe('function');
+  await expect.poll(() => worker.evaluate(() => typeof self.onmessage)).toBe('function');
   await expect(page.getByText(/BASELINE · 9 WORLDS/)).toBeVisible();
   if (process.env.EXPECTED_RELEASE_COMMIT) {
     await expect(page.getByText(/BASELINE · 9 WORLDS/)).toContainText(process.env.EXPECTED_RELEASE_COMMIT.slice(0, 7));
   }
+  await page.getByRole('tab', { name: /World Library/ }).click();
+  await page.goBack();
+  await expect(page.getByRole('tab', { name: /Active Observatory/ })).toHaveAttribute('aria-selected', 'true');
   for (const letter of 'ABCDEFGHI') {
     await page.getByRole('group', { name: 'Quick World Switcher' }).getByRole('button', { name: new RegExp(`World ${letter}:`) }).click();
     const tick = page.getByText(/TICK:/).first();

@@ -84,3 +84,10 @@ After enabling Pages, merge only passing baseline PR checks under the repository
 ## Persistence and execution limits
 
 State schema, archive format and IndexedDB schema remain version 1. No migration is introduced. Saved runs survive reload and can be restored from Data Vault; the baseline does not automatically resume the previously active run. Storage is browser-local, not cloud storage. Closed/suspended tabs do not have a persistent execution service. Only the active running simulation is scheduled automatically; paused and stored branches do not advance. Render-independent headless stepping is provided by the existing kernel/worker, not a promise of all worlds continuously advancing in the background.
+
+## Remote validation evidence
+
+- PR: https://github.com/westkitty/Multiverse_Simulator/pull/1
+- Initial PR run `38129369955` failed because the Vite config was inadvertently omitted from the first commit. Corrective commit `812242f` included the already locally verified config.
+- Corrected PR run **38129397003: SUCCESS** (all validation gates, including standard Playwright Chromium desktop/mobile browser tests on GitHub-hosted Ubuntu). Deploy/public-smoke correctly skipped for PR code.
+- Additional adversarial repair canonicalizes the initial hash-history entry; browser Back now restores the initial Observatory too. Regression exercised in desktop and mobile smoke tests.

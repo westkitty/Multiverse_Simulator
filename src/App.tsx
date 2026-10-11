@@ -58,9 +58,11 @@ export const App: React.FC = () => {
   useEffect(() => {
     const readRoute = () => {
       const tab = NAV_TABS.find((entry) => `#/${entry.id}` === window.location.hash);
-      if (tab) useMultiverseStore.getState().setActiveTab(tab.id);
+      useMultiverseStore.getState().setActiveTab(tab?.id ?? 'observatory');
     };
     readRoute();
+    // Canonicalize the first history entry so Back also restores the initial view.
+    window.history.replaceState(null, '', `#/${useMultiverseStore.getState().activeTab}`);
     const unsubscribe = useMultiverseStore.subscribe((state, previous) => {
       if (state.activeTab !== previous.activeTab && window.location.hash !== `#/${state.activeTab}`) {
         window.history.pushState(null, '', `#/${state.activeTab}`);
