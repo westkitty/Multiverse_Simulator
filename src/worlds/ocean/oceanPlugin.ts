@@ -109,16 +109,16 @@ const SECTOR_NAMES = [
   'Antarctic Circumpolar W', 'Roaring Forties Sea', 'Subantarctic Ridge', 'Krill Convergence', 'Abyssal Plain S', 'Deep Drake Channel', 'Southern Upwelling', 'Ice-Shelf Margin SE',
 ];
 
-function getSectorIdx(gx: number, gz: number): number {
+function getSectorIdx(gx: number, gz: number, rows = OCEAN_ROWS): number {
   const cx = clampDet(gx, 0, OCEAN_COLS - 1);
-  const cz = clampDet(gz, 0, OCEAN_ROWS - 1);
+  const cz = clampDet(gz, 0, rows - 1);
   return cz * OCEAN_COLS + cx;
 }
 
 function getSectorAtWorldPos(sectors: OceanSector[], x: number, z: number): OceanSector {
   const gx = clampDet(Math.floor(((x + 48) / 96) * OCEAN_COLS), 0, OCEAN_COLS - 1);
-  const gz = clampDet(Math.floor(((z + 36) / 72) * OCEAN_ROWS), 0, OCEAN_ROWS - 1);
-  return sectors[getSectorIdx(gx, gz)] ?? sectors[0];
+  const gz = clampDet((sectors.length === 48 ? Math.floor(((z + 36) / 72) * OCEAN_ROWS) : Math.floor((z + 36) / 12)), 0, sectors.length / OCEAN_COLS - 1);
+  return sectors[getSectorIdx(gx, gz, sectors.length / OCEAN_COLS)] ?? sectors[0];
 }
 
 function spawnShoal(
@@ -137,7 +137,7 @@ function spawnShoal(
   const name = `${list[(state.nextShoalId - 2) % list.length]} #${state.nextShoalId - 1}`;
 
   const px = roundDet(clampDet(x ?? stream.nextRange(-40, 40), -44, 44), 2);
-  const pz = roundDet(clampDet(z ?? stream.nextRange(-28, 28), -32, 32), 2);
+  const pz = roundDet(clampDet(z ?? stream.nextRange(-28, 28), -32, state.sectors.length / OCEAN_COLS * 12 - 40), 2);
   const depthMeters =
     depthLayer === 'epipelagic' ? 85 : depthLayer === 'mesopelagic' ? 520 : 2100;
 
@@ -883,9 +883,9 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
           const upZ = clampDet(
             Math.round(sec.gridZ - Math.sign(sec.currentV)),
             0,
-            OCEAN_ROWS - 1,
+            state.sectors.length / OCEAN_COLS - 1,
           );
-          const upIdx = getSectorIdx(upX, upZ);
+          const upIdx = getSectorIdx(upX, upZ, state.sectors.length / OCEAN_COLS);
           const advect = clampDet(Math.hypot(sec.currentU, sec.currentV) * 0.08, 0.02, 0.22);
 
           sec.epipelagic.nutrientsUmolL = roundDet(
@@ -1121,7 +1121,7 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
           let bestScore = -999;
           for (let dz = -1; dz <= 1; dz++) {
             for (let dx = -1; dx <= 1; dx++) {
-              const cand = state.sectors[getSectorIdx(host.gridX + dx, host.gridZ + dz)];
+              const cand = state.sectors[getSectorIdx(host.gridX + dx, host.gridZ + dz, state.sectors.length / OCEAN_COLS)];
               const lState = cand[shoal.depthLayer];
               const foodScore =
                 shoal.trophicRole === 'grazer_shoal'
@@ -1148,7 +1148,7 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
               2,
             );
             shoal.z = roundDet(
-              clampDet(shoal.z + (dirZ / dist) * stepSpeed + host.currentV * 0.4, -32, 32),
+              clampDet(shoal.z + (dirZ / dist) * stepSpeed + host.currentV * 0.4, -32, state.sectors.length / OCEAN_COLS * 12 - 40),
               2,
             );
           } else {
@@ -1157,7 +1157,7 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
               2,
             );
             shoal.z = roundDet(
-              clampDet(shoal.z + stream.nextRange(-1.5, 1.5) + host.currentV * 0.4, -32, 32),
+              clampDet(shoal.z + stream.nextRange(-1.5, 1.5) + host.currentV * 0.4, -32, state.sectors.length / OCEAN_COLS * 12 - 40),
               2,
             );
           }
@@ -1819,10 +1819,10 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
       });
 
     const connections: RenderConnectionVisual[] = [];
-    for (let gz = 0; gz < OCEAN_ROWS; gz += 2) {
+    for (let gz = 0; gz < state.sectors.length / OCEAN_COLS; gz += 2) {
       for (let gx = 0; gx < OCEAN_COLS - 1; gx += 2) {
-        const sA = state.sectors[getSectorIdx(gx, gz)];
-        const sB = state.sectors[getSectorIdx(gx + 1, gz)];
+        const sA = state.sectors[getSectorIdx(gx, gz, state.sectors.length / OCEAN_COLS)];
+        const sB = state.sectors[getSectorIdx(gx + 1, gz, state.sectors.length / OCEAN_COLS)];
         const speed = roundDet(Math.hypot(sA.currentU, sA.currentV), 2);
         connections.push({
           id: `gyre-${sA.id}-${sB.id}`,

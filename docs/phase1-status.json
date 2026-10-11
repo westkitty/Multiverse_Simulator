@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "phase": "1-foundation",
+  "scope": "local-only reusable exploration primitives; not integrated into production worlds",
+  "proofStatus": {
+    "versionedContracts": "PASS",
+    "deterministicSocketPlacement": "PASS",
+    "discoveryAndEvidenceTransitions": "PASS",
+    "tickTravelAndFuelConservation": "PASS",
+    "counterfactualRepairIsolation": "PASS",
+    "kernelReplayAndArchiveContinuation": "PASS",
+    "productionWorldIntegration": "FAIL",
+    "explorationUI": "FAIL",
+    "expandedWorldPerformance": "UNVERIFIED",
+    "remotePublication": "BLOCKED"
+  },
+  "proof": "src/test/exploration.test.ts",
+  "productionCounts": { "primaryWorlds": 9, "newPois": 0, "newDiscoveryChains": 0 },
+  "validation": { "typecheck": "PASS", "lint": "PASS", "unitTests": 34, "suites": 7, "build": "PASS", "productionAssetCheck": "PASS" },
+  "limits": {
+    "recentJournalEntries": 128,
+    "recentReferencesPerSite": 128,
+    "maxQueuedRouteLabels": 8192,
+    "maxExaminedRouteLabels": 16384,
+    "placementOverlapAlgorithm": "pairwise; not optimized for large atlases"
+  }
+}

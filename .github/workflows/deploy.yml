@@ -23,6 +23,8 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test
+      - name: Content, default-stock and historical archive acceptance
+        run: npm run test:acceptance
       - run: npm run build
       - run: npm run verify:dist
       - run: npx playwright install --with-deps chromium

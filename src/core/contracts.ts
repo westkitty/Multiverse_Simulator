@@ -16,7 +16,13 @@ export type PrimaryWorldId =
   | 'celestial'
   | 'megacity'
   | 'industrial'
-  | 'geology';
+  | 'geology'
+  | 'wild-meridian'
+  | 'hollow-deep'
+  | 'timeworn-empire'
+  | 'terraforming-frontier'
+  | 'machine-wilderness'
+  | 'signal-expanse';
 export type WorldId = PrimaryWorldId | string;
 
 export interface WorldScaleMetadata {

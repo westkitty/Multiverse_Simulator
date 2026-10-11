@@ -886,11 +886,11 @@ export const stationPlugin = defineWorldPlugin<StationConfig, StationState>({
         const reactorKw =
           state.reactorOnline && reactorRoom.equipmentOnline
             ? roundDet(
-                config.reactorNominalKw * reactorHealthFactor * state.reactorThrottle,
+                config.reactorNominalKw * reactorHealthFactor * state.reactorThrottle * (state.rooms.length / 18),
                 2,
               )
             : 0;
-        const solarKw = roundDet(config.solarBackupKw * state.solarArrayDeployedFactor, 2);
+        const solarKw = roundDet(config.solarBackupKw * state.solarArrayDeployedFactor * (state.rooms.length / 18), 2);
         const totalGenKw = roundDet(reactorKw + solarKw, 2);
         state.totalGenerationKw = totalGenKw;
 

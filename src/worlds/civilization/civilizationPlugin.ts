@@ -73,6 +73,7 @@ export interface TransportRoute {
 }
 
 export interface CivilizationState {
+  frontierSites?: typeof FRONTIER_SITES;
   settlements: Settlement[];
   routes: TransportRoute[];
   regionalDroughtTicks: number;
@@ -108,7 +109,7 @@ function normalizeLabor(labor: LaborAllocation): LaborAllocation {
 }
 
 // 6 Frontier expansion sites beyond the 9 starting settlements (15 total sites = 3x the original 5)
-const FRONTIER_SITES: Array<{
+export const FRONTIER_SITES: Array<{
   id: string;
   name: string;
   regionType: Settlement['regionType'];
@@ -1551,7 +1552,7 @@ export const civilizationPlugin = defineWorldPlugin<
 
       case 'found_settlement': {
         const existingIds = new Set(state.settlements.map((s) => s.id));
-        const candidate = FRONTIER_SITES.find((f) => !existingIds.has(f.id));
+        const candidate = (state.frontierSites ?? FRONTIER_SITES).find((f) => !existingIds.has(f.id));
         const newIndex = state.settlements.length + 1;
         const newStl: Settlement = {
           id: candidate ? candidate.id : `stl-colony-${newIndex}`,

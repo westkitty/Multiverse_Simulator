@@ -1,0 +1,862 @@
+{
+  "schemaVersion": 1,
+  "policy": "nearest-first",
+  "method": "Default configs and starting stocks; full native systems; only real expedition commands; three seeds; 2000 ticks plus restored continuation. Greedy reachable-site policy with prerequisite ordering and local resupply, not an exhaustive planning oracle.",
+  "results": [
+    {
+      "world": "ecosystem",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 111,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 475,
+        "supplies": 290
+      },
+      "meanCondition": 37.06211111111111
+    },
+    {
+      "world": "ecosystem",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 111,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 475,
+        "supplies": 290
+      },
+      "meanCondition": 37.03211111111111
+    },
+    {
+      "world": "ecosystem",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 111,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 475,
+        "supplies": 290
+      },
+      "meanCondition": 37.043972222222216
+    },
+    {
+      "world": "station",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 157,
+      "resupplies": 37,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 442,
+        "supplies": 284
+      },
+      "meanCondition": 86.33661111111104
+    },
+    {
+      "world": "station",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 157,
+      "resupplies": 37,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 442,
+        "supplies": 284
+      },
+      "meanCondition": 86.33661111111104
+    },
+    {
+      "world": "station",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 157,
+      "resupplies": 37,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 442,
+        "supplies": 284
+      },
+      "meanCondition": 86.33661111111104
+    },
+    {
+      "world": "civilization",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "civilization",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "civilization",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "atmosphere",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 58,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.01602777777777
+    },
+    {
+      "world": "atmosphere",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 58,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.03625
+    },
+    {
+      "world": "atmosphere",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 60,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.0681111111111
+    },
+    {
+      "world": "ocean",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.17425
+    },
+    {
+      "world": "ocean",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.17783333333333
+    },
+    {
+      "world": "ocean",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 86.17299999999997
+    },
+    {
+      "world": "celestial",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 53,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 500,
+        "supplies": 262
+      },
+      "meanCondition": 75.01141666666666
+    },
+    {
+      "world": "celestial",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 53,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 500,
+        "supplies": 262
+      },
+      "meanCondition": 75.01141666666666
+    },
+    {
+      "world": "celestial",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 53,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 500,
+        "supplies": 262
+      },
+      "meanCondition": 75.01141666666666
+    },
+    {
+      "world": "megacity",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 89,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 264
+      },
+      "meanCondition": 17.97061111111111
+    },
+    {
+      "world": "megacity",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 99,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 461,
+        "supplies": 272
+      },
+      "meanCondition": 18.044694444444445
+    },
+    {
+      "world": "megacity",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 97,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 452,
+        "supplies": 264
+      },
+      "meanCondition": 17.993166666666667
+    },
+    {
+      "world": "industrial",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    },
+    {
+      "world": "industrial",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    },
+    {
+      "world": "industrial",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    },
+    {
+      "world": "geology",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 6.501388888888888
+    },
+    {
+      "world": "geology",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 7.586250000000001
+    },
+    {
+      "world": "geology",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 56,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 530,
+        "supplies": 292
+      },
+      "meanCondition": 10.119388888888892
+    },
+    {
+      "world": "wild-meridian",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 117,
+      "resupplies": 37,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 445.80400000000003,
+        "supplies": 269.06399999999996
+      },
+      "meanCondition": 93.0768888888889
+    },
+    {
+      "world": "wild-meridian",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 97,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 453.503,
+        "supplies": 252.02300000000002
+      },
+      "meanCondition": 94.21619444444443
+    },
+    {
+      "world": "wild-meridian",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 101,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 451.458,
+        "supplies": 255.836
+      },
+      "meanCondition": 92.05869444444443
+    },
+    {
+      "world": "hollow-deep",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 104,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 465,
+        "supplies": 248
+      },
+      "meanCondition": 92.44811111111109
+    },
+    {
+      "world": "hollow-deep",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 104,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 465,
+        "supplies": 252
+      },
+      "meanCondition": 93.15633333333331
+    },
+    {
+      "world": "hollow-deep",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 104,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 465,
+        "supplies": 248
+      },
+      "meanCondition": 92.91616666666665
+    },
+    {
+      "world": "timeworn-empire",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 77,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 462,
+        "supplies": 248
+      },
+      "meanCondition": 88.07847222222222
+    },
+    {
+      "world": "timeworn-empire",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 77,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 462,
+        "supplies": 248
+      },
+      "meanCondition": 88.07866666666663
+    },
+    {
+      "world": "timeworn-empire",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 77,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 462,
+        "supplies": 248
+      },
+      "meanCondition": 88.07849999999998
+    },
+    {
+      "world": "terraforming-frontier",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 127,
+      "resupplies": 37,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439.171,
+        "supplies": 256.698
+      },
+      "meanCondition": 71.65152777777776
+    },
+    {
+      "world": "terraforming-frontier",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 97,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 452.275,
+        "supplies": 245.1
+      },
+      "meanCondition": 68.66344444444444
+    },
+    {
+      "world": "terraforming-frontier",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 101,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 450.522,
+        "supplies": 249.102
+      },
+      "meanCondition": 64.74891666666666
+    },
+    {
+      "world": "machine-wilderness",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 95,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 453.66499999999996,
+        "supplies": 254.65499999999997
+      },
+      "meanCondition": 88.61449999999996
+    },
+    {
+      "world": "machine-wilderness",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 105,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 451.034,
+        "supplies": 260
+      },
+      "meanCondition": 85.44702777777775
+    },
+    {
+      "world": "machine-wilderness",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 109,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 448.919,
+        "supplies": 258
+      },
+      "meanCondition": 87.34055555555551
+    },
+    {
+      "world": "signal-expanse",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 91,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 368.056,
+        "supplies": 260
+      },
+      "meanCondition": 87.98291666666665
+    },
+    {
+      "world": "signal-expanse",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 87,
+      "resupplies": 35,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 371,
+        "supplies": 248
+      },
+      "meanCondition": 90.48541666666668
+    },
+    {
+      "world": "signal-expanse",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 101,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 353.352,
+        "supplies": 258
+      },
+      "meanCondition": 90.10986111111112
+    }
+  ]
+}

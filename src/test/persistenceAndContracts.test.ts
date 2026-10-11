@@ -255,7 +255,8 @@ describe('Phase 5-6: Cross-World Contracts, Experiments, Comparison, Persistence
       },
     });
 
-    emptyEco.stepMany(30);
+    // This is an exact-tick persistence test, not a wall-clock batching benchmark.
+    for (let i = 0; i < 30; i++) emptyEco.step();
     expect(emptyEco.tick).toBe(30);
     expect(emptyEco.getEvents().length).toBeLessThanOrEqual(60);
     expect(emptyEco.listCheckpoints().length).toBeLessThanOrEqual(6);

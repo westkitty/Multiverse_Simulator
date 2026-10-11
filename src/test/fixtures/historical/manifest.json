@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "cb6bc9b4456f2cb45b7610c0df6d3325bd67a5eb",
+  "method": "Generated from git archive of the historical baseline commit in an isolated directory. No current plugin/kernel/archive code imported. Expected continuation hashes also computed there.",
+  "limitation": "Reconstructed historical-source fixtures, not files recovered from an actual past user session. Generator verifies the installed project lockfile matches the historical lockfile; binaries are reconstructed, not recovered user data.",
+  "fixtures": [
+    {
+      "worldId": "ecosystem",
+      "pluginVersion": "2.0.0",
+      "file": "ecosystem.omniverse.zip",
+      "bytes": 25392,
+      "sha256": "19d9e42bcd2791c153c334d123e1978ac462265a9fb59b3d994a4bc24d23211c",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "59a18d8e3a8461e0",
+      "continuationTick": 60,
+      "continuationStateHash": "eab7867a2d55d084",
+      "command": {
+        "type": "introduce_predators",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "station",
+      "pluginVersion": "2.0.0",
+      "file": "station.omniverse.zip",
+      "bytes": 8821,
+      "sha256": "8cceaa78c0669dc0a2bf628e2f9bc67ec681814cf415180662dca087c6a2d205",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "39aa6057c3cb54a7",
+      "continuationTick": 60,
+      "continuationStateHash": "8e772430e0ae97c3",
+      "command": {
+        "type": "isolate_compartment",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "civilization",
+      "pluginVersion": "2.0.0",
+      "file": "civilization.omniverse.zip",
+      "bytes": 8340,
+      "sha256": "f1cbe07bf66020cb39317957d0b7771a46e945a28e666d3de3ade526cf81868b",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "aa6cbd41d4364f00",
+      "continuationTick": 60,
+      "continuationStateHash": "29960cb370b673f0",
+      "command": {
+        "type": "build_water_infrastructure",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "atmosphere",
+      "pluginVersion": "2.0.0",
+      "file": "atmosphere.omniverse.zip",
+      "bytes": 13190,
+      "sha256": "f4996a0944c6f8f1b4acf5e61e385e9cc3d9ef7b2d132d426e6e31d6d8f9f40c",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "a7b3df361da3849f",
+      "continuationTick": 60,
+      "continuationStateHash": "02b164614877be9c",
+      "command": {
+        "type": "adjust_solar_forcing",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "ocean",
+      "pluginVersion": "2.0.0",
+      "file": "ocean.omniverse.zip",
+      "bytes": 17172,
+      "sha256": "1b009a5ccb88d4bd03bc5c2e39974e637b51269ae38f04791ac83a05f88154ba",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "786e4f4115c24e02",
+      "continuationTick": 60,
+      "continuationStateHash": "12b013d78dd96cf4",
+      "command": {
+        "type": "select_depth_layer",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "celestial",
+      "pluginVersion": "2.0.0",
+      "file": "celestial.omniverse.zip",
+      "bytes": 9771,
+      "sha256": "92afa1300c3f4103ddc60b4e4ac3b1e1d8ff9be4499cb3f40bd0eb11d9fc4c49",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "272f1316147742e7",
+      "continuationTick": 60,
+      "continuationStateHash": "ec905569e6bb1560",
+      "command": {
+        "type": "select_star_system",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "megacity",
+      "pluginVersion": "2.0.0",
+      "file": "megacity.omniverse.zip",
+      "bytes": 9696,
+      "sha256": "d2147aac959094355db7a9e159ef9873c1f951551f5ae9334a8971b97f69d210",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "aa09fd4209226d7e",
+      "continuationTick": 60,
+      "continuationStateHash": "7f62964efac1a5cd",
+      "command": {
+        "type": "develop_housing_towers",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "industrial",
+      "pluginVersion": "2.0.0",
+      "file": "industrial.omniverse.zip",
+      "bytes": 8729,
+      "sha256": "573912169a95aefefc0be929077edf7bedeca6d2e542d7838bbdfadfc9ef78cc",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "46c3d206b244b218",
+      "continuationTick": 60,
+      "continuationStateHash": "71a0ddf941a3bfce",
+      "command": {
+        "type": "construct_facility_upgrade",
+        "tick": 5
+      }
+    },
+    {
+      "worldId": "geology",
+      "pluginVersion": "2.0.0",
+      "file": "geology.omniverse.zip",
+      "bytes": 10643,
+      "sha256": "0b6a58dc5e1ec5facdbadc64cfaac4acb8517d9111021ee4ea6a677038f3c3fa",
+      "seed": 424242,
+      "archiveTick": 20,
+      "archiveStateHash": "99886fc52d4da5bf",
+      "continuationTick": 60,
+      "continuationStateHash": "0abd46a46ebdcf66",
+      "command": {
+        "type": "reinforce_vulnerable_areas",
+        "tick": 5
+      }
+    }
+  ]
+}

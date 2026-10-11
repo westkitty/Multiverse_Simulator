@@ -1,0 +1,21 @@
+import {it} from 'vitest';
+import {writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {SimulationKernel} from '../core/kernel';
+import {CORE_WORLD_PLUGINS} from '../worlds';
+import {createPortableArchiveZip} from '../persistence/archive';
+it('generates archives and continuation oracles using ONLY historical source',()=>{
+ const output=process.env.HISTORICAL_FIXTURE_OUTPUT!;
+ const fixtures=CORE_WORLD_PLUGINS.map(plugin=>{
+  const k=new SimulationKernel({runId:`historical-${plugin.id}`,name:`Historical ${plugin.id}`,plugin,seed:424242});
+  for(let i=0;i<5;i++)k.step();
+  const intervention=plugin.quickInterventions[0];
+  k.enqueueCommand({type:intervention.commandType,label:intervention.label,payload:intervention.defaultPayload});k.flushCurrentTickCommands();
+  for(let i=0;i<15;i++)k.step();
+  const archive=createPortableArchiveZip(k.exportRunRecord());
+  const at20=k.getStateHash();writeFileSync(`${output}/${plugin.id}.omniverse.zip`,archive);
+  for(let i=0;i<40;i++)k.step();
+  return {worldId:plugin.id,pluginVersion:plugin.version,file:`${plugin.id}.omniverse.zip`,bytes:archive.byteLength,sha256:createHash('sha256').update(archive).digest('hex'),seed:424242,archiveTick:20,archiveStateHash:at20,continuationTick:60,continuationStateHash:k.getStateHash(),command:{type:intervention.commandType,tick:5}};
+ });
+ writeFileSync(`${output}/manifest.json`,JSON.stringify({schemaVersion:1,sourceCommit:'cb6bc9b4456f2cb45b7610c0df6d3325bd67a5eb',method:'Generated from git archive of the historical baseline commit in an isolated directory. No current plugin/kernel/archive code imported. Expected continuation hashes also computed there.',limitation:'Reconstructed historical-source fixtures, not files recovered from an actual past user session. Generator verifies the installed project lockfile matches the historical lockfile; binaries are reconstructed, not recovered user data.',fixtures},null,2)+'\n');
+},120000);

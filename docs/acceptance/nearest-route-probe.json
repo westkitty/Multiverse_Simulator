@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "policy": "nearest-first",
+  "method": "Default configs and starting stocks; full native systems; only real expedition commands; three seeds; 2000 ticks plus restored continuation. Greedy reachable-site policy with prerequisite ordering and local resupply, not an exhaustive planning oracle.",
+  "results": [
+    {
+      "world": "civilization",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "civilization",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "civilization",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 98,
+      "resupplies": 36,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 456,
+        "supplies": 274
+      },
+      "meanCondition": 0.0022222222222222222
+    },
+    {
+      "world": "industrial",
+      "seed": 1,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    },
+    {
+      "world": "industrial",
+      "seed": 2026,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    },
+    {
+      "world": "industrial",
+      "seed": 424242,
+      "startingStocks": {
+        "fuel": 150,
+        "supplies": 80
+      },
+      "resolved": 36,
+      "expeditionTick": 163,
+      "resupplies": 38,
+      "expeditionFailure": null,
+      "stabilityFailure": null,
+      "finalTick": 2005,
+      "remainingStocks": {
+        "fuel": 439,
+        "supplies": 294
+      },
+      "meanCondition": 0
+    }
+  ]
+}

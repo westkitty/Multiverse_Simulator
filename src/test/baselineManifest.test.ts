@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { SimulationKernel } from '../core/kernel';
-import { CORE_WORLD_PLUGINS } from '../worlds';
+import { LEGACY_WORLD_PLUGINS } from '../worlds';
 import { createPortableArchiveZip } from '../persistence/archive';
 
 const expectedZones = [48, 18, 9, 48, 48, 3, 18, 18, 48];
@@ -9,7 +9,7 @@ const targets = [144, 54, 45, 144, 144, 9, 54, 54, 144];
 
 describe('OMNIVERSE II intake evidence (not expansion acceptance)', () => {
   it('measures actual initialized state and records the unchanged baseline separately from targets', () => {
-    const worlds = CORE_WORLD_PLUGINS.map((plugin, index) => {
+    const worlds = LEGACY_WORLD_PLUGINS.map((plugin, index) => {
       const kernel = new SimulationKernel({ runId: `intake-${plugin.id}`, name: 'Intake', plugin, seed: 424242 });
       const frame = kernel.extractRenderFrame();
       expect(frame.zones.length).toBe(expectedZones[index]);

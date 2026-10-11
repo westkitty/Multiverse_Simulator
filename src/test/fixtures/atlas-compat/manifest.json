@@ -1,0 +1,141 @@
+{
+  "sourceCommit": "7e7f9334cefd9c276dba4a16558640377790f229",
+  "method": "Historical-source Atlas generation with an actual default-stock visit and legacy role-3 operate command; tick-50 ZIP and tick-90 oracle from that historical implementation.",
+  "fixtures": [
+    {
+      "worldId": "ecosystem",
+      "file": "ecosystem.omniverse.zip",
+      "sha256": "17e158426c6a931dba803bb034ef24bb1ad7ba946e510b6a1a306f59df6ae399",
+      "archiveStateHash": "2b904a8a8e944430",
+      "continuationStateHash": "97adc415e42595fb",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "station",
+      "file": "station.omniverse.zip",
+      "sha256": "a4e488f87a318061ce91c58302343884a82028b9b30d29153ead27bca1106054",
+      "archiveStateHash": "cd2b59d3db361687",
+      "continuationStateHash": "abca7a07f59d0b95",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "civilization",
+      "file": "civilization.omniverse.zip",
+      "sha256": "04ca2cb4335b66983fb589d1d420e68e6ff29dda086019c7f09add34f3e85539",
+      "archiveStateHash": "dc69cb8216afa341",
+      "continuationStateHash": "cb111021b2b325d6",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "atmosphere",
+      "file": "atmosphere.omniverse.zip",
+      "sha256": "8f47ce7a4b972e8581e5aa09813abe16302af343884d32dd5c905baf4c35c781",
+      "archiveStateHash": "ceef028088bf5728",
+      "continuationStateHash": "b68e38e46d51f328",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "ocean",
+      "file": "ocean.omniverse.zip",
+      "sha256": "eff52b6cbe49bc97b8bcc69e63d1be835fe1017e80fbf1184ac295dde1f91da2",
+      "archiveStateHash": "cf407a9a9d388c8d",
+      "continuationStateHash": "69f350895c396829",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "celestial",
+      "file": "celestial.omniverse.zip",
+      "sha256": "3edcad2a22370fa2490dbe674e134be0712fd30e39b3e9115a78d6ed61de6e67",
+      "archiveStateHash": "1e10c5966977d63d",
+      "continuationStateHash": "ec0b2b9aafad5dbc",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "megacity",
+      "file": "megacity.omniverse.zip",
+      "sha256": "6915751c7f702834a5e90c4c08c6cf59c46e922ddd5b60851a3afca61adb5549",
+      "archiveStateHash": "21f1404fbf9bb538",
+      "continuationStateHash": "4a3fcd164e0e4999",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "industrial",
+      "file": "industrial.omniverse.zip",
+      "sha256": "51db6fa9eeed310d0fea07b99867e9092c2e6a34a8d95aaccf3918340471adf6",
+      "archiveStateHash": "576c0d03968740d7",
+      "continuationStateHash": "9e58d114aa432949",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "geology",
+      "file": "geology.omniverse.zip",
+      "sha256": "19096258e3188b2feb926ba8d16189b5d0b7a445ed7dd56cb8aba1b6ee41ad19",
+      "archiveStateHash": "802ee7e890d21984",
+      "continuationStateHash": "f4211ad1339d260b",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "wild-meridian",
+      "file": "wild-meridian.omniverse.zip",
+      "sha256": "05782c7875a6bd8c2e97ee2547ca75b2b58dee4f28ffac378e1ab72b26ac4e78",
+      "archiveStateHash": "b3120c1c3f2b8f07",
+      "continuationStateHash": "cf3444a9ebf96095",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "hollow-deep",
+      "file": "hollow-deep.omniverse.zip",
+      "sha256": "10d253675d446e9ef533f9f61225964fd0e3b54f1511858a56f9cce67cf4e8e7",
+      "archiveStateHash": "4c65163f580c0a56",
+      "continuationStateHash": "0d63038ecbbc5998",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "timeworn-empire",
+      "file": "timeworn-empire.omniverse.zip",
+      "sha256": "e26f27ac8673284969a79ccc2e75e1b05c6de578241e5f194dec8da481367dc4",
+      "archiveStateHash": "30de31a305ec11f9",
+      "continuationStateHash": "a5ce1218c0bb5454",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "terraforming-frontier",
+      "file": "terraforming-frontier.omniverse.zip",
+      "sha256": "7d1514de6c9795656af85248c48751c11316159eb21217ac459330254eadd11e",
+      "archiveStateHash": "3f196df51fb2dfb1",
+      "continuationStateHash": "90785f43c57d108a",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "machine-wilderness",
+      "file": "machine-wilderness.omniverse.zip",
+      "sha256": "b7b2871fab7365b89c50aa2a47a906e4d5a46b99cef08e3314a3ec31ae80aa20",
+      "archiveStateHash": "2ae0974716f5da89",
+      "continuationStateHash": "d45a0fdaf48785ea",
+      "archiveTick": 50,
+      "continuationTick": 90
+    },
+    {
+      "worldId": "signal-expanse",
+      "file": "signal-expanse.omniverse.zip",
+      "sha256": "f9e20e11f010c4b569e6649f49d3e0b346068d72738d059aa121120bf3a23de7",
+      "archiveStateHash": "5a29fbd998f3f377",
+      "continuationStateHash": "8ef8292a21958c09",
+      "archiveTick": 50,
+      "continuationTick": 90
+    }
+  ]
+}
