@@ -130,7 +130,7 @@ export const ExperimentLabView: React.FC = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 260px), 1fr))',
             gap: '10px',
           }}
         >
@@ -266,7 +266,7 @@ export const ExperimentLabView: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(330px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 330px), 1fr))',
           gap: '16px',
         }}
       >

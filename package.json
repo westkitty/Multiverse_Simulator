@@ -11,7 +11,10 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:browser": "playwright test",
+    "verify:dist": "node scripts/verify-dist.mjs",
+    "measure:baseline": "RECORD_BASELINE=1 vitest run src/test/baselineManifest.test.ts"
   },
   "dependencies": {
     "fflate": "^0.8.2",
@@ -23,7 +26,8 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
+    "@playwright/test": "^1.64.0",
+    "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.1.0",
     "@types/node": "^22.10.2",
     "@types/react": "^18.3.18",
@@ -37,6 +41,9 @@
     "jsdom": "^25.0.1",
     "typescript": "^5.7.2",
     "vite": "^6.0.5",
-    "vitest": "^2.1.8"
+    "vitest": "^5.0.3"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

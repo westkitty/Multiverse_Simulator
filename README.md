@@ -1,3 +1,7 @@
+> **OMNIVERSE II status — 2026-10-11:** This is the verified **nine-world baseline**, not the requested fifteen-world expansion. Publication preparation is implemented, but Pages activation returned HTTP 403 and the public site is **not verified live**. See [release evidence and blockers](docs/RELEASE_EVIDENCE.md) and the [machine-readable baseline/targets](docs/expansion-manifest.json). The earlier “3×” figures below describe the previous expansion, not completion of OMNIVERSE II.
+>
+> Target URL: https://westkitty.github.io/Multiverse_Simulator/ (unverified). Administrator: **Settings → Pages → Build and deployment → Source → GitHub Actions**.
+
 # Omniverse Engine — Nine-World Triple-Scale Procedural Simulation Platform
 
 A deterministic, browser-native scientific observatory and procedural simulation engine featuring **9 fully realized simulation worlds** (10 including the PDK Thermal Lattice template), **triple spatial scale (3.0×)**, **triple functional content (≥3× scenarios, interventions, and telemetry metrics)**, **10 cross-world causal event adapters**, counterfactual timeline branching, controlled multi-seed experiments, and reproducible `.omniverse.zip` archive portability.

@@ -30,3 +30,9 @@ All simulation worlds implement the `WorldPlugin<TConfig, TState>` contract defi
 Every registered world is automatically tested by:
 - `verifyWorldPluginContract(plugin)` (`src/core/pdk.ts`): Verifies deterministic twin runs, snapshot continuation parity, counterfactual branch isolation, and invalid command rejection.
 - `src/test/nineWorldsExpansion.test.ts`: Verifies `scaleFactor >= 3.0`, `>= 9` scenarios, `>= 18` interventions, `>= 18` metrics, and executes **every quick intervention against an unperturbed control run** to guarantee zero no-op interventions.
+
+## OMNIVERSE II verification additions
+
+Use Node >=22.12, `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm run verify:dist`. Install Chromium with `npx playwright install --with-deps chromium`, then run `npm run test:browser`. For public verification use `SMOKE_BASE_URL=https://westkitty.github.io/Multiverse_Simulator/ EXPECTED_RELEASE_COMMIT=<full-sha> npm run test:browser`.
+
+`npm run measure:baseline` writes the intake manifest using seed 424242 and default configuration. Preserve its frozen baseline when implementing new worlds; do not reinterpret old scale metadata as the new expansion. No new plugin/POI API is promised yet. CI release policy and activation instructions are in `docs/RELEASE_EVIDENCE.md`.

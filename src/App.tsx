@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { WorldId } from './core/contracts';
+import { ENGINE_VERSION, WorldId } from './core/contracts';
 import { MultiverseTab, useMultiverseStore } from './store/multiverseStore';
 import { CompareView } from './ui/views/CompareView';
 import { DataVaultView } from './ui/views/DataVaultView';
@@ -12,7 +12,7 @@ import { WorldLibraryView } from './ui/views/WorldLibraryView';
 import { CORE_WORLD_PLUGINS } from './worlds';
 
 const NAV_TABS: Array<{ id: MultiverseTab; label: string }> = [
-  { id: 'library', label: 'World Library (9)' },
+  { id: 'library', label: `World Library (${CORE_WORLD_PLUGINS.length})` },
   { id: 'observatory', label: 'Active Observatory' },
   { id: 'timeline', label: 'Timeline & Branches' },
   { id: 'lab', label: 'Experiment Lab' },
@@ -52,6 +52,27 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     initializeStoreFromDb();
+  }, []);
+
+  // Hash URLs work on static project hosting without a server-side rewrite.
+  useEffect(() => {
+    const readRoute = () => {
+      const tab = NAV_TABS.find((entry) => `#/${entry.id}` === window.location.hash);
+      if (tab) useMultiverseStore.getState().setActiveTab(tab.id);
+    };
+    readRoute();
+    const unsubscribe = useMultiverseStore.subscribe((state, previous) => {
+      if (state.activeTab !== previous.activeTab && window.location.hash !== `#/${state.activeTab}`) {
+        window.history.pushState(null, '', `#/${state.activeTab}`);
+      }
+    });
+    window.addEventListener('popstate', readRoute);
+    window.addEventListener('hashchange', readRoute);
+    return () => {
+      unsubscribe();
+      window.removeEventListener('popstate', readRoute);
+      window.removeEventListener('hashchange', readRoute);
+    };
   }, []);
 
   // Fixed-timestep scheduler loop decoupled from render frame rate
@@ -141,11 +162,11 @@ export const App: React.FC = () => {
                     fontFamily: 'monospace',
                   }}
                 >
-                  // OMNIVERSE ENGINE v2.0 (9 WORLDS • 3X SCALE)
+                  // OMNIVERSE ENGINE v{ENGINE_VERSION} · BASELINE · {CORE_WORLD_PLUGINS.length} WORLDS · {__RELEASE_COMMIT__.slice(0, 7)}
                 </span>
               </div>
               <div style={{ fontSize: '11px', color: '#94a3b8' }}>
-                9-World Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching • 10 Cross-World Contracts
+                {CORE_WORLD_PLUGINS.length}-World Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching • 10 Cross-World Contracts
               </div>
             </div>
           </div>

@@ -55,3 +55,7 @@
 - **Auto-Fit Camera Scaling**: Automatically computes the bounding box of all zones and entities (`maxSpan`) so triple-scale 48-cell grids, 18-compartment orbital stations, and 3-star-system orbital basins frame cleanly on load and via the **Fit World** button.
 - **Layer Visibility Toggles**: Operators can independently toggle `Zones`, `Entities`, `Links`, and `Labels` in both 3D WebGL and 2D SVG Schematic modes.
 - **Color-Independent Accessibility**: Every node and entity badge pairs color with a distinct status glyph (`✓` nominal, `⚠` warning, `✖` critical) and exposes a synchronized keyboard-navigable `AccessibleStateTable`.
+
+## OMNIVERSE II Phase 0 addendum (2026-10-11)
+
+No simulation or persistence architecture has been replaced. Production and preview share `/Multiverse_Simulator/`; development uses `/`. Workbench URLs use `#/library`, `#/observatory`, etc. with browser-history synchronization; no Pages rewrite is required. The UI displays the engine version and build commit, explicitly labeled baseline. The new POI contract, deterministic population, curiosity director, discovery state machine and six new worlds are **not implemented**. See `docs/RELEASE_EVIDENCE.md` for execution and save semantics.

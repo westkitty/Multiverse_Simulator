@@ -260,7 +260,7 @@ export const ObservatoryView: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(330px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 330px), 1fr))',
           gap: '14px',
         }}
       >
@@ -592,7 +592,7 @@ const EcosystemHeatmapMatrix: React.FC<{
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 110px), 1fr))',
           gap: '5px',
         }}
       >
@@ -637,7 +637,7 @@ const UniversalDomainMatrix: React.FC<{
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 130px), 1fr))',
           gap: '5px',
           maxHeight: '220px',
           overflowY: 'auto',
@@ -691,7 +691,7 @@ const StationControlMatrix: React.FC<{
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(195px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 195px), 1fr))',
           gap: '6px',
           marginBottom: '8px',
         }}
@@ -807,7 +807,7 @@ const CivilizationControlMatrix: React.FC<{
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
           gap: '8px',
         }}
       >

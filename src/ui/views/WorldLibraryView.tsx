@@ -184,7 +184,7 @@ export const WorldLibraryView: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
           gap: '14px',
         }}
       >
@@ -321,7 +321,7 @@ export const WorldLibraryView: React.FC = () => {
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
           gap: '16px',
         }}
       >
@@ -438,7 +438,7 @@ export const WorldLibraryView: React.FC = () => {
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(145px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 145px), 1fr))',
               gap: '8px',
               borderTop: '1px solid #1e293b',
               paddingTop: '10px',

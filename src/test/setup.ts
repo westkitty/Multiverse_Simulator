@@ -1,5 +1,5 @@
 import 'fake-indexeddb/auto';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 if (typeof window !== 'undefined') {
   if (typeof HTMLCanvasElement !== 'undefined') {

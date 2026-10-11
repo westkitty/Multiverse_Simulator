@@ -38,3 +38,7 @@ Thumbs.db
 !.vscode/extensions.json
 *.swp
 *.swo
+
+# Browser verification artifacts
+playwright-report/
+test-results/
