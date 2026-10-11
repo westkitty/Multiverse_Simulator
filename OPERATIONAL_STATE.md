@@ -48,3 +48,13 @@ Known limitations: generalized facility-role semantics and generated histories n
 - Further work is local. No remote operations were attempted after the session closed. Local checkpoint hashes are available in `git log`.
 
 Publication requires a new coding session and authorized Pages configuration: **Repository → Settings → Pages → Build and deployment → Source → GitHub Actions**. Then validate/merge the intended development branch, run deployment on main, and browser-test the deployed SHA at https://westkitty.github.io/Multiverse_Simulator/. Do not treat the previous baseline merge as publication of this expansion.
+
+## 2026-10-11 — GitHub repair branch integration (newest remote state)
+
+- User authorized repair, commit, push, and merge. PR #2 is the authoritative source for actual GitHub merge status: https://github.com/westkitty/Multiverse_Simulator/pull/2.
+- Branch: patch/omniverse-ii-text-import-20261011. Text import: 136 SHA-verified blobs, of which 99 were new/modified. Original text patch omitted 24 ZIPs and 15 screenshots; original binary bytes have not been recovered.
+- CI reconstructs nine old ZIP archives from pinned git commit cb6bc9b and verifies independent state/continuation oracles. Fifteen Atlas archives are generated from current source using legacy commands only if independently recorded pre-refuge state/continuation hashes agree for all worlds. This proves narrower state-equivalent behavior, not binary restoration of Atlas originals. Old ZIP hashes remain preserved; new ZIP hashes are newly computed.
+- Historic local pre-refuge commit 7e7f933 is absent on remote GitHub. Old screenshots remain missing, and historical image evidence cannot be independently reinspected from this branch.
+- CI run 38164837699 passed archive regeneration, typecheck, lint, ordinary tests, explicit acceptance, build, and dist verification. Browser checks were in progress when this checkpoint entry was authored: verify the actual run outcome before claiming end-to-end success.
+- Known limitations remain: wider semantic-content tripling, long-term unattended balance, real-device hardware performance, and live Pages deployment are not certified. Earlier main deploy failed configure-pages 404.
+- No changes to old source or state oracle values were permitted to disguise the absent binaries. No merge result is claimed in this timestamped entry.
