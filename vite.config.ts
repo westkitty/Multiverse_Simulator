@@ -19,9 +19,30 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-three': ['three'],
-          'vendor-react': ['react', 'react-dom', 'zustand', 'zod', 'fflate'],
+        manualChunks(id) {
+          if (id.includes('node_modules/three')) return 'vendor-three';
+          if (id.includes('node_modules')) return 'vendor-react';
+          if (
+            id.includes('src/worlds/ecosystem') ||
+            id.includes('src/worlds/ocean') ||
+            id.includes('src/worlds/atmosphere')
+          ) {
+            return 'worlds-biosphere';
+          }
+          if (
+            id.includes('src/worlds/station') ||
+            id.includes('src/worlds/celestial') ||
+            id.includes('src/worlds/geology')
+          ) {
+            return 'worlds-planetary-orbital';
+          }
+          if (
+            id.includes('src/worlds/civilization') ||
+            id.includes('src/worlds/megacity') ||
+            id.includes('src/worlds/industrial')
+          ) {
+            return 'worlds-civilization-urban';
+          }
         },
       },
     },

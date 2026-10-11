@@ -46,25 +46,31 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
       }),
     ).toBeInTheDocument();
 
-    // Quick-switch to World B: Space Station
-    fireEvent.click(
-      screen.getByRole('button', { name: /World B: Space Station/i }),
-    );
-    expect(
-      useMultiverseStore.getState().runs[
-        useMultiverseStore.getState().activeRunId
-      ].worldId,
-    ).toBe('station');
+    // Quick-switch across all 9 simulation worlds in the header bar
+    const worldButtons: Array<{ label: RegExp; expectedId: string }> = [
+      { label: /World B: Space Station/i, expectedId: 'station' },
+      { label: /World C: Civilization/i, expectedId: 'civilization' },
+      { label: /World D: Atmosphere/i, expectedId: 'atmosphere' },
+      { label: /World E: Abyssal Ocean/i, expectedId: 'ocean' },
+      { label: /World F: Celestial/i, expectedId: 'celestial' },
+      { label: /World G: Megacity/i, expectedId: 'megacity' },
+      { label: /World H: Industrial/i, expectedId: 'industrial' },
+      { label: /World I: Restless Planet/i, expectedId: 'geology' },
+      { label: /World A: Ecosystem/i, expectedId: 'ecosystem' },
+    ];
 
-    // Quick-switch to World C: Civilization
-    fireEvent.click(
-      screen.getByRole('button', { name: /World C: Civilization/i }),
-    );
-    expect(
-      useMultiverseStore.getState().runs[
-        useMultiverseStore.getState().activeRunId
-      ].worldId,
-    ).toBe('civilization');
+    for (const wb of worldButtons) {
+      fireEvent.click(screen.getByRole('button', { name: wb.label }));
+      expect(
+        useMultiverseStore.getState().runs[
+          useMultiverseStore.getState().activeRunId
+        ].worldId,
+      ).toBe(wb.expectedId);
+    }
+
+    // Exercise viewport Fit to World and Layer Toggles
+    fireEvent.click(screen.getByRole('button', { name: /Fit Camera to World/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Labels/i }));
   });
 
   it('navigates across World Library, Timeline, Experiment Lab, Compare, Event Observatory, Data Vault, and Diagnostics', async () => {

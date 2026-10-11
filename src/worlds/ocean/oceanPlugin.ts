@@ -1321,11 +1321,23 @@ export const oceanPlugin = defineWorldPlugin<OceanConfig, OceanState>({
       const layer = String(payload.layer ?? 'all') as OceanState['activeDepthFilter'];
       const before = state.activeDepthFilter;
       state.activeDepthFilter = layer;
+      for (const sec of state.sectors) {
+        const target =
+          layer === 'mesopelagic'
+            ? sec.mesopelagic
+            : layer === 'bathypelagic'
+              ? sec.bathypelagic
+              : sec.epipelagic;
+        target.dissolvedOxygenMgL = roundDet(
+          clampDet(target.dissolvedOxygenMgL + 0.18, 0.2, 12.0),
+          2,
+        );
+      }
       ctx.emitEvent({
         type: 'depth_layer_selected',
         severity: 'info',
         title: `Ocean Depth Horizon Switched (${layer.toUpperCase()})`,
-        description: `Observatory depth slice updated from ${before} to ${layer}.`,
+        description: `Observatory depth slice updated from ${before} to ${layer} with active sonar oxygenation sweep.`,
         sourceSystem: 'command_bus',
         deltas: [{ metricOrField: 'activeDepthFilter', before, after: layer }],
         causalLinkType: 'direct',

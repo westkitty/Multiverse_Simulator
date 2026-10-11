@@ -1250,11 +1250,19 @@ export const celestialPlugin = defineWorldPlugin<CelestialConfig, CelestialState
       const sysId = String(payload.systemId ?? 'all') as CelestialState['activeSystemFilter'];
       const before = state.activeSystemFilter;
       state.activeSystemFilter = sysId;
+      for (const sys of state.systems) {
+        if (sysId === 'all' || sys.id === sysId) {
+          sys.flareActivityIndex = roundDet(
+            clampDet(sys.flareActivityIndex + 0.75, 0, 100),
+            2,
+          );
+        }
+      }
       ctx.emitEvent({
         type: 'star_system_selected',
         severity: 'info',
         title: `Star System Focus Switched (${sysId.toUpperCase()})`,
-        description: `Observatory focus changed from ${before} to ${sysId}.`,
+        description: `Observatory focus changed from ${before} to ${sysId} with astrometric orbit calibration.`,
         sourceSystem: 'command_bus',
         deltas: [{ metricOrField: 'activeSystemFilter', before, after: sysId }],
         causalLinkType: 'direct',

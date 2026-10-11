@@ -375,6 +375,16 @@ export const ObservatoryView: React.FC = () => {
                 onSelectEntity={selectEntity}
               />
             )}
+
+            {kernel.worldId !== 'ecosystem' &&
+              kernel.worldId !== 'station' &&
+              kernel.worldId !== 'civilization' && (
+                <UniversalDomainMatrix
+                  frame={renderFrame}
+                  selectedEntityId={selectedEntity?.entityId ?? null}
+                  onSelectEntity={selectEntity}
+                />
+              )}
           </div>
         </div>
 
@@ -577,13 +587,13 @@ const EcosystemHeatmapMatrix: React.FC<{
   return (
     <div style={{ marginTop: '12px', borderTop: '1px solid #1e293b', paddingTop: '10px' }}>
       <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '6px' }}>
-        SPATIAL 4x4 HABITAT RESOURCE HEATMAP (Flora Biomass & Soil Moisture — Click sector to inspect):
+        SPATIAL 8x6 HABITAT RESOURCE HEATMAP (48 Active Zones — Flora Biomass & Soil Moisture — Click sector to inspect):
       </div>
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: '6px',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))',
+          gap: '5px',
         }}
       >
         {state.zones.map((z) => {
@@ -597,7 +607,7 @@ const EcosystemHeatmapMatrix: React.FC<{
                 backgroundColor: `rgba(16, 185, 129, ${Math.max(0.08, (bioPct / 100) * 0.35)})`,
                 border: `1px solid ${isSelected ? '#00e5ff' : '#1e293b'}`,
                 borderRadius: '4px',
-                padding: '5px 7px',
+                padding: '4px 6px',
                 fontSize: '10px',
                 cursor: 'pointer',
               }}
@@ -605,6 +615,60 @@ const EcosystemHeatmapMatrix: React.FC<{
               <div style={{ fontWeight: 700, color: '#f8fafc' }}>{z.label}</div>
               <div style={{ fontFamily: 'monospace', color: '#cbd5e1' }}>
                 Bio: {z.plantBiomass}kg | H2O: {z.moisture}%
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const UniversalDomainMatrix: React.FC<{
+  frame: ReturnType<import('../../core/kernel').SimulationKernel['extractRenderFrame']>;
+  selectedEntityId: string | null;
+  onSelectEntity: (id: string) => void;
+}> = ({ frame, selectedEntityId, onSelectEntity }) => {
+  return (
+    <div style={{ marginTop: '12px', borderTop: '1px solid #1e293b', paddingTop: '10px' }}>
+      <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '6px' }}>
+        SPATIAL SECTOR / NODE TELEMETRY MATRIX ({frame.zones.length} Active Zones & {frame.entities.length} Entities — Click to inspect):
+      </div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))',
+          gap: '5px',
+          maxHeight: '220px',
+          overflowY: 'auto',
+        }}
+      >
+        {frame.zones.map((z) => {
+          const isSelected = selectedEntityId === z.id;
+          const badge =
+            z.status === 'critical' ? '■' : z.status === 'warning' ? '▲' : '●';
+          return (
+            <div
+              key={z.id}
+              onClick={() => onSelectEntity(z.id)}
+              style={{
+                backgroundColor: '#0f172a',
+                border: `1px solid ${isSelected ? '#00e5ff' : z.color}`,
+                borderRadius: '4px',
+                padding: '4px 6px',
+                fontSize: '10px',
+                cursor: 'pointer',
+              }}
+            >
+              <div style={{ fontWeight: 700, color: '#f8fafc', display: 'flex', justifyContent: 'space-between' }}>
+                <span>{z.label.slice(0, 16)}</span>
+                <span style={{ color: z.color }}>{badge}</span>
+              </div>
+              <div style={{ fontFamily: 'monospace', color: '#94a3b8', fontSize: '9px' }}>
+                {Object.entries(z.metadata ?? {})
+                  .slice(0, 2)
+                  .map(([k, v]) => `${k.slice(0, 6)}:${v}`)
+                  .join(' | ')}
               </div>
             </div>
           );

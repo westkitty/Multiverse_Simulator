@@ -1674,11 +1674,12 @@ export const civilizationPlugin = defineWorldPlugin<
             stl.activeConstructionProject = 'housing';
           } else {
             stl.labor = normalizeLabor({
-              farming: 0.34,
-              waterworks: 0.3,
-              construction: 0.22,
-              logistics: 0.14,
+              farming: 0.35,
+              waterworks: 0.31,
+              construction: 0.21,
+              logistics: 0.13,
             });
+            stl.constructionProgress = roundDet(stl.constructionProgress + 8, 1);
           }
         }
 

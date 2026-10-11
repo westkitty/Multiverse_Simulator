@@ -1531,8 +1531,11 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
       for (const cell of state.cells) {
         if (cell.floodDepthCm > 0) {
           cell.floodDepthCm = roundDet(cell.floodDepthCm * (1 - eff), 2);
-          cell.soilMoisturePct = roundDet(clampDet(cell.soilMoisturePct + 8, 10, 95), 2);
         }
+        cell.soilMoisturePct = roundDet(
+          clampDet(cell.soilMoisturePct + 4.5 * eff, 10, 95),
+          2,
+        );
       }
       ctx.emitEvent({
         type: 'flood_basins_drained',

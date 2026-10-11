@@ -3,12 +3,28 @@ import { WorldId } from '../../core/contracts';
 import { useMultiverseStore } from '../../store/multiverseStore';
 import { CORE_WORLD_PLUGINS } from '../../worlds';
 
+type DomainFilter = 'all' | 'biosphere' | 'planetary' | 'orbital' | 'civilization';
+
+const WORLD_DOMAIN_MAP: Record<string, DomainFilter> = {
+  ecosystem: 'biosphere',
+  ocean: 'biosphere',
+  atmosphere: 'planetary',
+  geology: 'planetary',
+  station: 'orbital',
+  celestial: 'orbital',
+  civilization: 'civilization',
+  megacity: 'civilization',
+  industrial: 'civilization',
+};
+
 export const WorldLibraryView: React.FC = () => {
   const createNewRun = useMultiverseStore((s) => s.createNewRun);
   const runs = useMultiverseStore((s) => s.runs);
   const selectRun = useMultiverseStore((s) => s.selectRun);
   const setActiveTab = useMultiverseStore((s) => s.setActiveTab);
 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [domainFilter, setDomainFilter] = useState<DomainFilter>('all');
   const [selectedWorldId, setSelectedWorldId] = useState<WorldId>('ecosystem');
   const activePlugin =
     CORE_WORLD_PLUGINS.find((p) => p.id === selectedWorldId) ??
@@ -58,6 +74,20 @@ export const WorldLibraryView: React.FC = () => {
     });
   };
 
+  const filteredPlugins = CORE_WORLD_PLUGINS.filter((plugin) => {
+    if (domainFilter !== 'all' && WORLD_DOMAIN_MAP[plugin.id] !== domainFilter) {
+      return false;
+    }
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      plugin.name.toLowerCase().includes(q) ||
+      plugin.subtitle.toLowerCase().includes(q) ||
+      plugin.description.toLowerCase().includes(q) ||
+      plugin.scenarios.some((s) => s.name.toLowerCase().includes(q))
+    );
+  });
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Hero Banner */}
@@ -69,7 +99,7 @@ export const WorldLibraryView: React.FC = () => {
           padding: '20px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px',
+          gap: '10px',
         }}
       >
         <div
@@ -80,28 +110,91 @@ export const WorldLibraryView: React.FC = () => {
             letterSpacing: '0.08em',
           }}
         >
-          OMNIVERSE ENGINE // DETERMINISTIC MULTIVERSE SIMULATION LABORATORY
+          OMNIVERSE ENGINE v2.0 // NINE-WORLD TRIPLE-SCALE SIMULATION PLATFORM
         </div>
         <h1 style={{ margin: 0, fontSize: '22px', color: '#f8fafc' }}>
           Create a world. Change its conditions. Watch consequences unfold.
         </h1>
-        <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', maxWidth: '860px' }}>
-          All three world modules execute on a shared fixed-timestep deterministic kernel with
-          seeded PRNG streams, append-only causal event journals, copy-on-write checkpoints,
-          and side-by-side branch comparison.
+        <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', maxWidth: '960px' }}>
+          All nine world modules execute on a shared fixed-timestep deterministic kernel with
+          seeded PRNG streams, 3× expanded spatial scale, 81 curated scenarios, 171 validated
+          interventions, 162 live metrics, append-only causal event journals, copy-on-write
+          checkpoints, and 10 cross-world causal contract adapters.
         </p>
+
+        {/* Search & Domain Filter Bar */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '10px',
+            alignItems: 'center',
+            marginTop: '6px',
+          }}
+        >
+          <input
+            type="search"
+            aria-label="Search Simulation Worlds"
+            placeholder="Search 9 worlds, 81 scenarios, or physical mechanics..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              flex: '1 1 260px',
+              backgroundColor: '#0f172a',
+              color: '#f8fafc',
+              border: '1px solid #334155',
+              borderRadius: '5px',
+              padding: '7px 12px',
+              fontSize: '12px',
+            }}
+          />
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {(
+              [
+                ['all', 'All Worlds (9)'],
+                ['biosphere', 'Biosphere & Ocean (2)'],
+                ['planetary', 'Atmosphere & Geology (2)'],
+                ['orbital', 'Orbital & Celestial (2)'],
+                ['civilization', 'Civilization, City & Industry (3)'],
+              ] as const
+            ).map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setDomainFilter(id)}
+                style={{
+                  backgroundColor: domainFilter === id ? '#00e5ff' : '#111827',
+                  color: domainFilter === id ? '#05080f' : '#cbd5e1',
+                  border: `1px solid ${domainFilter === id ? '#00e5ff' : '#334155'}`,
+                  borderRadius: '5px',
+                  padding: '6px 10px',
+                  fontSize: '11px',
+                  fontWeight: domainFilter === id ? 700 : 500,
+                  cursor: 'pointer',
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Three World Cards */}
+      {/* Nine World Cards Grid */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
           gap: '14px',
         }}
       >
-        {CORE_WORLD_PLUGINS.map((plugin) => {
+        {filteredPlugins.map((plugin) => {
           const isSelected = plugin.id === activePlugin.id;
+          const sm = plugin.scaleMetadata;
+          const areaRatio = sm
+            ? (sm.expandedPlayableArea / Math.max(1, sm.baselinePlayableArea)).toFixed(1)
+            : '3.0';
+
           return (
             <div
               key={plugin.id}
@@ -151,7 +244,7 @@ export const WorldLibraryView: React.FC = () => {
                   </span>
                 </div>
 
-                <h2 style={{ margin: '0 0 4px 0', fontSize: '17px', color: '#f8fafc' }}>
+                <h2 style={{ margin: '0 0 4px 0', fontSize: '16px', color: '#f8fafc' }}>
                   {plugin.name}
                 </h2>
                 <div style={{ fontSize: '12px', color: '#cbd5e1', marginBottom: '8px' }}>
@@ -160,6 +253,27 @@ export const WorldLibraryView: React.FC = () => {
                 <p style={{ fontSize: '12px', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
                   {plugin.description}
                 </p>
+
+                {sm && (
+                  <div
+                    style={{
+                      marginTop: '8px',
+                      padding: '6px 8px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                      border: '1px solid #1e293b',
+                      borderRadius: '4px',
+                      fontSize: '11px',
+                      color: '#cbd5e1',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    Scale: {sm.baselinePlayableArea} →{' '}
+                    <strong style={{ color: plugin.accentColor }}>
+                      {sm.expandedPlayableArea}
+                    </strong>{' '}
+                    ({areaRatio}×) • {plugin.quickInterventions.length} Interventions
+                  </div>
+                )}
               </div>
 
               <div
@@ -229,7 +343,7 @@ export const WorldLibraryView: React.FC = () => {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <label style={{ fontSize: '12px', color: '#cbd5e1' }}>
-              Scenario Preset:
+              Scenario Preset ({activePlugin.scenarios.length} Curated Scenarios):
               <select
                 aria-label="Scenario Preset"
                 value={selectedScenarioId}

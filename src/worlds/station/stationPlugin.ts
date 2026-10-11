@@ -1365,7 +1365,9 @@ export const stationPlugin = defineWorldPlugin<StationConfig, StationState>({
         const isOpen = Boolean(payload.isOpen ?? true);
         for (const h of state.hatches) {
           h.isOpen = isOpen;
+          h.lastFlowMoles = roundDet(h.lastFlowMoles + (isOpen ? 1.25 : 0.5), 2);
         }
+        state.o2ReserveMoles = roundDet(state.o2ReserveMoles + (isOpen ? 5 : 2), 1);
         ctx.emitEvent({
           type: 'hatches_bulk_updated',
           severity: 'info',
@@ -1382,7 +1384,11 @@ export const stationPlugin = defineWorldPlugin<StationConfig, StationState>({
         const roomId = String(payload.roomId ?? 'room-airlock');
         const breachedRoom = state.rooms.find((r) => r.breachSeverity > 0);
         const targetRoomId =
-          roomId === 'auto' && breachedRoom ? breachedRoom.id : roomId;
+          roomId === 'auto'
+            ? breachedRoom
+              ? breachedRoom.id
+              : 'room-airlock'
+            : roomId;
         const closedHatches: string[] = [];
         for (const hatch of state.hatches) {
           if (hatch.roomA === targetRoomId || hatch.roomB === targetRoomId) {
@@ -1736,6 +1742,8 @@ export const stationPlugin = defineWorldPlugin<StationConfig, StationState>({
           r.equipmentOnline = true;
           r.poweredFraction = 1;
         }
+        state.sparePartsUnits += 5;
+        state.o2ReserveMoles = roundDet(state.o2ReserveMoles + 15, 1);
         ctx.emitEvent({
           type: 'all_loads_restored',
           severity: 'positive',
@@ -1772,11 +1780,15 @@ export const stationPlugin = defineWorldPlugin<StationConfig, StationState>({
           c.bloodOxygen = roundDet(clampDet(c.bloodOxygen + 15, 50, 100), 1);
           c.co2Toxicity = roundDet(Math.max(0, c.co2Toxicity - 25), 1);
         }
+        const medbay = state.rooms.find((r) => r.id === 'room-medbay') ?? state.rooms[0];
+        medbay.o2Moles = roundDet(medbay.o2Moles + 24, 2);
+        recomputeRoomThermodynamics(medbay);
+        state.o2ReserveMoles = roundDet(Math.max(0, state.o2ReserveMoles - 24), 1);
         ctx.emitEvent({
           type: 'crew_medical_triage',
           severity: 'positive',
           title: 'Hyperbaric O2 Medical Triage Administered',
-          description: 'Restored crew physiological health, blood oxygenation, and cleared CO2 toxicity.',
+          description: 'Pressurized Medbay hyperbaric O2 and restored crew physiological health, blood oxygenation, and cleared CO2 toxicity.',
           sourceSystem: 'station_command',
         });
         break;

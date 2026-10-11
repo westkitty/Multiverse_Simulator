@@ -24,9 +24,9 @@ interface CameraSphericalState {
 }
 
 const DEFAULT_CAMERA: CameraSphericalState = {
-  theta: 0.65,
-  phi: 0.92,
-  radius: 52,
+  theta: 0.62,
+  phi: 0.88,
+  radius: 76,
   targetX: 0,
   targetY: 0,
   targetZ: 0,
@@ -72,6 +72,22 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
   const [contextLost, setContextLost] = useState<boolean>(false);
   const [hoveredLabel, setHoveredLabel] = useState<string | null>(null);
 
+  // Layer visibility controls for 3x-scale 9-world inspection
+  const [showZones, setShowZones] = useState<boolean>(true);
+  const [showEntities, setShowEntities] = useState<boolean>(true);
+  const [showConnections, setShowConnections] = useState<boolean>(true);
+  const [showLabels, setShowLabels] = useState<boolean>(true);
+
+  const layersRef = useRef({
+    showZones: true,
+    showEntities: true,
+    showConnections: true,
+  });
+
+  useEffect(() => {
+    layersRef.current = { showZones, showEntities, showConnections };
+  }, [showZones, showEntities, showConnections]);
+
   useEffect(() => {
     if (frame.tick !== lastTickRef.current) {
       lastTickRef.current = frame.tick;
@@ -91,27 +107,25 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
   const fitToWorld = () => {
     const f = frameRef.current;
-    if (f.worldId === 'station') {
-      cameraStateRef.current = {
-        theta: 0.45,
-        phi: 0.82,
-        radius: 44,
-        targetX: 0,
-        targetY: 0,
-        targetZ: 1,
-      };
-    } else if (f.worldId === 'civilization') {
-      cameraStateRef.current = {
-        theta: 0.55,
-        phi: 0.88,
-        radius: 48,
-        targetX: 0,
-        targetY: 0,
-        targetZ: 0,
-      };
-    } else {
-      cameraStateRef.current = { ...DEFAULT_CAMERA };
+    let maxExtent = 36;
+    for (const z of f.zones) {
+      maxExtent = Math.max(
+        maxExtent,
+        Math.abs(z.position[0]) + z.size[0] * 0.6,
+        Math.abs(z.position[2]) + z.size[2] * 0.6,
+      );
     }
+    for (const e of f.entities) {
+      maxExtent = Math.max(maxExtent, Math.abs(e.position[0]), Math.abs(e.position[2]));
+    }
+    cameraStateRef.current = {
+      theta: f.worldId === 'station' ? 0.45 : f.worldId === 'celestial' ? 0.35 : 0.6,
+      phi: f.worldId === 'celestial' ? 0.72 : 0.86,
+      radius: Math.max(46, Math.min(115, maxExtent * 1.65)),
+      targetX: 0,
+      targetY: 0,
+      targetZ: 0,
+    };
   };
 
   useEffect(() => {
@@ -147,28 +161,25 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     container.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070a0f, 0.0085);
+    scene.fog = new THREE.FogExp2(0x070a0f, 0.0055);
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 260);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 340);
 
-    // Shared reusable Lights
-    const ambientLight = new THREE.AmbientLight(0xdbeafe, highContrast ? 1.1 : 0.75);
+    const ambientLight = new THREE.AmbientLight(0xdbeafe, highContrast ? 1.1 : 0.78);
     scene.add(ambientLight);
 
     const dirLight = new THREE.DirectionalLight(0xffffff, 1.15);
-    dirLight.position.set(28, 46, 24);
+    dirLight.position.set(36, 58, 32);
     scene.add(dirLight);
 
-    const rimLight = new THREE.DirectionalLight(0x00e5ff, 0.4);
-    rimLight.position.set(-28, 20, -24);
+    const rimLight = new THREE.DirectionalLight(0x00e5ff, 0.42);
+    rimLight.position.set(-36, 24, -32);
     scene.add(rimLight);
 
-    // Subtle reference grid
-    const gridHelper = new THREE.GridHelper(64, 16, 0x1e293b, 0x0f172a);
+    const gridHelper = new THREE.GridHelper(108, 24, 0x1e293b, 0x0f172a);
     gridHelper.position.y = -0.05;
     scene.add(gridHelper);
 
-    // Shared reusable geometries (disposed cleanly on unmount)
     const boxGeo = new THREE.BoxGeometry(1, 1, 1);
     const cylGeo = new THREE.CylinderGeometry(0.5, 0.65, 1, simplifiedMode ? 8 : 16);
     const coneGeo = new THREE.ConeGeometry(0.55, 1.2, simplifiedMode ? 6 : 12);
@@ -200,8 +211,15 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
     const syncSceneObjects = (currentFrame: RenderFrameData, alpha: number) => {
       pickableObjects.length = 0;
+      zoneGroup.visible = layersRef.current.showZones;
+      entityGroup.visible = layersRef.current.showEntities;
+      connectionGroup.visible = layersRef.current.showConnections;
 
-      // 1. Sync Zones (Habitat patches / Station compartments / Settlement bases)
+      const isTranslucentWorld =
+        currentFrame.worldId === 'station' ||
+        currentFrame.worldId === 'ocean' ||
+        currentFrame.worldId === 'celestial';
+
       const activeZoneIds = new Set<string>();
       for (const z of currentFrame.zones) {
         activeZoneIds.add(z.id);
@@ -210,9 +228,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
           const mat = new THREE.MeshStandardMaterial({
             color: z.color,
             roughness: 0.65,
-            metalness: currentFrame.worldId === 'station' ? 0.35 : 0.1,
-            transparent: currentFrame.worldId === 'station',
-            opacity: currentFrame.worldId === 'station' ? 0.42 : 0.92,
+            metalness: isTranslucentWorld ? 0.35 : 0.12,
+            transparent: isTranslucentWorld,
+            opacity: isTranslucentWorld ? 0.42 : 0.92,
           });
           mesh = new THREE.Mesh(boxGeo, mat);
           mesh.userData = { entityId: z.id, label: z.label };
@@ -229,20 +247,22 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         mesh.scale.set(z.size[0], heightScale, z.size[2]);
         mesh.position.set(
           z.position[0],
-          currentFrame.worldId === 'station' ? z.size[1] * 0.5 : heightScale * 0.5,
+          currentFrame.worldId === 'station' ? z.size[1] * 0.5 : z.position[1],
           z.position[2],
         );
 
         const mat = mesh.material as THREE.MeshStandardMaterial;
         mat.color.set(z.color);
-        if (currentFrame.worldId === 'station') {
+        if (isTranslucentWorld) {
           mat.transparent = true;
-          mat.opacity = selectedIdRef.current === z.id ? 0.68 : 0.38;
+          mat.opacity = selectedIdRef.current === z.id ? 0.68 : 0.36;
         } else {
           mat.transparent = false;
           mat.opacity = 1;
         }
-        pickableObjects.push(mesh);
+        if (layersRef.current.showZones) {
+          pickableObjects.push(mesh);
+        }
       }
 
       for (const [id, mesh] of zoneMeshes.entries()) {
@@ -253,7 +273,6 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         }
       }
 
-      // 2. Sync Connections (Station Hatches / Civilization Trade Convoys)
       const activeConnIds = new Set<string>();
       for (const conn of currentFrame.connections) {
         activeConnIds.add(conn.id);
@@ -280,9 +299,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
         mesh.position.set(midX, 0.55, midZ);
         mesh.scale.set(
-          conn.status === 'active' ? 1.15 : 0.75,
-          conn.status === 'closed' ? 1.6 : 0.45,
-          dist * 0.78,
+          conn.status === 'active' ? 1.05 : 0.65,
+          conn.status === 'closed' ? 1.5 : 0.4,
+          dist * 0.82,
         );
         mesh.rotation.y = Math.atan2(dx, dz);
 
@@ -294,7 +313,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
               ? '#ffb300'
               : '#00e676',
         );
-        pickableObjects.push(mesh);
+        if (layersRef.current.showConnections) {
+          pickableObjects.push(mesh);
+        }
       }
 
       for (const [id, mesh] of connectionMeshes.entries()) {
@@ -305,16 +326,15 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         }
       }
 
-      // 3. Sync Entities (Organisms / Crew / Settlement Citadels)
       const activeEntIds = new Set<string>();
       for (const ent of currentFrame.entities) {
         activeEntIds.add(ent.id);
         let mesh = entityMeshes.get(ent.id);
         if (!mesh) {
           const geo =
-            ent.kind === 'predator'
+            ent.kind === 'predator' || ent.kind === 'volcano_cone' || ent.kind === 'storm_vortex'
               ? coneGeo
-              : ent.kind === 'herbivore'
+              : ent.kind === 'herbivore' || ent.kind === 'star' || ent.kind === 'planet' || ent.kind === 'moon'
                 ? sphereGeo
                 : cylGeo;
           const mat = new THREE.MeshStandardMaterial({
@@ -348,7 +368,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
         const mat = mesh.material as THREE.MeshStandardMaterial;
         mat.color.set(ent.color);
-        pickableObjects.push(mesh);
+        if (layersRef.current.showEntities) {
+          pickableObjects.push(mesh);
+        }
       }
 
       for (const [id, mesh] of entityMeshes.entries()) {
@@ -359,7 +381,6 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         }
       }
 
-      // 4. Update selection highlight ring
       const selId = selectedIdRef.current;
       const targetMesh =
         (selId && entityMeshes.get(selId)) ||
@@ -383,7 +404,6 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       }
     };
 
-    // Pointer & touch controls for Orbit, Pan, Zoom, and Raycast Selection
     const raycaster = new THREE.Raycaster();
     const pointerNdc = new THREE.Vector2();
     let isDragging = false;
@@ -429,8 +449,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
       const cam = cameraStateRef.current;
       if (isPanning) {
-        cam.targetX = Math.max(-30, Math.min(30, cam.targetX - dx * 0.06));
-        cam.targetZ = Math.max(-30, Math.min(30, cam.targetZ - dy * 0.06));
+        cam.targetX = Math.max(-48, Math.min(48, cam.targetX - dx * 0.08));
+        cam.targetZ = Math.max(-48, Math.min(48, cam.targetZ - dy * 0.08));
       } else {
         cam.theta -= dx * 0.0075;
         cam.phi = Math.max(0.22, Math.min(1.42, cam.phi - dy * 0.0065));
@@ -456,7 +476,7 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const cam = cameraStateRef.current;
-      cam.radius = Math.max(16, Math.min(95, cam.radius + e.deltaY * 0.04));
+      cam.radius = Math.max(18, Math.min(140, cam.radius + e.deltaY * 0.05));
     };
 
     const handleContextLost = (e: Event) => {
@@ -535,7 +555,6 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       domEl.removeEventListener('webglcontextrestored', handleContextRestored);
       window.removeEventListener('resize', handleResize);
 
-      // Explicit GPU disposal on unmount or world switching
       for (const mesh of zoneMeshes.values()) {
         (mesh.material as THREE.Material).dispose();
       }
@@ -607,12 +626,12 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
               INTERACTIVE TACTICAL SCHEMATIC ({frame.worldId.toUpperCase()} // TICK {frame.tick})
             </span>
             <span style={{ color: '#00e5ff' }}>
-              {contextLost ? 'WebGL Context Recovery Mode' : '2D Precision Schematic Active'}
+              {contextLost ? 'WebGL Context Recovery Mode' : '2D Precision Schematic Active (3x Scale)'}
             </span>
           </div>
 
           <svg
-            viewBox="-32 -26 64 52"
+            viewBox="-52 -38 104 76"
             style={{
               width: '100%',
               height: '82%',
@@ -621,71 +640,76 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
               background: '#080c14',
             }}
           >
-            {frame.zones.map((z) => (
-              <g
-                key={z.id}
-                onClick={() => onSelectEntity(z.id)}
-                style={{ cursor: 'pointer' }}
-              >
-                <rect
-                  x={z.position[0] - z.size[0] * 0.45}
-                  y={z.position[2] - z.size[2] * 0.45}
-                  width={z.size[0] * 0.9}
-                  height={z.size[2] * 0.9}
-                  fill={z.color}
-                  fillOpacity={0.32}
-                  stroke={selectedEntityId === z.id ? '#00e5ff' : z.color}
-                  strokeWidth={selectedEntityId === z.id ? 0.8 : 0.35}
-                  rx={0.8}
-                />
-                <text
-                  x={z.position[0]}
-                  y={z.position[2]}
-                  fontSize="1.65"
-                  fill="#e2e8f0"
-                  textAnchor="middle"
+            {showZones &&
+              frame.zones.map((z) => (
+                <g
+                  key={z.id}
+                  onClick={() => onSelectEntity(z.id)}
+                  style={{ cursor: 'pointer' }}
                 >
-                  {z.label.slice(0, 14)}
-                </text>
-              </g>
-            ))}
+                  <rect
+                    x={z.position[0] - z.size[0] * 0.45}
+                    y={z.position[2] - z.size[2] * 0.45}
+                    width={z.size[0] * 0.9}
+                    height={z.size[2] * 0.9}
+                    fill={z.color}
+                    fillOpacity={0.32}
+                    stroke={selectedEntityId === z.id ? '#00e5ff' : z.color}
+                    strokeWidth={selectedEntityId === z.id ? 0.85 : 0.35}
+                    rx={0.8}
+                  />
+                  {showLabels && (
+                    <text
+                      x={z.position[0]}
+                      y={z.position[2]}
+                      fontSize="1.65"
+                      fill="#e2e8f0"
+                      textAnchor="middle"
+                    >
+                      {z.label.slice(0, 14)}
+                    </text>
+                  )}
+                </g>
+              ))}
 
-            {frame.connections.map((c) => (
-              <line
-                key={c.id}
-                x1={c.from[0]}
-                y1={c.from[2]}
-                x2={c.to[0]}
-                y2={c.to[2]}
-                stroke={
-                  c.status === 'closed'
-                    ? '#ff3d57'
-                    : c.status === 'active'
-                      ? '#ffb300'
-                      : '#00e676'
-                }
-                strokeWidth={0.65}
-                strokeDasharray={c.status === 'closed' ? '1,1' : undefined}
-                onClick={() => onSelectEntity(c.id)}
-                style={{ cursor: 'pointer' }}
-              />
-            ))}
+            {showConnections &&
+              frame.connections.map((c) => (
+                <line
+                  key={c.id}
+                  x1={c.from[0]}
+                  y1={c.from[2]}
+                  x2={c.to[0]}
+                  y2={c.to[2]}
+                  stroke={
+                    c.status === 'closed'
+                      ? '#ff3d57'
+                      : c.status === 'active'
+                        ? '#ffb300'
+                        : '#00e676'
+                  }
+                  strokeWidth={0.65}
+                  strokeDasharray={c.status === 'closed' ? '1,1' : undefined}
+                  onClick={() => onSelectEntity(c.id)}
+                  style={{ cursor: 'pointer' }}
+                />
+              ))}
 
-            {frame.entities.map((e) => (
-              <circle
-                key={e.id}
-                cx={e.position[0]}
-                cy={e.position[2]}
-                r={e.kind === 'predator' ? 1.15 : 0.85}
-                fill={e.color}
-                stroke={selectedEntityId === e.id ? '#ffffff' : '#080c14'}
-                strokeWidth={selectedEntityId === e.id ? 0.45 : 0.2}
-                onClick={() => onSelectEntity(e.id)}
-                style={{ cursor: 'pointer' }}
-              >
-                <title>{e.label}</title>
-              </circle>
-            ))}
+            {showEntities &&
+              frame.entities.map((e) => (
+                <circle
+                  key={e.id}
+                  cx={e.position[0]}
+                  cy={e.position[2]}
+                  r={e.kind === 'predator' || e.kind === 'star' ? 1.35 : 0.9}
+                  fill={e.color}
+                  stroke={selectedEntityId === e.id ? '#ffffff' : '#080c14'}
+                  strokeWidth={selectedEntityId === e.id ? 0.45 : 0.2}
+                  onClick={() => onSelectEntity(e.id)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <title>{e.label}</title>
+                </circle>
+              ))}
           </svg>
         </div>
       )}
@@ -728,7 +752,11 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
               fontWeight: 700,
             }}
           >
-            ● {frame.ambientStatus.toUpperCase()}
+            {frame.ambientStatus === 'critical'
+              ? '■ CRITICAL'
+              : frame.ambientStatus === 'warning'
+                ? '▲ WARNING'
+                : '● NOMINAL'}
           </span>
           {Object.entries(frame.hudSummary).map(([k, v]) => (
             <span key={k} style={{ color: '#cbd5e1', marginLeft: '6px' }}>
@@ -737,14 +765,79 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
           ))}
         </div>
 
-        {/* Camera Controls Bar */}
+        {/* Camera & Layer Visibility Controls Bar */}
         <div
           style={{
             display: 'flex',
-            gap: '6px',
+            flexWrap: 'wrap',
+            gap: '4px',
             pointerEvents: 'auto',
           }}
         >
+          <button
+            type="button"
+            onClick={() => setShowZones((v) => !v)}
+            aria-pressed={showZones}
+            style={{
+              backgroundColor: showZones ? 'rgba(0, 229, 255, 0.14)' : '#0f172a',
+              color: showZones ? '#00e5ff' : '#64748b',
+              border: '1px solid #334155',
+              borderRadius: '4px',
+              padding: '3px 7px',
+              fontSize: '10px',
+              cursor: 'pointer',
+            }}
+          >
+            Zones ({frame.zones.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowEntities((v) => !v)}
+            aria-pressed={showEntities}
+            style={{
+              backgroundColor: showEntities ? 'rgba(0, 230, 118, 0.14)' : '#0f172a',
+              color: showEntities ? '#00e676' : '#64748b',
+              border: '1px solid #334155',
+              borderRadius: '4px',
+              padding: '3px 7px',
+              fontSize: '10px',
+              cursor: 'pointer',
+            }}
+          >
+            Entities ({frame.entities.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowConnections((v) => !v)}
+            aria-pressed={showConnections}
+            style={{
+              backgroundColor: showConnections ? 'rgba(255, 179, 0, 0.14)' : '#0f172a',
+              color: showConnections ? '#ffb300' : '#64748b',
+              border: '1px solid #334155',
+              borderRadius: '4px',
+              padding: '3px 7px',
+              fontSize: '10px',
+              cursor: 'pointer',
+            }}
+          >
+            Links ({frame.connections.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowLabels((v) => !v)}
+            aria-pressed={showLabels}
+            style={{
+              backgroundColor: showLabels ? 'rgba(148, 163, 184, 0.18)' : '#0f172a',
+              color: showLabels ? '#e2e8f0' : '#64748b',
+              border: '1px solid #334155',
+              borderRadius: '4px',
+              padding: '3px 7px',
+              fontSize: '10px',
+              cursor: 'pointer',
+            }}
+          >
+            Labels
+          </button>
           <button
             type="button"
             onClick={resetCamera}

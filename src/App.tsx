@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { WorldId } from './core/contracts';
 import { MultiverseTab, useMultiverseStore } from './store/multiverseStore';
 import { CompareView } from './ui/views/CompareView';
 import { DataVaultView } from './ui/views/DataVaultView';
@@ -8,9 +9,10 @@ import { ExperimentLabView } from './ui/views/ExperimentLabView';
 import { ObservatoryView } from './ui/views/ObservatoryView';
 import { TimelineView } from './ui/views/TimelineView';
 import { WorldLibraryView } from './ui/views/WorldLibraryView';
+import { CORE_WORLD_PLUGINS } from './worlds';
 
 const NAV_TABS: Array<{ id: MultiverseTab; label: string }> = [
-  { id: 'library', label: 'World Library' },
+  { id: 'library', label: 'World Library (9)' },
   { id: 'observatory', label: 'Active Observatory' },
   { id: 'timeline', label: 'Timeline & Branches' },
   { id: 'lab', label: 'Experiment Lab' },
@@ -19,6 +21,18 @@ const NAV_TABS: Array<{ id: MultiverseTab; label: string }> = [
   { id: 'vault', label: 'Data Vault' },
   { id: 'diagnostics', label: 'Diagnostics & PDK' },
 ];
+
+const SHORT_WORLD_BUTTON_LABELS: Record<string, string> = {
+  ecosystem: 'World A: Ecosystem',
+  station: 'World B: Space Station',
+  civilization: 'World C: Civilization',
+  atmosphere: 'World D: Atmosphere',
+  ocean: 'World E: Abyssal Ocean',
+  celestial: 'World F: Celestial',
+  megacity: 'World G: Megacity',
+  industrial: 'World H: Industrial',
+  geology: 'World I: Restless Planet',
+};
 
 export const App: React.FC = () => {
   const activeTab = useMultiverseStore((s) => s.activeTab);
@@ -32,6 +46,7 @@ export const App: React.FC = () => {
   const initializeStoreFromDb = useMultiverseStore((s) => s.initializeStoreFromDb);
   const setActiveTab = useMultiverseStore((s) => s.setActiveTab);
   const selectRun = useMultiverseStore((s) => s.selectRun);
+  const createNewRun = useMultiverseStore((s) => s.createNewRun);
   const stepActiveRun = useMultiverseStore((s) => s.stepActiveRun);
   const clearAlerts = useMultiverseStore((s) => s.clearAlerts);
 
@@ -51,11 +66,20 @@ export const App: React.FC = () => {
 
   const activeKernel = runs[activeRunId] ?? Object.values(runs)[0];
 
-  const handleQuickSwitchWorld = (worldId: 'ecosystem' | 'station' | 'civilization') => {
+  const handleQuickSwitchWorld = (worldId: WorldId) => {
     const existing = Object.values(runs).find((r) => r.worldId === worldId);
     if (existing) {
       selectRun(existing.runId);
       setActiveTab('observatory');
+    } else {
+      const runId = createNewRun({
+        worldId,
+        switchToObservatory: true,
+      });
+      const created = useMultiverseStore.getState().runs[runId];
+      if (created && created.tick === 0) {
+        useMultiverseStore.getState().stepActiveRun(3);
+      }
     }
   };
 
@@ -109,75 +133,53 @@ export const App: React.FC = () => {
                 }}
               >
                 THE SIMULATION MULTIVERSE{' '}
-                <span style={{ color: '#00e5ff', fontWeight: 500, fontSize: '11px', fontFamily: 'monospace' }}>
-                  // OMNIVERSE ENGINE v1.0
+                <span
+                  style={{
+                    color: '#00e5ff',
+                    fontWeight: 500,
+                    fontSize: '11px',
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  // OMNIVERSE ENGINE v2.0 (9 WORLDS • 3X SCALE)
                 </span>
               </div>
               <div style={{ fontSize: '11px', color: '#94a3b8' }}>
-                Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching
+                9-World Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching • 10 Cross-World Contracts
               </div>
             </div>
           </div>
 
-          {/* 1-Click World Switcher Pills */}
+          {/* Registry-Driven 9-World Quick Switcher Pills */}
           <div
             role="group"
             aria-label="Quick World Switcher"
-            style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}
+            style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}
           >
-            <button
-              type="button"
-              onClick={() => handleQuickSwitchWorld('ecosystem')}
-              style={{
-                backgroundColor:
-                  activeKernel?.worldId === 'ecosystem' ? '#00e676' : '#0f172a',
-                color: activeKernel?.worldId === 'ecosystem' ? '#000' : '#cbd5e1',
-                border: '1px solid #00e676',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              World A: Ecosystem
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickSwitchWorld('station')}
-              style={{
-                backgroundColor:
-                  activeKernel?.worldId === 'station' ? '#00e5ff' : '#0f172a',
-                color: activeKernel?.worldId === 'station' ? '#000' : '#cbd5e1',
-                border: '1px solid #00e5ff',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              World B: Space Station
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickSwitchWorld('civilization')}
-              style={{
-                backgroundColor:
-                  activeKernel?.worldId === 'civilization' ? '#ffb300' : '#0f172a',
-                color: activeKernel?.worldId === 'civilization' ? '#000' : '#cbd5e1',
-                border: '1px solid #ffb300',
-                borderRadius: '4px',
-                padding: '5px 10px',
-                fontSize: '11px',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              World C: Civilization
-            </button>
+            {CORE_WORLD_PLUGINS.map((plugin) => {
+              const isSelected = activeKernel?.worldId === plugin.id;
+              const btnLabel =
+                SHORT_WORLD_BUTTON_LABELS[plugin.id] ?? plugin.name;
+              return (
+                <button
+                  key={plugin.id}
+                  type="button"
+                  onClick={() => handleQuickSwitchWorld(plugin.id)}
+                  style={{
+                    backgroundColor: isSelected ? plugin.accentColor : '#0f172a',
+                    color: isSelected ? '#05080f' : '#cbd5e1',
+                    border: `1px solid ${plugin.accentColor}`,
+                    borderRadius: '4px',
+                    padding: '4px 8px',
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {btnLabel}
+                </button>
+              );
+            })}
           </div>
         </div>
 

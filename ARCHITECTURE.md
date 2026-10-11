@@ -1,72 +1,57 @@
-# OMNIVERSE ENGINE — ARCHITECTURE
+# Omniverse Engine — System Architecture
 
-## 1. Module Boundaries
+## 1. Architectural Principles
 
-The architecture enforces a strict one-way dependency graph so the simulation kernel never depends on React or Three.js:
+1. **Strict Authoritative Separation**:
+   - The simulation engine (`src/core/`) and all 9 world plugins (`src/worlds/`) are pure, deterministic TypeScript modules with zero React or Three.js dependencies.
+   - All random decisions flow exclusively through named `SeededRng` Mulberry32 streams (`src/core/rng.ts`) serialized in every snapshot.
+   - No `Math.random()`, `Date.now()`, or renderer frame timing ever enters authoritative state calculation.
 
-```text
-SIMULATION CORE (src/core/)
-  ├── contracts.ts          Versioned types, state hashing (FNV-1a 64-bit), roundDet/clampDet
-  ├── rng.ts                Seeded Mulberry32 PRNG with isolated named streams
-  ├── ecs.ts                Deterministic Entity-Component Storage with sorted queries
-  ├── causalJournal.ts      Append-only bounded logical event journal & causal graph traversal
-  ├── kernel.ts             Fixed-timestep scheduler, command bus, checkpoints, replay & branching
-  ├── pluginRegistry.ts     World plugin registration & lifecycle management
-  ├── experimentRunner.ts   Single-seed & paired multi-seed controlled experiment engine
-  ├── comparisonEngine.ts   Same-world & cross-world reality comparison engine
-  ├── crossWorldContract.ts Versioned cross-world event adapters & physical guardrails
-  └── pdk.ts                World Plugin Development Kit & contract test harness
-        │
-WORLD PLUGINS (src/worlds/)
-  ├── ecosystem/            World A: Living Ecosystem plugin
-  ├── station/              World B: Modular Space Station plugin
-  └── civilization/         World C: Civilization Network plugin
-        │
-PERSISTENCE & WORKER TRANSPORT (src/persistence/, src/worker/)
-  ├── indexedDb.ts          IndexedDB stores (runs, experiments, preferences) + throttled autosave
-  ├── archive.ts            Portable .omniverse.zip packager, Zod validator & integrity verifier
-  ├── simulation.worker.ts  Web Worker simulation host
-  └── workerBridge.ts       Bounded worker queue with crash isolation & main-thread fallback
-        │
-REACT & THREE.JS OBSERVATORY (src/renderers/, src/store/, src/ui/)
-  ├── ThreeWorldViewport.tsx Imperative Three.js renderer + 2D schematic fallback + GPU cleanup
-  ├── multiverseStore.ts    Zustand state store coordinating runs, workbenches & alerts
-  └── views/                8 specialized laboratory workbenches
-```
+2. **Phase-Accurate Fixed-Timestep Execution (`SimulationKernel`)**:
+   - Each tick advances through a deterministic pipeline:
+     1. `pre_step` queued operator commands
+     2. Ordered world systems (`systems.sort((a, b) => a.order - b.order)`)
+     3. `post_step` queued commands
+     4. Metric extraction (`extractMetrics`)
+     5. Canonical FNV-1a 64-bit state hashing (`hashCanonicalState`)
+     6. Automatic checkpoint capture & bounded telemetry retention
+
+3. **Plugin Development Kit (`src/core/pdk.ts`) & `WorldScaleMetadata`**:
+   - Every world is defined via `defineWorldPlugin(plugin)` and registered in `globalPluginRegistry` (`src/worlds/index.ts`).
+   - Each world declares machine-verifiable `scaleMetadata`:
+     - `baselineSpatialUnits` vs. `expandedSpatialUnits` (`scaleFactor >= 3.0`)
+     - `spatialUnitLabel`, `playableAreaBefore`, `playableAreaAfter`
+     - `baselineScenarios`, `baselineInterventions`, `baselineMetrics`
+   - `verifyWorldPluginContract(plugin)` proves determinism, snapshot round-trip continuation, counterfactual branch isolation, and command validation.
 
 ---
 
-## 2. Fixed-Timestep Scheduler & Command Ordering
+## 2. Nine-World Domain Architecture
 
-`SimulationKernel` advances authoritative simulation time (`tick: number`) in discrete unit steps:
-
-1. **Post-Systems Command Flush (`post_systems`)**: Commands enqueued interactively while paused at tick $T$ are applied and recorded with `(executedAtTick: T, replayPhase: 'post_systems')`.
-2. **Clock Advance**: `tick` increments to $T + 1$.
-3. **Pre-Systems Command Flush (`pre_systems`)**: Pre-scheduled scenario commands for tick $T + 1$ are applied in deterministic `(tick, sequence)` order.
-4. **Ordered System Execution**: Registered plugin systems execute in sorted `(system.order, system.id)` order.
-5. **Metrics & Bounded Checkpointing**: Metrics are extracted and rounded via `roundDet`, and periodic checkpoints are stored within `budget.maxCheckpoints`.
-
----
-
-## 3. Deterministic Seeded PRNG (`src/core/rng.ts`)
-
-`SeededRng` derives independent `Mulberry32Stream` instances per subsystem stream name (`rng.stream('environment')`, `rng.stream('movement')`, `rng.stream('lifecycle')`). Drawing random numbers in one subsystem never perturbs another subsystem's random sequence. The complete state of all active streams is serialized in every checkpoint and `.omniverse.zip` archive.
+| World ID | Module Path | Primary Spatial Representation | Ordered Causal Systems |
+| :--- | :--- | :--- | :---: |
+| `ecosystem` | `src/worlds/ecosystem/ecosystemPlugin.ts` | 48 Habitat Zones (`8×6` grid, 6 biomes) + mobile organism agents | 4 ordered systems (Hydrology -> Flora -> Fauna Foraging/Migration -> Carcass Decomposition) |
+| `station` | `src/worlds/station/stationPlugin.ts` | 18 Pressurized Compartments (`3,810 m³`) + 24 bulkhead hatches + 12 crew | 4 ordered systems (Power/Solar/Reactor Bus -> Pressure/Breach Equalization -> O₂/CO₂/Thermal -> Crew Tasking) |
+| `civilization` | `src/worlds/civilization/civilizationPlugin.ts` | 9 Starting Settlements + 6 Frontier Sites + 16 Convoy Routes | 4 ordered systems (Hydrology/Seasons -> Production/Research -> Trade Convoys -> Stability/Migration/Founding) |
+| `atmosphere` | `src/worlds/atmosphere/atmospherePlugin.ts` | 48 Synoptic Climate Cells (`8×6` grid) + tracked Cyclonic Storms | 4 ordered systems (Radiative/Pressure -> Geostrophic Wind & Advection -> Moisture/Clouds/Rain -> Cyclogenesis) |
+| `ocean` | `src/worlds/ocean/oceanPlugin.ts` | 48 Horizontal Sectors × 3 Depth Zones (`144 cells`) + mobile Shoals/Pods | 4 ordered systems (Gyres/Thermohaline -> Upwelling/Nutrients -> Trophic Food Web -> Oxygen/Coral/Pollution) |
+| `celestial` | `src/worlds/celestial/celestialPlugin.ts` | 3 Star Systems (`Helios`, `Kepler Binary`, `Trappist`) with 18 Bodies | 4 ordered systems (Keplerian Propagation -> Secular Perturbations -> Stellar Flux/Flares -> Energy/Habitability) |
+| `megacity` | `src/worlds/megacity/megacityPlugin.ts` | 18 Metropolitan Districts (`6×3` matrix) + 24 Transit/Utility Corridors | 4 ordered systems (Commuting/Congestion -> Grid/Water/Waste -> AQI/Heat Island -> Housing/Vitality/Emergencies) |
+| `industrial` | `src/worlds/industrial/industrialPlugin.ts` | 18 Supply-Chain Nodes (4 Tiers) + 24 Freight Corridors + Convoys | 4 ordered systems (Power/Equipment Health -> Extraction/Refining/Assembly -> Freight Convoys -> Demand/Backlogs) |
+| `geology` | `src/worlds/geology/geologyPlugin.ts` | 48 Crustal Cells (`8×6` grid, 6 Plates) + 28 Fault Segments | 4 ordered systems (Tectonic Loading -> Mohr-Coulomb Rupture & Waves -> Magma/Volcanism -> Erosion/Landslides) |
 
 ---
 
-## 4. Causality Model (`src/core/causalJournal.ts`)
+## 3. Cross-World Causal Event Translation (`src/core/crossWorldContract.ts`)
 
-Every event in `CausalEventJournal` carries an explicit `causalLinkType`:
-
-- `'direct'`: Directly triggered by an explicit command or immediate parent event (`causedByEventId`).
-- `'dependency'`: Propagated through a documented physical/subsystem dependency (e.g., Reactor SCRAM -> Battery Depletion -> Life Support Scrubber Power Loss -> Cabin CO2 Rise -> Crew Health Deterioration).
-- `'inferred'`: Temporal/subsystem correlation without direct single-event certainty.
-- `'unknown'`: Root autonomous state transition.
-
-`inspectCausalChain(eventId)` traverses both upstream ancestors and downstream consequences to answer *What Happened? What Changed? What Caused It? What Was Affected? What Happened Next?*
+`CrossWorldContractRegistry` registers 10 versioned adapters connecting all 9 worlds:
+- Each adapter specifies `sourceWorldId`, `sourceEventTypes`, `targetWorldId`, `targetCommandType`, `requiredUnits` (explicit physical unit conversion formulas), and `informationLoss`.
+- `previewTransfer(event, sourceWorldId, targetWorldId)` validates compatibility and returns a full preview of the translated command, payload, and provenance before execution.
 
 ---
 
-## 5. Rendering Separation (`src/renderers/ThreeWorldViewport.tsx`)
+## 4. Three.js 3D Viewport & 2D SVG Fallback (`src/renderers/ThreeWorldViewport.tsx`)
 
-World plugins expose `extractRenderFrame(state, config, runId, tick): RenderFrameData`. The Three.js viewport consumes `RenderFrameData` to update reusable geometries and materials, performing visual-only position interpolation (`prevPosition -> position`) between ticks without ever mutating authoritative simulation state. On unmount or world switching, all geometries, materials, and WebGL resources are explicitly disposed.
+- **Auto-Fit Camera Scaling**: Automatically computes the bounding box of all zones and entities (`maxSpan`) so triple-scale 48-cell grids, 18-compartment orbital stations, and 3-star-system orbital basins frame cleanly on load and via the **Fit World** button.
+- **Layer Visibility Toggles**: Operators can independently toggle `Zones`, `Entities`, `Links`, and `Labels` in both 3D WebGL and 2D SVG Schematic modes.
+- **Color-Independent Accessibility**: Every node and entity badge pairs color with a distinct status glyph (`✓` nominal, `⚠` warning, `✖` critical) and exposes a synchronized keyboard-navigable `AccessibleStateTable`.
