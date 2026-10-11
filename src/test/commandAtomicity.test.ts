@@ -68,8 +68,11 @@ describe('Command execution atomicity', () => {
     expect(run.getPendingCommands().map(c => c.type)).toEqual(['test_valid']);
     expect(run.getEvents().filter(e => e.type === 'command:injected_failure' || e.type === 'fake_partial_success')).toHaveLength(0);
     expect(run.getEvents().filter(e => e.type === 'command_rejected')).toHaveLength(1);
+    const queued = run.getPendingCommands()[0];
     const completed = run.flushCurrentTickCommands();
     expect(completed.map(c => c.type)).toEqual(['test_valid']);
+    expect(queued.executedAtTick).toBe(0);
+    expect(queued.replayPhase).toBe('post_systems');
     expect(suppliesIn(run)).toBe(supplies - 1);
     expect(run.getExecutedCommands()).toHaveLength(1);
     expect(run.replayFromStart(run.tick).matchesAuthoritativeHash).toBe(true);

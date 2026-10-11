@@ -311,8 +311,11 @@ export class SimulationKernel<
 
         this.plugin.applyCommand(this.state, cmd, cmdCtx);
         this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
-        this.executedCommands.push(cmd);
-        completed.push(cmd);
+        // Preserve enqueueCommand's returned object identity and completion metadata.
+        queued.executedAtTick = this._tick;
+        queued.replayPhase = phase;
+        this.executedCommands.push(queued);
+        completed.push(queued);
       } catch (error) {
         this.state = stateBefore;
         this.currentConfig = configBefore;
