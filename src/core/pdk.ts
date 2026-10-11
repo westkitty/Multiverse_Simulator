@@ -13,6 +13,7 @@ import {
   Tick,
   WorldId,
   WorldPlugin,
+  WorldScaleMetadata,
   WorldScenarioPreset,
 } from './contracts';
 import { SimulationKernel } from './kernel';
@@ -30,6 +31,7 @@ export interface DefineWorldPluginSpec<
   description: string;
   physicalModelDocumentation: string[];
   simplifiedMechanicsNote: string;
+  scaleMetadata?: WorldScaleMetadata;
   configSchema: z.ZodType<TConfig>;
   defaultConfig: TConfig;
   scenarios: WorldScenarioPreset<TConfig>[];
@@ -74,6 +76,7 @@ export function defineWorldPlugin<
     description: spec.description,
     physicalModelDocumentation: spec.physicalModelDocumentation,
     simplifiedMechanicsNote: spec.simplifiedMechanicsNote,
+    scaleMetadata: spec.scaleMetadata,
     defaultConfig: spec.defaultConfig,
     scenarios: spec.scenarios,
     quickInterventions: spec.quickInterventions,

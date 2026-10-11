@@ -7,7 +7,28 @@ export type BranchId = string;
 export type CheckpointId = string;
 export type EventId = string;
 export type EntityId = string;
-export type WorldId = 'ecosystem' | 'station' | 'civilization' | string;
+export type PrimaryWorldId =
+  | 'ecosystem'
+  | 'station'
+  | 'civilization'
+  | 'atmosphere'
+  | 'ocean'
+  | 'celestial'
+  | 'megacity'
+  | 'industrial'
+  | 'geology';
+export type WorldId = PrimaryWorldId | string;
+
+export interface WorldScaleMetadata {
+  areaUnitLabel: string;
+  baselinePlayableArea: number;
+  expandedPlayableArea: number;
+  baselineTerritoryScalar: number;
+  expandedTerritoryScalar: number;
+  baselineScenarioCount: number;
+  baselineInterventionCount: number;
+  baselineMetricCount: number;
+}
 
 export type CausalLinkType = 'direct' | 'dependency' | 'inferred' | 'unknown';
 
@@ -262,6 +283,7 @@ export interface WorldPlugin<
   description: string;
   physicalModelDocumentation: string[];
   simplifiedMechanicsNote: string;
+  scaleMetadata?: WorldScaleMetadata;
   defaultConfig: TConfig;
   scenarios: WorldScenarioPreset<TConfig>[];
   quickInterventions: QuickInterventionDescriptor[];
