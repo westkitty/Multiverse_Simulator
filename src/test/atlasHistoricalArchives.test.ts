@@ -5,7 +5,7 @@ import manifest from './fixtures/atlas-compat/manifest.json';
 import {CORE_WORLD_PLUGINS} from '../worlds';
 import {SimulationKernel} from '../core/kernel';
 import {inspectAndUnpackArchiveZip} from '../persistence/archive';
-for(const fixture of manifest.fixtures)it(`${fixture.worldId}: pre-refuge Atlas archive, legacy operate and historical replay remain exact`,()=>{
+for(const fixture of manifest.fixtures)it(`${fixture.worldId}: state-equivalent Atlas archive, legacy operation and replay remain deterministic`,()=>{
  const bytes=new Uint8Array(readFileSync(`src/test/fixtures/atlas-compat/${fixture.file}`));
  expect(createHash('sha256').update(bytes).digest('hex')).toBe(fixture.sha256);
  const archive=inspectAndUnpackArchiveZip(bytes);expect(archive.valid).toBe(true);
