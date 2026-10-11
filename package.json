@@ -2,7 +2,7 @@
   "name": "omniverse-engine",
   "private": true,
   "version": "1.0.0",
-  "description": "The Simulation Multiverse (Omniverse Engine) \u2014 Deterministic Multiverse Simulation Laboratory",
+  "description": "The Simulation Multiverse (Omniverse Engine) — Deterministic Multiverse Simulation Laboratory",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173",
@@ -16,7 +16,8 @@
     "verify:dist": "node scripts/verify-dist.mjs",
     "measure:baseline": "RECORD_BASELINE=1 vitest run src/test/baselineManifest.test.ts",
     "test:acceptance": "RUN_ACCEPTANCE=1 RUN_SEMANTIC_ACCEPTANCE=1 vitest run src/test/defaultBalance.test.ts src/test/semanticAcceptance.test.ts src/test/historicalArchives.test.ts",
-    "fixtures:historical": "node scripts/acceptance/generate-historical.mjs"
+    "fixtures:historical": "node scripts/acceptance/generate-historical.mjs",
+    "fixtures:atlas:verify": "node scripts/acceptance/reconstruct-atlas-compat.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.2",

@@ -12,14 +12,20 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # pinned historical baseline source is required for archive regression tests
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22'
           cache: npm
       - run: npm ci
+      - name: Restore nine historical archives from pinned Git source
+        run: npm run fixtures:historical
+      - name: Recover pre-refuge Atlas archives only if exact old oracles match
+        run: npm run fixtures:atlas:verify
       - run: npm run typecheck
       - run: npm run lint
       - run: npm test

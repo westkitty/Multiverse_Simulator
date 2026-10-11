@@ -4,6 +4,8 @@ import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 const root=resolve(import.meta.dirname,'../..');
 const revision='cb6bc9b4456f2cb45b7610c0df6d3325bd67a5eb';
+const expected=JSON.parse(readFileSync(join(root,'src/test/fixtures/historical/manifest.json'),'utf8'));
+assert.equal(expected.sourceCommit,revision,'Historical manifest source does not match pinned source revision');
 mkdirSync(join(root,'.cache'),{recursive:true});
 const workspace=mkdtempSync(join(root,'.cache','historical-fixtures-'));
 const archived=execFileSync('git',['archive',revision],{cwd:root,maxBuffer:32*1024*1024});
@@ -12,4 +14,6 @@ assert.deepEqual(readFileSync(join(workspace,'package-lock.json')),readFileSync(
 symlinkSync(join(root,'node_modules'),join(workspace,'node_modules'),'dir');
 writeFileSync(join(workspace,'src/test/historicalFixtureGeneration.test.ts'),readFileSync(join(root,'scripts/acceptance/historical-generator.ts.txt')));
 execFileSync(process.execPath,[join(root,'node_modules/vitest/vitest.mjs'),'run','--root',workspace,'src/test/historicalFixtureGeneration.test.ts'],{cwd:root,stdio:'inherit',env:{...process.env,HISTORICAL_FIXTURE_OUTPUT:join(root,'src/test/fixtures/historical')}});
-console.log(`Historical source retained for inspection at ${workspace}. No branches changed or network used.`);
+const observed=JSON.parse(readFileSync(join(root,'src/test/fixtures/historical/manifest.json'),'utf8'));
+assert.deepEqual(observed.fixtures,expected.fixtures,'Historical-source regeneration diverged from committed independent manifest oracles');
+console.log(`Recovered ${observed.fixtures.length} historical archives from pinned commit ${revision}; manifest oracles all match.`);
