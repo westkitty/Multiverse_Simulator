@@ -812,3 +812,27 @@ defaultCrossWorldRegistry.registerAdapter({
     };
   },
 });
+
+// Atlas expansion contracts deliberately exchange experimental events, not a shared universe.
+for (const spec of [
+  { id:'industrial-supplies-to-terraforming', source:'industrial', target:'terraforming-frontier', event:'industrial_shipment_dispatched', field:'surplusUnits', sourceUnit:'manufactured inventory units', targetField:'quantity', targetUnit:'salvage units', command:'frontier.import_supplies', factor:.25, max:100, loss:'Inventory composition, shipping delay and spatial origin are discarded; this is an experimental allocation, not conserved cross-world transport.' },
+  { id:'geology-exposure-to-archaeology', source:'geology', target:'timeworn-empire', event:'landslide_mass_wasting', field:'slideCount', sourceUnit:'failed slope cells', targetField:'meters', targetUnit:'m overburden removed', command:'frontier.expose_layers', factor:.05, max:1, loss:'Slope geometry and debris deposition are lost. Positive exposure approximates selected erosion sites only, not every landslide.' },
+  { id:'atmosphere-drought-to-wilderness', source:'atmosphere', target:'wild-meridian', event:'drought_triggered', field:'severity', sourceUnit:'drought severity fraction', targetField:'delta', targetUnit:'forcing multiplier increment', command:'frontier.forcing', factor:1, max:1, loss:'Climate cells, duration and precipitation units are collapsed into a bounded frontier forcing change; no physical climate coupling is implied.' },
+]) {
+  defaultCrossWorldRegistry.registerAdapter({
+    id:`adapter-${spec.id}`,name:`${spec.source} → ${spec.target}`,version:'1.0.0',schemaVersion:1,
+    sourceWorldId:spec.source,targetWorldId:spec.target,sourceEventTypes:[spec.event],targetCommandType:spec.command,
+    description:spec.loss,transformationRules:[`${spec.targetField} = min(${spec.max}, ${spec.field} × ${spec.factor})`],
+    requiredUnits:[{sourceField:spec.field,sourceUnit:spec.sourceUnit,targetField:spec.targetField,targetUnit:spec.targetUnit,formulaDescription:`Multiply by ${spec.factor}, cap at ${spec.max}; require finite positive input.`}],
+    informationLoss:[spec.loss],
+    validateSourceEvent(event){
+      const value=event?.payload?.[spec.field];
+      return event?.schemaVersion===1 && event.type===spec.event && typeof value==='number' && Number.isFinite(value) && value>0
+        ? {valid:true}:{valid:false,reason:`Requires schema 1 ${spec.event} with positive finite ${spec.field} in ${spec.sourceUnit}.`};
+    },
+    translate(event){
+      const value=roundDet(Math.min(spec.max,Number(event.payload[spec.field])*spec.factor),6);
+      return {commandType:spec.command,commandLabel:`Experimental transfer: ${spec.id}`,payload:{[spec.targetField]:value},provenance:{adapterId:`adapter-${spec.id}`,sourceRunId:event.runId,sourceWorldId:spec.source,sourceEventId:event.id,sourceTick:event.tick,informationLossNotes:[spec.loss]}};
+    },
+  });
+}

@@ -1,38 +1,46 @@
-# Extending the Omniverse Engine (Plugin Development Kit)
+# Extending OMNIVERSE II
 
-## 1. Registering a New Simulation World
+## Use the real PDK contract
 
-All simulation worlds implement the `WorldPlugin<TConfig, TState>` contract defined in `src/core/contracts.ts` and are validated through `defineWorldPlugin` in `src/core/pdk.ts`.
+Start with `WorldPlugin<TConfig,TState>` in `src/core/contracts.ts`, `defineWorldPlugin` in `src/core/pdk.ts`, and the Thermal Lattice template. Source types—not historical prose—are authoritative for required fields and signatures.
 
-### Required Plugin Fields
-1. **Identity & Metadata**:
-   - `id`, `name`, `subtitle`, `category`, `version`, `schemaVersion`, `description`, `accentColor`, `icon`, `educationalOverview`.
-2. **Scale Metadata (`scaleMetadata`)**:
-   - Declares `baselineSpatialUnits`, `expandedSpatialUnits`, `scaleFactor` (`>= 3.0`), `spatialUnitLabel`, `playableAreaBefore`, `playableAreaAfter`, `baselineScenarios`, `baselineInterventions`, and `baselineMetrics`.
-3. **Configuration & Presets**:
-   - `defaultConfig`, `validateConfig(raw)`, and `scenarios` (`>= 9` scientific scenarios per world).
-4. **Deterministic Lifecycle**:
-   - `createInitialState(config, rng, ecs)`
-   - `systems`: Ordered array of `SimulationSystem<TConfig, TState>` executed each fixed tick.
-   - `validateCommand(command, state)` and `applyCommand(ctx, command)`
-   - `quickInterventions`: Operator-ready command presets (`>= 18` per world) where every intervention mutates authoritative state and emits a causal event.
-5. **Observability & Serialization**:
-   - `metrics` (`>= 18` telemetry metrics) and `extractMetrics(state, ecs, tick)`
-   - `extractRenderFrame(state, ecs, tick)` returning 3D/2D `zones`, `entities`, `links`, and `ambientMood`
-   - `inspectEntity(entityId, state, ecs)`
-   - `evaluateAlerts(state, metrics, tick)`
-   - `serializeState(state)` and `deserializeState(raw, schemaVersion)`
+Implement strict configuration validation, seeded initialization, ordered systems, commands, metrics, entity inspection, render extraction, and owned serialization/deserialization. Provide meaningful scenarios, quick interventions, metric definitions, model documentation and explicit simplifications. Register a new selectable world once in `src/worlds/index.ts`.
 
----
+Never use wall clocks, `Math.random`, React state, camera visibility or renderer interpolation to drive authoritative physics. Use named RNG streams and deterministic rounding where required. Preserve IDs and saved-state compatibility; introduce explicit migrations or explain version limits rather than silently reinterpreting an archive.
 
-## 2. Automated Contract & No-Op Verification
+## Frontier or native Atlas integration
 
-Every registered world is automatically tested by:
-- `verifyWorldPluginContract(plugin)` (`src/core/pdk.ts`): Verifies deterministic twin runs, snapshot continuation parity, counterfactual branch isolation, and invalid command rejection.
-- `src/test/nineWorldsExpansion.test.ts`: Verifies `scaleFactor >= 3.0`, `>= 9` scenarios, `>= 18` interventions, `>= 18` metrics, and executes **every quick intervention against an unperturbed control run** to guarantee zero no-op interventions.
+- A new frontier domain can provide a `DomainSpec` in `src/worlds/frontiers/domains.ts`; it must supply genuinely distinct equations and field units, not only different labels/colors. `makeFrontierPlugin` supplies lifecycle and expedition plumbing.
+- A native plugin can be integrated through `withNativeAtlas`, with a domain profile mapping real collections/fields/conditions. If adding territory, expand collections used by physics and remap every physical link. Do not satisfy area targets by changing metadata or camera coordinates.
+- Distinguish initial functional scale from the expanded scale. Count actual state and proof categories; never sum actors, links and sites into an inflated content total.
 
-## OMNIVERSE II verification additions
+## Adding sites and facilities
 
-Use Node >=22.12, `npm ci`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, `npm run verify:dist`. Install Chromium with `npx playwright install --with-deps chromium`, then run `npm run test:browser`. For public verification use `SMOKE_BASE_URL=https://westkitty.github.io/Multiverse_Simulator/ EXPECTED_RELEASE_COMMIT=<full-sha> npm run test:browser`.
+Define facts, initial state, evidence rules, available interactions and presentation using `src/exploration/contracts.ts`. `population.ts` supports deterministic socket/tag/clearance placement. Reuse owned transaction handling in `engine.ts`; never mutate the input before all validations succeed.
 
-`npm run measure:baseline` writes the intake manifest using seed 424242 and default configuration. Preserve its frozen baseline when implementing new worlds; do not reinterpret old scale metadata as the new expansion. No new plugin/POI API is promised yet. CI release policy and activation instructions are in `docs/RELEASE_EVIDENCE.md`.
+Bind measurements to a real simulation field and unit. Document where a generated historical claim differs from observed data. Keep hidden facts out of accessible names as well as visual text. Test prerequisite ordering, unknown/remote rejection, exhausted stocks, duplicate evidence, exhausted reserves, failed routes, restore/branch independence and command replay.
+
+Existing facility roles cover supply transfer, local scans, salvage, refuge provisions, finite extraction, route reopening, workshop repair, processing, archive records, relays, containment and fuel generation. These shared mechanics are not permission to count arbitrary names as independently functional archetypes. Add domain-specific behavior and corresponding consequence tests where the concept requires it.
+
+Autonomous actors must consume/produce/transport or maintain authoritative state, not merely increment animation counters. Cargo should have an origin, resource accounting and a destination; offscreen actors must use the same rules.
+
+## Cross-world adapters
+
+Register with `defaultCrossWorldRegistry` only for scientifically coherent experimental transfers. Declare source event/schema, finite fields and units, target command, conversion limits, provenance and information loss. Preview must not mutate either run. Verify rejection of incompatible worlds/events and application on a target branch without altering the source.
+
+## Verification checklist
+
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run build
+npm run verify:dist
+npm run test:browser
+```
+
+Extend `currentInventory.test.ts` with actual collections and explicit PASS/FAIL/UNVERIFIED categories. Preserve `docs/expansion-manifest.json` as frozen intake evidence. Test multiple seeds, baseline and expanded scales, bounded long runs, all interventions against controls, exact continuation, failed imports, legacy records and accessible fallback.
+
+For exact-tick assertions use individual `kernel.step()` calls; production batches intentionally have a responsiveness deadline. Record CPU/FPS/memory measurements with environment and method—never infer browser FPS from CPU step timings.
+
+The deployment workflow is gated for main/manual runs, not PR publication. A successful build or workflow definition does not activate Pages or prove the deployed simulator works. Use the administrator handoff and live-verification checklist in `README.md` when permissions are unavailable.

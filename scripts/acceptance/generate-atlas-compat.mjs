@@ -1,0 +1,16 @@
+import {execFileSync} from 'node:child_process';
+import {mkdirSync,mkdtempSync,readFileSync,writeFileSync,symlinkSync} from 'node:fs';
+import {join,resolve} from 'node:path';
+import assert from 'node:assert/strict';
+const root=resolve(import.meta.dirname,'../..');
+const revision='7e7f9334cefd9c276dba4a16558640377790f229';
+mkdirSync(join(root,'.cache'),{recursive:true});
+mkdirSync(join(root,'src/test/fixtures/atlas-compat'),{recursive:true});
+const workspace=mkdtempSync(join(root,'.cache','historical-fixtures-'));
+const archived=execFileSync('git',['archive',revision],{cwd:root,maxBuffer:32*1024*1024});
+execFileSync('tar',['-x','-C',workspace],{input:archived});
+assert.deepEqual(readFileSync(join(workspace,'package-lock.json')),readFileSync(join(root,'package-lock.json')),'Historical/current lockfiles differ; install historical dependencies separately before generating oracles.');
+symlinkSync(join(root,'node_modules'),join(workspace,'node_modules'),'dir');
+writeFileSync(join(workspace,'src/test/historicalFixtureGeneration.test.ts'),readFileSync(join(root,'scripts/acceptance/atlas-generator.ts.txt')));
+execFileSync(process.execPath,[join(root,'node_modules/vitest/vitest.mjs'),'run','--root',workspace,'src/test/historicalFixtureGeneration.test.ts'],{cwd:root,stdio:'inherit',env:{...process.env,HISTORICAL_FIXTURE_OUTPUT:join(root,'src/test/fixtures/atlas-compat')}});
+console.log(`Historical source retained for inspection at ${workspace}. No branches changed or network used.`);

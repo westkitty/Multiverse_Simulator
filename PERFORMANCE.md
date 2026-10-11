@@ -1,48 +1,50 @@
-# Omniverse Engine — Triple-Scale Performance & Spatial Optimization Report
+# OMNIVERSE II — measured local performance
 
-## 1. Triple-Scale Performance Budgets & Benchmarks
+## CPU measurement, 2026-10-11
 
-With all 9 worlds expanded to **3.0× spatial scale** (48 habitat zones, 18 station compartments, 15 settlement sites, 48 climate cells, 144 volumetric ocean cells, 18 celestial bodies, 18 megacity districts, 18 industrial nodes, and 48 geological cells), the simulation engine maintains deterministic fixed-timestep execution well within interactive frame budgets.
+Source: `docs/current-inventory.json`, reproducible using `RECORD_CURRENT=1 npx vitest run src/test/currentInventory.test.ts`. Node 22.22.3, Linux, Vitest/jsdom, seed 424242, default configurations, 100 individual `kernel.step()` calls per world, no warmup exclusion. Percentiles include varying checkpoint work. These are **CPU timings, not browser FPS**; do not compare directly with the older batch-based intake benchmark.
 
-| World ID | Active Spatial Elements | Mean Step Time (ms/tick) | 50-Tick Batch Duration | Bounded Telemetry Cap |
-| :--- | :--- | :---: | :---: | :---: |
-| `ecosystem` | 48 habitat zones + up to 420 organisms | ~0.65 ms | ~32 ms | 600 points |
-| `station` | 18 compartments + 24 hatches + 12 crew | ~0.22 ms | ~11 ms | 600 points |
-| `civilization` | 15 regional sites + 16 convoy routes | ~0.28 ms | ~14 ms | 600 points |
-| `atmosphere` | 48 synoptic cells + cyclonic vortices | ~0.31 ms | ~16 ms | 600 points |
-| `ocean` | 144 volumetric cells (48 × 3 layers) + shoals | ~0.48 ms | ~24 ms | 600 points |
-| `celestial` | 3 star systems + 18 orbital bodies | ~0.19 ms | ~10 ms | 600 points |
-| `megacity` | 18 districts + 24 transit/utility corridors | ~0.25 ms | ~13 ms | 600 points |
-| `industrial` | 18 supply-chain nodes + 24 freight routes | ~0.27 ms | ~14 ms | 600 points |
-| `geology` | 48 crustal cells + 28 fault segments | ~0.34 ms | ~17 ms | 600 points |
-
----
-
-## 2. Spatial & Rendering Optimizations for 3× Scale
-
-1. **O(1) Grid Coordinate Indexing**:
-   - Grid-based worlds (`ecosystem`, `atmosphere`, `ocean`, `geology`) map world-space `(x, z)` coordinates directly into `(gridX, gridZ)` cell indices (`idx = gridZ * 8 + gridX`) rather than performing `O(N²)` distance scans during neighbor diffusion, advection, and organism foraging.
-2. **Precomputed Adjacency Lists**:
-   - Networked worlds (`station`, `civilization`, `megacity`, `industrial`) iterate over pre-indexed corridor/hatch adjacency lists for pressure equalization, commuter routing, electrical load dispatch, and freight convoy transport.
-3. **Bounded Ring Buffers (`ResourceBudget`)**:
-   - `CausalEventJournal` (`maxCausalEvents = 2500`), telemetry histories (`maxTelemetryHistory = 600`), and auto-checkpoints (`maxCheckpoints = 32`) strictly bound memory growth across multi-thousand-tick runs.
-4. **Domain-Split Production Bundles (`vite.config.ts`)**:
-   - Production assets are code-split into `worlds-biosphere`, `worlds-planetary-orbital`, `worlds-civilization-urban`, `vendor-three`, and `vendor-react`, keeping every bundle chunk under 480 kB.
-
-## Independently measured intake (2026-10-11) — supersedes estimates above
-
-Linux sandbox, Node 22.22.3, Vitest/jsdom, seed 424242, default configs. 100 individual `kernel.stepMany(1)` calls per world; timings include kernel bookkeeping/checkpoint work. No warmup exclusion. These are measurements, not browser FPS guarantees. No expansion/performance uplift is claimed.
-
-| World | p50 ms/tick | p95 ms/tick | ZIP bytes at tick 100 |
+| World | p50 step ms | p95 step ms | ZIP at tick 100, bytes |
 |---|---:|---:|---:|
-| ecosystem | 7.202 | 12.514 | 66562 |
-| station | 1.526 | 2.375 | 15246 |
-| civilization | 0.894 | 1.541 | 20106 |
-| atmosphere | 1.973 | 4.006 | 26815 |
-| ocean | 5.881 | 9.457 | 42084 |
-| celestial | 1.212 | 2.286 | 18241 |
-| megacity | 1.255 | 2.411 | 17605 |
-| industrial | 1.640 | 3.107 | 18115 |
-| geology | 1.851 | 3.133 | 24102 |
+| ecosystem | 3.084 | 10.041 | 194726 |
+| station | 0.853 | 7.559 | 77209 |
+| civilization | 0.568 | 2.199 | 83766 |
+| atmosphere | 1.619 | 6.328 | 148563 |
+| ocean | 1.240 | 4.810 | 159684 |
+| celestial | 0.655 | 4.088 | 81067 |
+| megacity | 0.750 | 2.805 | 95247 |
+| industrial | 0.604 | 2.275 | 81815 |
+| geology | 0.944 | 3.572 | 133535 |
+| wild-meridian | 0.530 | 2.042 | 64298 |
+| hollow-deep | 0.511 | 1.733 | 66074 |
+| timeworn-empire | 0.525 | 1.210 | 58787 |
+| terraforming-frontier | 0.448 | 1.398 | 65201 |
+| machine-wilderness | 0.465 | 0.966 | 64759 |
+| signal-expanse | 0.487 | 1.205 | 58791 |
 
-Reproduce with `npm run measure:baseline`; raw values and collection counts are in `docs/expansion-manifest.json`. Do not compare the historical estimates directly to these measurements: their sampling method/environment was not recorded. Browser smoke used Chromium 153 with software GPU on desktop and mobile-emulated viewports; physical mobile performance, p95 frame time, GPU memory, draw calls, world-switch/save latency and long-session resource growth remain **UNVERIFIED**. Production worker is ~475 kB uncompressed; largest render chunk ~474 kB. No new GPU-disposal or instancing optimization is claimed.
+## Rendering and responsiveness
+
+- Native cells/compartments are drawn with a shared instanced mesh (capacity 2,048; current maximum is 144 zones). Entities/links reuse meshes and materials. Zone opacity is shared rather than an independent material per zone.
+- Object synchronization is skipped when frame, interpolation, layers and selection are unchanged. Visual interpolation never changes authoritative state.
+- Camera fit, zoom/pan limits, fog, grid and SVG extents derive from live presentation bounds. Selected sites can be focused. Vertical connections now retain Y displacement.
+- WebGL-unavailable fallback supports keyboard selection; accessible entity tables remain available.
+- Browser renderer tests establish nonzero draw calls below visual-instance count in expanded Geology on desktop and mobile software Chromium. They do not establish hardware FPS or memory budgets.
+- The production 250 ms `stepMany` responsiveness budget is preserved. Exact-tick tests use individual steps rather than depending on machine speed to finish a batch.
+
+## Boundaries and unverified budgets
+
+Exploration journals retain 128 recent actions per branch with compact action totals and persistent evidence. Route planning has explicit queue/search limits. Unknown sites are omitted from visual entity presentation. Simulation still runs all authoritative regions; this is not chunk-sleeping or lazy physical evolution.
+
+Schema validation/cloning remains a CPU cost. Actor/connection rendering is not fully instanced, and there is no measured hardware LOD or GPU-memory budget. Hundred-tick CPU samples and software-renderer checks do not prove day-long stability, large branch collections, constrained-phone memory, or deployed HTTPS performance. Old estimated figures are preserved only in `docs/historical/PERFORMANCE.md` and are not current evidence.
+
+## Matched Atlas UI work (current uplift)
+
+`npx vitest run src/test/upliftMeasurement.test.tsx` compares the saved pre-uplift view with the current view using the same Ecosystem seed, mount and two filter changes. It measures real `extractRenderFrame` calls with the viewport mocked identically: **3 → 1**. See `docs/uplift/frame-measurement.json`. No FPS/latency conclusion follows from this count. Main JS gzip grows 65.91 → 69.11 kB, with 2.29 kB gzip of added CSS. Mobile navigation geometry changes 682 → 230 px at 393×852; all destinations remain available through horizontal scrolling.
+
+## Device provenance follow-up — 2026-10-11
+
+`docs/acceptance/device-profile.json` contains an actual five-second browser observation, explicitly **SwiftShader/software rendering**, not hardware certification. Its animation-frame intervals are not GPU execution timings; its JS heap is not GPU memory. See `docs/acceptance/REVIEW.md` for workload limits and the reproducible `scripts/acceptance/device-probe.mjs` command. Physical desktop/mobile sustained-load evidence remains blocked by device access.
+
+## Refuge/departure cost — latest local uplift
+
+This is a behavior/correctness uplift, not a claimed FPS optimization. Nearby route search is only requested when the planner is expanded. Existing render-frame reuse passes its regression test. Main compressed JS increased from 69.11 kB to 70.96 kB; CSS from 2.29 kB to 2.44 kB. Worker raw size increased from 534.69 kB to 537.00 kB. Scientific/vendor chunks are unchanged. Final build sizes and scope are recorded in `docs/refuge-uplift/REVIEW.md`; no physical-device speedup is claimed.

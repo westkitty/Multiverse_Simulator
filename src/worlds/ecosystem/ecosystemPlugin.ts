@@ -114,7 +114,7 @@ const ZONE_LABELS = [
 
 function findZoneForCoord(zones: HabitatZone[], x: number, z: number): HabitatZone {
   const gx = clampDet(Math.floor(((x + 48) / 96) * ECO_COLS), 0, ECO_COLS - 1);
-  const gz = clampDet(Math.floor(((z + 36) / 72) * ECO_ROWS), 0, ECO_ROWS - 1);
+  const gz = clampDet((zones.length === 48 ? Math.floor(((z + 36) / 72) * ECO_ROWS) : Math.floor((z + 36) / 12)), 0, zones.length / ECO_COLS - 1);
   const idx = gz * ECO_COLS + gx;
   return zones[idx] ?? zones[0];
 }
@@ -135,9 +135,9 @@ function spawnOrganism(
     45,
   );
   const z = clampDet(
-    nearZ !== undefined ? nearZ + stream.nextRange(-4.5, 4.5) : stream.nextRange(-30, 30),
+    nearZ !== undefined ? nearZ + stream.nextRange(-4.5, 4.5) : stream.nextRange(-30, state.zones.length / ECO_COLS * 12 - 42),
     -33,
-    33,
+    state.zones.length / ECO_COLS * 12 - 39,
   );
   const angle = stream.nextRange(0, Math.PI * 2);
   const speed = species === 'predator' ? 1.55 : 1.15;
@@ -1062,7 +1062,7 @@ export const ecosystemPlugin = defineWorldPlugin<EcosystemConfig, EcosystemState
           }
 
           herb.x = roundDet(clampDet(herb.x + herb.vx, -45.5, 45.5), 3);
-          herb.z = roundDet(clampDet(herb.z + herb.vz, -33.5, 33.5), 3);
+          herb.z = roundDet(clampDet(herb.z + herb.vz, -33.5, state.zones.length / ECO_COLS * 12 - 38.5), 3);
 
           const zone = findZoneForCoord(state.zones, herb.x, herb.z);
           const desiredBite = Math.min(4.2, Math.max(0, 105 - herb.energy) * 0.18);
@@ -1100,7 +1100,7 @@ export const ecosystemPlugin = defineWorldPlugin<EcosystemConfig, EcosystemState
             pred.vx = roundDet((dx / norm) * huntSpeed, 3);
             pred.vz = roundDet((dz / norm) * huntSpeed, 3);
             pred.x = roundDet(clampDet(pred.x + pred.vx, -45.5, 45.5), 3);
-            pred.z = roundDet(clampDet(pred.z + pred.vz, -33.5, 33.5), 3);
+            pred.z = roundDet(clampDet(pred.z + pred.vz, -33.5, state.zones.length / ECO_COLS * 12 - 38.5), 3);
 
             const postDist = Math.hypot(targetHerb.x - pred.x, targetHerb.z - pred.z);
             const catchRadius = 2.6 * clampDet(config.predatorPressure, 0.6, 1.6);
@@ -1126,7 +1126,7 @@ export const ecosystemPlugin = defineWorldPlugin<EcosystemConfig, EcosystemState
               3,
             );
             pred.x = roundDet(clampDet(pred.x + pred.vx, -45.5, 45.5), 3);
-            pred.z = roundDet(clampDet(pred.z + pred.vz, -33.5, 33.5), 3);
+            pred.z = roundDet(clampDet(pred.z + pred.vz, -33.5, state.zones.length / ECO_COLS * 12 - 38.5), 3);
           }
 
           const predZone = findZoneForCoord(state.zones, pred.x, pred.z);
@@ -1907,7 +1907,7 @@ export const ecosystemPlugin = defineWorldPlugin<EcosystemConfig, EcosystemState
     });
 
     const connections: RenderConnectionVisual[] = [];
-    for (let gz = 0; gz < ECO_ROWS; gz += 2) {
+    for (let gz = 0; gz < state.zones.length / ECO_COLS; gz += 2) {
       for (let gx = 0; gx < ECO_COLS - 1; gx += 2) {
         const zA = state.zones[gz * ECO_COLS + gx];
         const zB = state.zones[gz * ECO_COLS + (gx + 1)];

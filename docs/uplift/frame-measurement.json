@@ -1,0 +1,15 @@
+{
+  "method": "Same React Testing Library/jsdom mount + two region-filter changes; ecosystem seed 2026; viewport mocked equally in both. Actual kernel.extractRenderFrame spy, not elapsed-time or GPU profiling.",
+  "results": [
+    {
+      "version": "before",
+      "mountExtractions": 1,
+      "totalExtractions": 3
+    },
+    {
+      "version": "after",
+      "mountExtractions": 1,
+      "totalExtractions": 1
+    }
+  ]
+}

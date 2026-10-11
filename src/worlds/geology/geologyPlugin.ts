@@ -86,9 +86,9 @@ const GEO_CELL_NAMES = [
   'Triple Junction W', 'Outer Rise Flexure', 'Submarine Caldera', 'DACITE Ridge', 'Southern Fault Zone', 'Rift Lake Margin', 'Loess Steeplands', 'Craton Margin S',
 ];
 
-function getGeoIdx(gx: number, gz: number): number {
+function getGeoIdx(gx: number, gz: number, rows = GEO_ROWS): number {
   const cx = clampDet(gx, 0, GEO_COLS - 1);
-  const cz = clampDet(gz, 0, GEO_ROWS - 1);
+  const cz = clampDet(gz, 0, rows - 1);
   return cz * GEO_COLS + cx;
 }
 
@@ -800,8 +800,8 @@ export const geologyPlugin = defineWorldPlugin<GeologyConfig, GeologyState>({
             for (const [dx, dz] of dirs) {
               const nx = cell.gridX + dx;
               const nz = cell.gridZ + dz;
-              if (nx >= 0 && nx < GEO_COLS && nz >= 0 && nz < GEO_ROWS) {
-                const nCell = state.cells[getGeoIdx(nx, nz)];
+              if (nx >= 0 && nx < GEO_COLS && nz >= 0 && nz < state.cells.length / GEO_COLS) {
+                const nCell = state.cells[getGeoIdx(nx, nz, state.cells.length / GEO_COLS)];
                 nCell.tectonicStressMpa = roundDet(
                   clampDet(nCell.tectonicStressMpa + stressDrop * 0.14, 5, 160),
                   1,
@@ -1412,10 +1412,10 @@ export const geologyPlugin = defineWorldPlugin<GeologyConfig, GeologyState>({
 
     // Plate boundary fault lines connecting trench, transform, and rift cells
     const connections: RenderConnectionVisual[] = [];
-    for (let gz = 0; gz < GEO_ROWS - 1; gz++) {
+    for (let gz = 0; gz < state.cells.length / GEO_COLS - 1; gz++) {
       for (const gx of [0, 2, 4, 5]) {
-        const cA = state.cells[getGeoIdx(gx, gz)];
-        const cB = state.cells[getGeoIdx(gx, gz + 1)];
+        const cA = state.cells[getGeoIdx(gx, gz, state.cells.length / GEO_COLS)];
+        const cB = state.cells[getGeoIdx(gx, gz + 1, state.cells.length / GEO_COLS)];
         connections.push({
           id: `fault-${cA.id}-${cB.id}`,
           from: [cA.centerX, 1.1, cA.centerZ],

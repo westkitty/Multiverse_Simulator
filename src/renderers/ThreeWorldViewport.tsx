@@ -1,3 +1,4 @@
+import { frameBounds } from './frameBounds';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { RenderFrameData } from '../core/contracts';
@@ -106,27 +107,21 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
   };
 
   const fitToWorld = () => {
-    const f = frameRef.current;
-    let maxExtent = 36;
-    for (const z of f.zones) {
-      maxExtent = Math.max(
-        maxExtent,
-        Math.abs(z.position[0]) + z.size[0] * 0.6,
-        Math.abs(z.position[2]) + z.size[2] * 0.6,
-      );
-    }
-    for (const e of f.entities) {
-      maxExtent = Math.max(maxExtent, Math.abs(e.position[0]), Math.abs(e.position[2]));
-    }
+    const f = frameRef.current, bounds = frameBounds(f);
+    const aspect = (containerRef.current?.clientWidth || 640) / (containerRef.current?.clientHeight || 440);
     cameraStateRef.current = {
-      theta: f.worldId === 'station' ? 0.45 : f.worldId === 'celestial' ? 0.35 : 0.6,
-      phi: f.worldId === 'celestial' ? 0.72 : 0.86,
-      radius: Math.max(46, Math.min(115, maxExtent * 1.65)),
-      targetX: 0,
-      targetY: 0,
-      targetZ: 0,
+      theta: f.worldId === 'station' ? 0.45 : 0.6, phi: 0.86,
+      radius: Math.max(24, bounds.span * 1.6 / Math.min(1, aspect)),
+      targetX: bounds.center[0], targetY: bounds.center[1], targetZ: bounds.center[2],
     };
   };
+  const focusSelected = () => {
+    const target = [...frameRef.current.entities, ...frameRef.current.zones].find(x => x.id === selectedIdRef.current);
+    if (!target) return;
+    const size = 'size' in target ? target.size : target.scale;
+    cameraStateRef.current = { ...cameraStateRef.current, radius: Math.max(16, Math.max(...size) * 3), targetX: target.position[0], targetY: target.position[1], targetZ: target.position[2] };
+  };
+  useEffect(() => { fitToWorld(); }, [frame.worldId, frame.runId]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -163,7 +158,7 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x070a0f, 0.0055);
 
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 340);
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
 
     const ambientLight = new THREE.AmbientLight(0xdbeafe, highContrast ? 1.1 : 0.78);
     scene.add(ambientLight);
@@ -204,7 +199,17 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     selectionRing.visible = false;
     scene.add(selectionRing);
 
-    const zoneMeshes = new Map<string, THREE.Mesh>();
+    const zoneMaterial = new THREE.MeshStandardMaterial({ roughness: .65, metalness: .12 });
+    const zoneInstances = new THREE.InstancedMesh(boxGeo, zoneMaterial, 2048);
+    zoneInstances.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    zoneInstances.count = 0;
+    zoneGroup.add(zoneInstances);
+    const zoneTransform = new THREE.Object3D();
+    const instanceColor = new THREE.Color();
+    const linkDirection = new THREE.Vector3();
+    const linkAxis = new THREE.Vector3(0, 0, 1);
+    const hitIdentity = (hit: THREE.Intersection) => hit.object === zoneInstances && hit.instanceId !== undefined
+      ? frameRef.current.zones[hit.instanceId] : { id: String(hit.object.userData.entityId ?? ''), label: String(hit.object.userData.label ?? '') };
     const entityMeshes = new Map<string, THREE.Mesh>();
     const connectionMeshes = new Map<string, THREE.Mesh>();
     const pickableObjects: THREE.Object3D[] = [];
@@ -220,58 +225,27 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         currentFrame.worldId === 'ocean' ||
         currentFrame.worldId === 'celestial';
 
-      const activeZoneIds = new Set<string>();
-      for (const z of currentFrame.zones) {
-        activeZoneIds.add(z.id);
-        let mesh = zoneMeshes.get(z.id);
-        if (!mesh) {
-          const mat = new THREE.MeshStandardMaterial({
-            color: z.color,
-            roughness: 0.65,
-            metalness: isTranslucentWorld ? 0.35 : 0.12,
-            transparent: isTranslucentWorld,
-            opacity: isTranslucentWorld ? 0.42 : 0.92,
-          });
-          mesh = new THREE.Mesh(boxGeo, mat);
-          mesh.userData = { entityId: z.id, label: z.label };
-          zoneGroup.add(mesh);
-          zoneMeshes.set(z.id, mesh);
-        }
-
-        mesh.userData.entityId = z.id;
-        mesh.userData.label = z.label;
-        const heightScale =
-          currentFrame.worldId === 'ecosystem'
-            ? Math.max(0.3, z.size[1] + z.value * 1.1)
-            : z.size[1];
-        mesh.scale.set(z.size[0], heightScale, z.size[2]);
-        mesh.position.set(
-          z.position[0],
-          currentFrame.worldId === 'station' ? z.size[1] * 0.5 : z.position[1],
-          z.position[2],
-        );
-
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.color.set(z.color);
-        if (isTranslucentWorld) {
-          mat.transparent = true;
-          mat.opacity = selectedIdRef.current === z.id ? 0.68 : 0.36;
-        } else {
-          mat.transparent = false;
-          mat.opacity = 1;
-        }
-        if (layersRef.current.showZones) {
-          pickableObjects.push(mesh);
-        }
-      }
-
-      for (const [id, mesh] of zoneMeshes.entries()) {
-        if (!activeZoneIds.has(id)) {
-          zoneGroup.remove(mesh);
-          (mesh.material as THREE.Material).dispose();
-          zoneMeshes.delete(id);
-        }
-      }
+      // One draw call for all habitat/climate/compartment boxes instead of one per zone.
+      zoneInstances.count = Math.min(2048, currentFrame.zones.length);
+      zoneInstances.userData.entityId = null;
+      zoneMaterial.transparent = isTranslucentWorld;
+      zoneMaterial.opacity = isTranslucentWorld ? .42 : 1;
+      currentFrame.zones.slice(0,2048).forEach((z,index) => {
+        const height = currentFrame.worldId === 'ecosystem' ? Math.max(.3,z.size[1]+z.value*1.1) : z.size[1];
+        zoneTransform.scale.set(z.size[0],height,z.size[2]);
+        zoneTransform.position.set(z.position[0],currentFrame.worldId === 'station'?z.size[1]*.5:z.position[1],z.position[2]);
+        zoneTransform.updateMatrix();
+        zoneInstances.setMatrixAt(index,zoneTransform.matrix);
+        zoneInstances.setColorAt(index,instanceColor.set(z.color));
+      });
+      zoneInstances.instanceMatrix.needsUpdate = true;
+      if(zoneInstances.instanceColor)zoneInstances.instanceColor.needsUpdate = true;
+      zoneInstances.computeBoundingSphere();
+      if(layersRef.current.showZones)pickableObjects.push(zoneInstances);
+      const bounds=frameBounds(currentFrame);
+      (scene.fog as THREE.FogExp2).density=1/(bounds.span*8);
+      gridHelper.scale.setScalar(Math.max(1,bounds.span/108));
+      gridHelper.position.set(bounds.center[0],bounds.min[1]-.1,bounds.center[2]);
 
       const activeConnIds = new Set<string>();
       for (const conn of currentFrame.connections) {
@@ -293,17 +267,18 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
         const dx = conn.to[0] - conn.from[0];
         const dz = conn.to[2] - conn.from[2];
-        const dist = Math.max(0.5, Math.hypot(dx, dz));
+        const dy = conn.to[1] - conn.from[1];
+        const dist = Math.max(0.5, Math.hypot(dx, dy, dz));
         const midX = (conn.from[0] + conn.to[0]) * 0.5;
         const midZ = (conn.from[2] + conn.to[2]) * 0.5;
 
-        mesh.position.set(midX, 0.55, midZ);
+        mesh.position.set(midX, (conn.from[1] + conn.to[1]) * .5, midZ);
         mesh.scale.set(
           conn.status === 'active' ? 1.05 : 0.65,
           conn.status === 'closed' ? 1.5 : 0.4,
           dist * 0.82,
         );
-        mesh.rotation.y = Math.atan2(dx, dz);
+        mesh.quaternion.setFromUnitVectors(linkAxis, linkDirection.set(dx, dy, dz).normalize());
 
         const mat = mesh.material as THREE.MeshStandardMaterial;
         mat.color.set(
@@ -384,7 +359,7 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       const selId = selectedIdRef.current;
       const targetMesh =
         (selId && entityMeshes.get(selId)) ||
-        (selId && zoneMeshes.get(selId)) ||
+
         (selId && connectionMeshes.get(selId));
 
       if (targetMesh) {
@@ -400,7 +375,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         );
         selectionRing.scale.set(radiusScale, radiusScale, 1);
       } else {
-        selectionRing.visible = false;
+        const zone=currentFrame.zones.find(z=>z.id===selId);
+        selectionRing.visible=!!zone;
+        if(zone){selectionRing.position.set(zone.position[0],zone.position[1]+.2,zone.position[2]);selectionRing.scale.setScalar(Math.max(zone.size[0],zone.size[2])*.6);}
       }
     };
 
@@ -434,8 +411,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       if (!isDragging) {
         raycaster.setFromCamera(pointerNdc, camera);
         const hits = raycaster.intersectObjects(pickableObjects, false);
-        if (hits.length > 0 && hits[0].object.userData?.label) {
-          setHoveredLabel(String(hits[0].object.userData.label));
+        if (hits.length > 0 && hitIdentity(hits[0])?.label) {
+          setHoveredLabel(hitIdentity(hits[0]).label);
         } else {
           setHoveredLabel(null);
         }
@@ -449,8 +426,9 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
       const cam = cameraStateRef.current;
       if (isPanning) {
-        cam.targetX = Math.max(-48, Math.min(48, cam.targetX - dx * 0.08));
-        cam.targetZ = Math.max(-48, Math.min(48, cam.targetZ - dy * 0.08));
+        const b = frameBounds(frameRef.current);
+        cam.targetX = Math.max(b.min[0]-b.span, Math.min(b.max[0]+b.span, cam.targetX - dx * cam.radius * .001));
+        cam.targetZ = Math.max(b.min[2]-b.span, Math.min(b.max[2]+b.span, cam.targetZ - dy * cam.radius * .001));
       } else {
         cam.theta -= dx * 0.0075;
         cam.phi = Math.max(0.22, Math.min(1.42, cam.phi - dy * 0.0065));
@@ -467,8 +445,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         pointerNdc.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
         raycaster.setFromCamera(pointerNdc, camera);
         const hits = raycaster.intersectObjects(pickableObjects, false);
-        if (hits.length > 0 && hits[0].object.userData?.entityId) {
-          onSelectEntity(String(hits[0].object.userData.entityId));
+        if (hits.length > 0 && hitIdentity(hits[0])?.id) {
+          onSelectEntity(hitIdentity(hits[0]).id);
         }
       }
     };
@@ -476,7 +454,7 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
       const cam = cameraStateRef.current;
-      cam.radius = Math.max(18, Math.min(140, cam.radius + e.deltaY * 0.05));
+      cam.radius = Math.max(8, Math.min(frameBounds(frameRef.current).span * 8, cam.radius + e.deltaY * cam.radius * .001));
     };
 
     const handleContextLost = (e: Event) => {
@@ -494,7 +472,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     window.addEventListener('pointermove', handlePointerMove);
     window.addEventListener('pointerup', handlePointerUp);
     domEl.addEventListener('wheel', handleWheel, { passive: false });
-    domEl.addEventListener('contextmenu', (e) => e.preventDefault());
+    const preventContextMenu = (e: Event) => e.preventDefault();
+    domEl.addEventListener('contextmenu', preventContextMenu);
     domEl.addEventListener('webglcontextlost', handleContextLost);
     domEl.addEventListener('webglcontextrestored', handleContextRestored);
 
@@ -512,6 +491,10 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     let frameCount = 0;
     let lastFpsSampleWall = performance.now();
 
+    let syncedFrame: RenderFrameData | null = null;
+    let syncedLayers = '';
+    let syncedSelection: string | null = null;
+    let syncedAlpha = -1;
     const animate = (now: number) => {
       animFrameId = requestAnimationFrame(animate);
       frameCount += 1;
@@ -529,7 +512,11 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         1,
         Math.max(0, (now - tickTransitionStartRef.current) / 180),
       );
-      syncSceneObjects(frameRef.current, alpha);
+      const layerKey = JSON.stringify(layersRef.current);
+      if(syncedFrame !== frameRef.current || syncedLayers !== layerKey || syncedSelection !== selectedIdRef.current || (!reducedMotion && alpha !== syncedAlpha)) {
+        syncSceneObjects(frameRef.current, alpha);
+        syncedFrame=frameRef.current; syncedLayers=layerKey; syncedSelection=selectedIdRef.current; syncedAlpha=alpha;
+      }
 
       const cam = cameraStateRef.current;
       const sinPhi = Math.sin(cam.phi);
@@ -541,6 +528,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       camera.lookAt(cam.targetX, cam.targetY, cam.targetZ);
 
       renderer.render(scene, camera);
+      domEl.dataset.drawCalls=String(renderer.info.render.calls);
+      domEl.dataset.visualInstances=String(frameRef.current.zones.length+frameRef.current.entities.length+frameRef.current.connections.length);
     };
 
     animFrameId = requestAnimationFrame(animate);
@@ -551,13 +540,15 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
       domEl.removeEventListener('wheel', handleWheel);
+      domEl.removeEventListener('contextmenu', preventContextMenu);
       domEl.removeEventListener('webglcontextlost', handleContextLost);
       domEl.removeEventListener('webglcontextrestored', handleContextRestored);
       window.removeEventListener('resize', handleResize);
 
-      for (const mesh of zoneMeshes.values()) {
-        (mesh.material as THREE.Material).dispose();
-      }
+      zoneMaterial.dispose();
+      zoneInstances.dispose();
+      gridHelper.geometry.dispose();
+      for(const material of Array.isArray(gridHelper.material)?gridHelper.material:[gridHelper.material])material.dispose();
       for (const mesh of entityMeshes.values()) {
         (mesh.material as THREE.Material).dispose();
       }
@@ -630,8 +621,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
             </span>
           </div>
 
-          <svg
-            viewBox="-52 -38 104 76"
+          <svg aria-label="Interactive two-dimensional world map"
+            viewBox={frameBounds(frame).viewBox}
             style={{
               width: '100%',
               height: '82%',
@@ -644,6 +635,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
               frame.zones.map((z) => (
                 <g
                   key={z.id}
+                  role="button" tabIndex={0} aria-label={z.label}
+                  onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelectEntity(z.id);}}}
                   onClick={() => onSelectEntity(z.id)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -689,6 +682,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
                   }
                   strokeWidth={0.65}
                   strokeDasharray={c.status === 'closed' ? '1,1' : undefined}
+                  role="button" tabIndex={0} aria-label={c.id}
+                  onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelectEntity(c.id);}}}
                   onClick={() => onSelectEntity(c.id)}
                   style={{ cursor: 'pointer' }}
                 />
@@ -704,6 +699,8 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
                   fill={e.color}
                   stroke={selectedEntityId === e.id ? '#ffffff' : '#080c14'}
                   strokeWidth={selectedEntityId === e.id ? 0.45 : 0.2}
+                  role="button" tabIndex={0} aria-label={e.label}
+                  onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onSelectEntity(e.id);}}}
                   onClick={() => onSelectEntity(e.id)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -854,6 +851,7 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
           >
             Reset Camera
           </button>
+          <button type="button" onClick={focusSelected} style={{ padding: '4px 8px', background: '#0f172a', color: '#e2e8f0', border: '1px solid #334155' }}>Focus selected site</button>
           <button
             type="button"
             onClick={fitToWorld}

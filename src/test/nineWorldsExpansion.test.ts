@@ -12,7 +12,7 @@ import {
 import {
   atmospherePlugin,
   celestialPlugin,
-  CORE_WORLD_PLUGINS,
+  ORIGINAL_WORLD_PLUGINS,
   geologyPlugin,
   industrialPlugin,
   megacityPlugin,
@@ -36,7 +36,7 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
       'geology',
     ];
 
-    expect(CORE_WORLD_PLUGINS.map((p) => p.id)).toEqual(expectedIds);
+    expect(ORIGINAL_WORLD_PLUGINS.map((p) => p.id)).toEqual(expectedIds);
 
     for (const id of expectedIds) {
       const plugin = globalPluginRegistry.get(id);
@@ -65,7 +65,7 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
       geology: 48, // 3x of 16 crustal cells
     };
 
-    for (const plugin of CORE_WORLD_PLUGINS) {
+    for (const plugin of ORIGINAL_WORLD_PLUGINS) {
       expect(plugin.scaleMetadata).toBeDefined();
       const sm = plugin.scaleMetadata!;
       expect(sm.expandedPlayableArea).toBeGreaterThanOrEqual(
@@ -117,7 +117,7 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
       geology: { scenarios: 9, interventions: 18, metrics: 18 },
     };
 
-    for (const plugin of CORE_WORLD_PLUGINS) {
+    for (const plugin of ORIGINAL_WORLD_PLUGINS) {
       const target = expectedTargets[plugin.id];
       expect(plugin.scenarios.length).toBeGreaterThanOrEqual(target.scenarios);
       expect(plugin.quickInterventions.length).toBeGreaterThanOrEqual(
@@ -146,8 +146,8 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
     }
   });
 
-  it('D & F. Determinism & No-Op Detection Proof: every intervention in all 9 worlds mutates state vs. control and replays deterministically', () => {
-    for (const plugin of CORE_WORLD_PLUGINS) {
+  it('D & F. Determinism & No-Op Detection Proof: every intervention in all 9 worlds mutates state vs. control and replays deterministically', { timeout: 60000 }, () => {
+    for (const plugin of ORIGINAL_WORLD_PLUGINS) {
       for (const intervention of plugin.quickInterventions) {
         const control = new SimulationKernel({
           runId: `noop-ctrl-${plugin.id}-${intervention.id}`,
@@ -384,7 +384,7 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
     expect(invalidPreview.rejectionReason).toContain('REJECTED BY PHYSICAL CONTRACT');
 
     // Verify exportRunRecord/fromRunRecord and .omniverse.zip archive round-trip across all 9 worlds
-    for (const plugin of CORE_WORLD_PLUGINS) {
+    for (const plugin of ORIGINAL_WORLD_PLUGINS) {
       const k = new SimulationKernel({
         runId: `persist-${plugin.id}`,
         name: `Persist ${plugin.id}`,

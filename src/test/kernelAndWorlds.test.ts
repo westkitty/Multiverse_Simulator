@@ -287,14 +287,14 @@ describe('Phase 1-4: Core Kernel, RNG, ECS, Causality & Three World Modules', ()
       baseMetrics.infrastructureIndex,
     );
 
-    // Test founding a 10th frontier settlement (from 9 starting settlements)
-    expect(civInvested.inspectEntities().filter((e) => e.kind === 'settlement').length).toBe(9);
+    // Test founding a 28th frontier settlement (from 27 expanded starting settlements)
+    expect(civInvested.inspectEntities().filter((e) => e.kind === 'settlement').length).toBe(27);
     civInvested.enqueueCommand({
       type: 'found_settlement',
       label: 'Found Frontier Colony',
       payload: {},
     });
     civInvested.flushCurrentTickCommands();
-    expect(civInvested.inspectEntities().filter((e) => e.kind === 'settlement').length).toBe(10);
+    expect(civInvested.inspectEntities().filter((e) => e.kind === 'settlement').length).toBe(28);
   });
 });

@@ -1,0 +1,15 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "before": {
+    "crew": "REFUGE / LOCAL PRESENCE\n\n2 teams present\n\nOnly teams here receive service. One local supply restores 20 total energy, up to 40 per action. Expedition stocks are not replenished.\n\nactor-0\n78 / 100\nactor-4\n78 / 100\n\n2 local supplies → 40 total energy",
+    "expedition": "TICK 5 · Paused\nPosition / region-4\nFuel / 149\nSupplies / 79\nAT REST"
+  },
+  "after": {
+    "crew": "REFUGE / LOCAL PRESENCE\n\n2 teams present\n\nOnly teams here receive service. One local supply restores 20 total energy, up to 40 per action. Expedition stocks are not replenished.\n\nactor-0\n100 / 100\nactor-4\n96 / 100\n\n0.2 local supplies → 4 total energy",
+    "expedition": "TICK 5 · Paused\nPosition / region-4\nFuel / 149\nSupplies / 79\nAT REST",
+    "message": "Restored 40 total team energy using 2 local supplies. Recorded in History & branches."
+  }
+}

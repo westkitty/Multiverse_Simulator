@@ -1,3 +1,6 @@
+import './ui/navigation.css';
+import { defaultCrossWorldRegistry } from './core/crossWorldContract';
+import { AtlasView } from './ui/views/AtlasView';
 import React, { useEffect } from 'react';
 import { ENGINE_VERSION, WorldId } from './core/contracts';
 import { MultiverseTab, useMultiverseStore } from './store/multiverseStore';
@@ -12,6 +15,7 @@ import { WorldLibraryView } from './ui/views/WorldLibraryView';
 import { CORE_WORLD_PLUGINS } from './worlds';
 
 const NAV_TABS: Array<{ id: MultiverseTab; label: string }> = [
+  { id: 'atlas', label: 'Living World Atlas' },
   { id: 'library', label: `World Library (${CORE_WORLD_PLUGINS.length})` },
   { id: 'observatory', label: 'Active Observatory' },
   { id: 'timeline', label: 'Timeline & Branches' },
@@ -32,6 +36,9 @@ const SHORT_WORLD_BUTTON_LABELS: Record<string, string> = {
   megacity: 'World G: Megacity',
   industrial: 'World H: Industrial',
   geology: 'World I: Restless Planet',
+  'wild-meridian': 'World J: Wild Meridian', 'hollow-deep': 'World K: Hollow Deep',
+  'timeworn-empire': 'World L: Timeworn Empire', 'terraforming-frontier': 'World M: Terraforming Frontier',
+  'machine-wilderness': 'World N: Machine Wilderness', 'signal-expanse': 'World O: Signal Expanse',
 };
 
 export const App: React.FC = () => {
@@ -164,17 +171,18 @@ export const App: React.FC = () => {
                     fontFamily: 'monospace',
                   }}
                 >
-                  // OMNIVERSE ENGINE v{ENGINE_VERSION} · BASELINE · {CORE_WORLD_PLUGINS.length} WORLDS · {__RELEASE_COMMIT__.slice(0, 7)}
+                  // OMNIVERSE ENGINE v{ENGINE_VERSION} · DEVELOPMENT · {CORE_WORLD_PLUGINS.length} WORLDS · {__RELEASE_COMMIT__.slice(0, 7)}
                 </span>
               </div>
               <div style={{ fontSize: '11px', color: '#94a3b8' }}>
-                {CORE_WORLD_PLUGINS.length}-World Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching • 10 Cross-World Contracts
+                {CORE_WORLD_PLUGINS.length}-World Deterministic Causal Laboratory • Seeded PRNG • Copy-on-Write Branching • {defaultCrossWorldRegistry.listAdapters().length} Cross-World Contracts
               </div>
             </div>
           </div>
 
           {/* Registry-Driven 9-World Quick Switcher Pills */}
           <div
+            className="multiverse-worlds"
             role="group"
             aria-label="Quick World Switcher"
             style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}
@@ -186,6 +194,7 @@ export const App: React.FC = () => {
               return (
                 <button
                   key={plugin.id}
+                  aria-pressed={isSelected}
                   type="button"
                   onClick={() => handleQuickSwitchWorld(plugin.id)}
                   style={{
@@ -207,8 +216,18 @@ export const App: React.FC = () => {
         </div>
 
         {/* Primary Workbench Navigation */}
-        <nav
-          aria-label="Multiverse Workbenches"
+        <nav aria-label="Multiverse Workbenches">
+        <div className="multiverse-tabs" role="tablist" aria-label="Multiverse workbench tabs"
+          onKeyDown={event => {
+            if (!['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+            const tabs = Array.from(event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+            const index = tabs.indexOf(event.target as HTMLButtonElement);
+            if (index < 0) return;
+            event.preventDefault();
+            const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+            tabs[next].focus();
+            setActiveTab(NAV_TABS[next].id);
+          }}
           style={{
             display: 'flex',
             flexWrap: 'wrap',
@@ -224,6 +243,7 @@ export const App: React.FC = () => {
                 key={tab.id}
                 type="button"
                 role="tab"
+                tabIndex={isSelected ? 0 : -1}
                 aria-selected={isSelected}
                 onClick={() => setActiveTab(tab.id)}
                 style={{
@@ -242,6 +262,7 @@ export const App: React.FC = () => {
               </button>
             );
           })}
+        </div>
         </nav>
       </header>
 
@@ -303,6 +324,7 @@ export const App: React.FC = () => {
           boxSizing: 'border-box',
         }}
       >
+        {activeTab === 'atlas' && <AtlasView key={activeRunId} />}
         {activeTab === 'library' && <WorldLibraryView />}
         {activeTab === 'observatory' && <ObservatoryView />}
         {activeTab === 'timeline' && <TimelineView />}

@@ -14,7 +14,10 @@
     "test:watch": "vitest",
     "test:browser": "playwright test",
     "verify:dist": "node scripts/verify-dist.mjs",
-    "measure:baseline": "RECORD_BASELINE=1 vitest run src/test/baselineManifest.test.ts"
+    "measure:baseline": "RECORD_BASELINE=1 vitest run src/test/baselineManifest.test.ts",
+    "test:acceptance": "RUN_ACCEPTANCE=1 RUN_SEMANTIC_ACCEPTANCE=1 vitest run src/test/defaultBalance.test.ts src/test/semanticAcceptance.test.ts src/test/historicalArchives.test.ts",
+    "fixtures:historical": "node scripts/acceptance/generate-historical.mjs",
+    "fixtures:atlas:verify": "node scripts/acceptance/reconstruct-atlas-compat.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.2",

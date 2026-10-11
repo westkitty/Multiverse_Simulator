@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "7e7f9334cefd9c276dba4a16558640377790f229",
+  "measuredAt": "2026-10-11T17:01:51.878Z",
+  "status": "BLOCKED_HARDWARE_RENDERING",
+  "method": "Five-second requestAnimationFrame interval sample on initial paused Observatory canvas; not GPU execution time, active simulation throughput, or sustained thermal/load acceptance. No FPS target inferred.",
+  "headless": true,
+  "forcedSoftwareRendering": true,
+  "host": {
+    "platform": "linux",
+    "release": "6.1.158+",
+    "cpu": "Intel(R) Xeon(R) Processor @ 2.60GHz",
+    "logicalCPUs": 2,
+    "reportedMemoryBytes": 4131278848,
+    "driDeviceDirectory": false
+  },
+  "viewport": {
+    "width": 1440,
+    "height": 1000
+  },
+  "observation": {
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.0 Safari/537.36",
+    "hardwareConcurrency": 2,
+    "deviceMemoryGiB": 4,
+    "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+    "webglVersion": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    "frames": 102,
+    "p50FrameIntervalMs": 33.39999999999998,
+    "p95FrameIntervalMs": 66.80000000000018,
+    "meanAnimationFrameHz": 20.000792110578637,
+    "heap": {
+      "usedJSHeapSize": 24500000,
+      "totalJSHeapSize": 53500000
+    }
+  },
+  "pageErrors": [],
+  "limitations": [
+    "Device metadata is browser/OS reported, not independent physical-device attestation.",
+    "A software result cannot pass hardware acceptance.",
+    "Real desktop and physical mobile active-world trials, thermal duration, GPU memory and deployed build identity remain required."
+  ]
+}

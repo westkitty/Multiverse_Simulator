@@ -91,3 +91,18 @@ State schema, archive format and IndexedDB schema remain version 1. No migration
 - Initial PR run `38129369955` failed because the Vite config was inadvertently omitted from the first commit. Corrective commit `812242f` included the already locally verified config.
 - Corrected PR run **38129397003: SUCCESS** (all validation gates, including standard Playwright Chromium desktop/mobile browser tests on GitHub-hosted Ubuntu). Deploy/public-smoke correctly skipped for PR code.
 - Additional adversarial repair canonicalizes the initial hash-history entry; browser Back now restores the initial Observatory too. Regression exercised in desktop and mobile smoke tests.
+- Final baseline PR run **38129568876: SUCCESS**, including the initial-history regression. Head: `43047f365e3baa90ed64f708bd9bd8fb450153a0`.
+- PR #1 merged normally (no admin/protection bypass) on 2026-10-11 at 09:49 UTC. Main merge commit: `cb6bc9b4456f2cb45b7610c0df6d3325bd67a5eb`. Session remains on `arena/37f107b8-multiverse-simulator`.
+- Production run **38129717092: FAILURE** at Pages configuration: https://github.com/westkitty/Multiverse_Simulator/actions/runs/38129717092 . Main validation and production artifact upload PASSED; `configure-pages` returned HTTP 404 because the site is not enabled; deploy-pages and public-smoke were skipped. This is not a successful deployment. The direct authorized activation request had already returned HTTP 403, so administrator action is required.
+- After selecting GitHub Actions in Settings → Pages, rerun failed jobs on run `38129717092` while its artifact remains available, or dispatch the workflow on main to rebuild/revalidate. Require a successful public-smoke job before calling the target URL verified.
+
+
+## Local fifteen-world checkpoint — 2026-10-11
+
+Source `6b19bd4aa43bf6d870246d6d68bdf487c1e2a912` on `arena/37f107b8-multiverse-simulator`: typecheck/lint PASS; 83 tests across 14 files PASS (95.88 s); production build and six-assets-plus-worker validation PASS. Eight desktop/mobile production browser tests PASS, including the exact `6b19bd4` local source label, all-world navigation/stepping, archive and IndexedDB journeys, site operation, renderer counters and forced WebGL fallback. Full details: `docs/local-validation.json`.
+
+The first source-label attempt correctly failed because ordinary local builds label themselves `local`; rebuilding with `GITHUB_SHA=$(git rev-parse HEAD)` set the local artifact stamp, after which all eight browser tests passed. This environment variable does not imply any GitHub action or deployment occurred.
+
+Counts and CPU measurements: `docs/current-inventory.json`. All-site/chain action feasibility passed under generous stocks and frozen initial environmental conditions; default-resource long-run balance and complete semantic content-tripling acceptance remain incomplete.
+
+No remote calls, pushes or PRs were attempted after the merged session closed. The public URL remains unverified, and the prior Pages permission/activation failures remain the last remote evidence. A new coding session and authorized Pages configuration are required to publish.

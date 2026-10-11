@@ -6,6 +6,8 @@ import { CORE_WORLD_PLUGINS } from '../../worlds';
 type DomainFilter = 'all' | 'biosphere' | 'planetary' | 'orbital' | 'civilization';
 
 const WORLD_DOMAIN_MAP: Record<string, DomainFilter> = {
+  'wild-meridian': 'biosphere', 'hollow-deep': 'planetary', 'timeworn-empire': 'civilization',
+  'terraforming-frontier': 'planetary', 'machine-wilderness': 'civilization', 'signal-expanse': 'orbital',
   ecosystem: 'biosphere',
   ocean: 'biosphere',
   atmosphere: 'planetary',
@@ -110,16 +112,15 @@ export const WorldLibraryView: React.FC = () => {
             letterSpacing: '0.08em',
           }}
         >
-          OMNIVERSE ENGINE v2.0 // NINE-WORLD TRIPLE-SCALE SIMULATION PLATFORM
+          OMNIVERSE II // {CORE_WORLD_PLUGINS.length} REGISTERED WORLDS · DEVELOPMENT BUILD
         </div>
         <h1 style={{ margin: 0, fontSize: '22px', color: '#f8fafc' }}>
           Create a world. Change its conditions. Watch consequences unfold.
         </h1>
         <p style={{ margin: 0, fontSize: '13px', color: '#94a3b8', maxWidth: '960px' }}>
-          All nine world modules execute on a shared fixed-timestep deterministic kernel with
-          seeded PRNG streams, 3× expanded spatial scale, 81 curated scenarios, 171 validated
-          interventions, 162 live metrics, append-only causal event journals, copy-on-write
-          checkpoints, and 10 cross-world causal contract adapters.
+          {CORE_WORLD_PLUGINS.length} world modules share a fixed-timestep deterministic kernel,
+          seeded random streams, checkpoints, experiments and portable archives.
+          All fifteen worlds include persistent expedition exploration. New original-world runs use expanded native territory; legacy saves retain their original extent. Final release acceptance remains in progress.
         </p>
 
         {/* Search & Domain Filter Bar */}
@@ -135,7 +136,7 @@ export const WorldLibraryView: React.FC = () => {
           <input
             type="search"
             aria-label="Search Simulation Worlds"
-            placeholder="Search 9 worlds, 81 scenarios, or physical mechanics..."
+            placeholder="Search worlds, scenarios, or physical mechanics..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{

@@ -1,0 +1,35 @@
+import {it} from 'vitest';
+import {writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {CORE_WORLD_PLUGINS} from '../worlds';
+import {surveyCoverage,planRoute} from '../exploration/engine';
+import {SimulationKernel} from '../core/kernel';
+import {createPortableArchiveZip} from '../persistence/archive';
+it('preserves the pre-refuge Atlas command contract',()=>{
+ const output=process.env.HISTORICAL_FIXTURE_OUTPUT!;
+ const fixtures=CORE_WORLD_PLUGINS.map(plugin=>{
+  const k=new SimulationKernel({runId:`atlas-old-${plugin.id}`,name:'Pre-refuge Atlas',plugin,seed:2026});
+  const atlas=k.getState().atlas,target=atlas.sites[3],siteId=target.facts.id;
+  const visit=(id:string)=>{
+   const stage=k.getState().exploration.sites[id].discoveryState;
+   for(const action of [...(stage==='UNKNOWN'?['detect']:[]),...(stage==='UNKNOWN'||stage==='DETECTED'?['survey']:[]),...(['UNKNOWN','DETECTED','SURVEYED'].includes(stage)?['discover']:[]),'travel']){
+    k.enqueueCommand({type:'exploration.action',label:action,payload:{action,siteId:id}});k.flushCurrentTickCommands();
+   }
+   while(k.getState().exploration.expedition.journey)k.step();
+  };
+  for(let moves=0;!surveyCoverage(atlas,k.getState().exploration).has(target.facts.regionId);moves++){
+   if(moves>=36)throw new Error('Historical approach failed');
+   const e=k.getState().exploration,covered=surveyCoverage(atlas,e);
+   const candidates=atlas.sites.filter((x:any)=>covered.has(x.facts.regionId)&&x.facts.regionId!==e.expedition.regionId).map((x:any)=>({site:x,ticks:planRoute(atlas,x.facts.regionId,target.facts.regionId,70,e.expedition.fuel,e).ticks})).sort((a:any,b:any)=>a.ticks-b.ticks);
+   visit(candidates[0].site.facts.id);
+  }
+  visit(siteId);
+  k.enqueueCommand({type:'exploration.action',label:'Legacy refuge transfer',payload:{action:'operate',siteId}});k.flushCurrentTickCommands();
+  while(k.tick<50)k.step();
+  const bytes=createPortableArchiveZip(k.exportRunRecord()),hash20=k.getStateHash();
+  writeFileSync(`${output}/${plugin.id}.omniverse.zip`,bytes);
+  while(k.tick<90)k.step();
+  return {worldId:plugin.id,file:`${plugin.id}.omniverse.zip`,sha256:createHash('sha256').update(bytes).digest('hex'),archiveStateHash:hash20,continuationStateHash:k.getStateHash(),archiveTick:50,continuationTick:90};
+ });
+ writeFileSync(`${output}/manifest.json`,JSON.stringify({sourceCommit:'7e7f9334cefd9c276dba4a16558640377790f229',method:'Historical-source Atlas generation with an actual default-stock visit and legacy role-3 operate command; tick-50 ZIP and tick-90 oracle from that historical implementation.',fixtures},null,2)+'\n');
+},120000);

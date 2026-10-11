@@ -107,16 +107,16 @@ const REGION_NAMES = [
   'Equatorial Swell', 'Doldrum Trench', 'Lagoon Peninsula', 'Tropical Lowland', 'Canopy Basin', 'Southern Cordillera', 'Desert Erg', 'Monsoon Strait',
 ];
 
-function findCellIndex(gx: number, gz: number): number {
+function findCellIndex(gx: number, gz: number, rows = GRID_ROWS): number {
   const cx = clampDet(gx, 0, GRID_COLS - 1);
-  const cz = clampDet(gz, 0, GRID_ROWS - 1);
+  const cz = clampDet(gz, 0, rows - 1);
   return cz * GRID_COLS + cx;
 }
 
 function findCellAtWorldPos(cells: ClimateCell[], x: number, z: number): ClimateCell {
   const gx = clampDet(Math.floor(((x + 48) / 96) * GRID_COLS), 0, GRID_COLS - 1);
-  const gz = clampDet(Math.floor(((z + 36) / 72) * GRID_ROWS), 0, GRID_ROWS - 1);
-  return cells[findCellIndex(gx, gz)] ?? cells[0];
+  const gz = clampDet((cells.length === 48 ? Math.floor(((z + 36) / 72) * GRID_ROWS) : Math.floor((z + 36) / 12)), 0, cells.length / GRID_COLS - 1);
+  return cells[findCellIndex(gx, gz, cells.length / GRID_COLS)] ?? cells[0];
 }
 
 function createStorm(
@@ -875,7 +875,7 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
           for (const [dx, dz] of dirs) {
             const nx = cell.gridX + dx;
             const nz = cell.gridZ + dz;
-            if (nx >= 0 && nx < GRID_COLS && nz >= 0 && nz < GRID_ROWS) {
+            if (nx >= 0 && nx < GRID_COLS && nz >= 0 && nz < state.cells.length / GRID_COLS) {
               neighborTempSum += prevTemps[nz * GRID_COLS + nx];
               neighborCount++;
             }
@@ -931,10 +931,10 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
 
         // Compute horizontal wind vectors from pressure gradient + Coriolis + Jet Stream
         for (const cell of state.cells) {
-          const leftIdx = findCellIndex(cell.gridX - 1, cell.gridZ);
-          const rightIdx = findCellIndex(cell.gridX + 1, cell.gridZ);
-          const upIdx = findCellIndex(cell.gridX, cell.gridZ - 1);
-          const downIdx = findCellIndex(cell.gridX, cell.gridZ + 1);
+          const leftIdx = findCellIndex(cell.gridX - 1, cell.gridZ, state.cells.length / GRID_COLS);
+          const rightIdx = findCellIndex(cell.gridX + 1, cell.gridZ, state.cells.length / GRID_COLS);
+          const upIdx = findCellIndex(cell.gridX, cell.gridZ - 1, state.cells.length / GRID_COLS);
+          const downIdx = findCellIndex(cell.gridX, cell.gridZ + 1, state.cells.length / GRID_COLS);
 
           // Wind blows from high pressure to low pressure
           const dPdx = state.cells[rightIdx].pressureHpa - state.cells[leftIdx].pressureHpa;
@@ -992,9 +992,9 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
           const upwindZ = clampDet(
             Math.round(cell.gridZ - Math.sign(cell.windV)),
             0,
-            GRID_ROWS - 1,
+            state.cells.length / GRID_COLS - 1,
           );
-          const upwindIdx = findCellIndex(upwindX, upwindZ);
+          const upwindIdx = findCellIndex(upwindX, upwindZ, state.cells.length / GRID_COLS);
           const advectRate = clampDet(cell.windSpeedMs * 0.012, 0.02, 0.28);
 
           cell.humidityPct = roundDet(
@@ -1258,7 +1258,7 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
                   ? 'tropical_storm'
                   : 'depression';
 
-          const inBounds = storm.x >= -46 && storm.x <= 46 && storm.z >= -34 && storm.z <= 34;
+          const inBounds = storm.x >= -46 && storm.x <= 46 && storm.z >= -34 && storm.z <= state.cells.length / GRID_COLS * 12 - 38;
           if (inBounds && storm.maxSustainedWindMs >= 15 && storm.ageTicks <= 42) {
             survivingStorms.push(storm);
           }
@@ -1799,10 +1799,10 @@ export const atmospherePlugin = defineWorldPlugin<AtmosphereConfig, AtmosphereSt
 
     // Render wind stream connections between adjacent high-flow cells
     const connections: RenderConnectionVisual[] = [];
-    for (let gz = 0; gz < GRID_ROWS; gz += 2) {
+    for (let gz = 0; gz < state.cells.length / GRID_COLS; gz += 2) {
       for (let gx = 0; gx < GRID_COLS - 1; gx += 2) {
-        const cA = state.cells[findCellIndex(gx, gz)];
-        const cB = state.cells[findCellIndex(gx + 1, gz)];
+        const cA = state.cells[findCellIndex(gx, gz, state.cells.length / GRID_COLS)];
+        const cB = state.cells[findCellIndex(gx + 1, gz, state.cells.length / GRID_COLS)];
         connections.push({
           id: `wind-${cA.id}-${cB.id}`,
           from: [cA.centerX, 1.4, cA.centerZ],

@@ -1,0 +1,711 @@
+{
+  "schemaVersion": 1,
+  "criterion": "Production camp operate and refuge rest commands must have different functional effects; legacy refuge operate is retained for replay, not presented as the current service. This is a necessary check, not sufficient certification of semantic breadth.",
+  "results": [
+    {
+      "world": "ecosystem",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Research camp · North-West Basin",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Nesting refuge · Cedar Floodplain",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "station",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Crew refuge · Command Bridge",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Crew berth · Primary Reactor Core Chamber",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "civilization",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Survey camp · Aethelgard Basin",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Farmstead · Meridian Delta",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "atmosphere",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Weather shelter · Boreal Sea NW",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Cloud sampler · Central Timberland",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "ocean",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "ROV dock · Subpolar Shelf NW",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Coral nursery · Azores Guyot",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "celestial",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Probe anchorage · Solara-A (Host Star)",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Observation platform · Jovian-Hyperion (Gas Giant)",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "megacity",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Emergency shelter · Northgate Heights",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Residential block · Skyline Financial North",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "industrial",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Logistics camp · Iron-Lithium Quarry N",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Crew facilities · Rare-Earth Outcrop S",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "geology",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Geology camp · Cascadia Trench N",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Field refuge · Transform Stepover",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "wild-meridian",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Research camp 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Migration crossing 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "hollow-deep",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Ventilation station 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Fungal grove 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "timeworn-empire",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Excavation camp 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Ancient road 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "terraforming-frontier",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Colony camp 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Greenhouse 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "machine-wilderness",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Repair depot 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Robot settlement 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    },
+    {
+      "world": "signal-expanse",
+      "status": "PASS",
+      "effects": [
+        {
+          "role": 0,
+          "name": "Survey outpost 1",
+          "signature": {
+            "supplies": 1,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 0
+          }
+        },
+        {
+          "role": 3,
+          "name": "Navigation beacon 4",
+          "signature": {
+            "supplies": 0,
+            "fuel": 0,
+            "condition": 0,
+            "hazard": 0,
+            "resources": {
+              "fuel": 0,
+              "records": 0,
+              "reserve": 0,
+              "salvage": 0,
+              "supplies": -1
+            },
+            "cargo": {},
+            "actorEnergy": 1
+          }
+        }
+      ],
+      "historyTemplates": 1,
+      "chains": 3,
+      "sites": 36
+    }
+  ]
+}

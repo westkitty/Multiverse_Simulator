@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import type { SerializedRunRecord } from '../src/core/kernel';
 
-test('production baseline: nine worlds, worker, history, inspection, archive and persisted save', async ({ page }) => {
+test('production baseline: fifteen worlds, worker, history, inspection, archive and persisted save', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('response', response => {
@@ -10,21 +10,21 @@ test('production baseline: nine worlds, worker, history, inspection, archive and
   const workers: import('@playwright/test').Worker[] = [];
   page.on('worker', worker => workers.push(worker));
   await page.goto('./');
-  await expect(page.getByText(/BASELINE · 9 WORLDS/)).toBeVisible();
+  await expect(page.getByText(/DEVELOPMENT · 15 WORLDS/)).toBeVisible();
   expect(errors).toEqual([]);
   await expect.poll(() => workers.length).toBeGreaterThan(0);
   const worker = workers[0];
   expect(worker.url()).toMatch(/\/Multiverse_Simulator\/assets\/simulation\.worker-.*\.js$/);
   // Confirm the production module initialized; exercise its protocol below.
   await expect.poll(() => worker.evaluate(() => typeof self.onmessage)).toBe('function');
-  await expect(page.getByText(/BASELINE · 9 WORLDS/)).toBeVisible();
+  await expect(page.getByText(/DEVELOPMENT · 15 WORLDS/)).toBeVisible();
   if (process.env.EXPECTED_RELEASE_COMMIT) {
-    await expect(page.getByText(/BASELINE · 9 WORLDS/)).toContainText(process.env.EXPECTED_RELEASE_COMMIT.slice(0, 7));
+    await expect(page.getByText(/DEVELOPMENT · 15 WORLDS/)).toContainText(process.env.EXPECTED_RELEASE_COMMIT.slice(0, 7));
   }
   await page.getByRole('tab', { name: /World Library/ }).click();
   await page.goBack();
   await expect(page.getByRole('tab', { name: /Active Observatory/ })).toHaveAttribute('aria-selected', 'true');
-  for (const letter of 'ABCDEFGHI') {
+  for (const letter of 'ABCDEFGHIJKLMNO') {
     await page.getByRole('group', { name: 'Quick World Switcher' }).getByRole('button', { name: new RegExp(`World ${letter}:`) }).click();
     const tick = page.getByText(/TICK:/).first();
     const before = (await tick.innerText()).match(/TICK:\s*(\d+)/)![1];

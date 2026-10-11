@@ -1,0 +1,609 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-11T10:35:51.485Z",
+  "seed": 424242,
+  "branch": "arena/37f107b8-multiverse-simulator",
+  "startingCommit": "b4e57734873df0af4f0bd760a9283557b0e8c977",
+  "environment": {
+    "node": "v22.22.3",
+    "platform": "linux",
+    "method": "Vitest/jsdom, 100 single steps, no warmup excluded; CPU timings, NOT browser FPS or GPU memory"
+  },
+  "total": {
+    "worlds": 15,
+    "pois": 540,
+    "chains": 45,
+    "signatures": 15,
+    "crossWorldAdapters": 13
+  },
+  "status": "LOCAL DEVELOPMENT; final release acceptance incomplete; remote publication BLOCKED",
+  "limitations": [
+    "Functional facility operations share a twelve-role exploration layer; do not equate named archetypes with twelve independent domain simulations.",
+    "Original scenarios/interventions retained, not tripled against intake.",
+    "Historical semantic breadth, long-run balance, full exploration stress acceptance remain incomplete.",
+    "No current deployed build or live HTTPS verification."
+  ],
+  "worlds": [
+    {
+      "id": "ecosystem",
+      "version": "3.0.0",
+      "baselineRegions": 48,
+      "targetRegions": 144,
+      "observed": {
+        "regions": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 21,
+        "metrics": 18,
+        "nativeCollections": {
+          "zones": 144,
+          "organisms": 86,
+          "regions": 144,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 3.0839160000000447,
+        "p95StepMs": 10.04086099999995,
+        "archiveBytesAtTick100": 194726
+      }
+    },
+    {
+      "id": "station",
+      "version": "3.0.0",
+      "baselineRegions": 18,
+      "targetRegions": 54,
+      "observed": {
+        "regions": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 21,
+        "metrics": 18,
+        "nativeCollections": {
+          "rooms": 54,
+          "hatches": 74,
+          "crew": 12,
+          "regions": 54,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.8529880000000958,
+        "p95StepMs": 7.558698000000277,
+        "archiveBytesAtTick100": 77209
+      }
+    },
+    {
+      "id": "civilization",
+      "version": "3.0.0",
+      "baselineRegions": 9,
+      "targetRegions": 27,
+      "observed": {
+        "regions": 27,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 24,
+        "metrics": 18,
+        "nativeCollections": {
+          "settlements": 27,
+          "routes": 50,
+          "frontierSites": 18,
+          "regions": 27,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.5682440000000497,
+        "p95StepMs": 2.1985169999998107,
+        "archiveBytesAtTick100": 83766
+      }
+    },
+    {
+      "id": "atmosphere",
+      "version": "3.0.0",
+      "baselineRegions": 48,
+      "targetRegions": 144,
+      "observed": {
+        "regions": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "cells": 144,
+          "storms": 1,
+          "regions": 144,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.6192179999998189,
+        "p95StepMs": 6.327577000000019,
+        "archiveBytesAtTick100": 148563
+      }
+    },
+    {
+      "id": "ocean",
+      "version": "3.0.0",
+      "baselineRegions": 48,
+      "targetRegions": 144,
+      "observed": {
+        "regions": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "sectors": 144,
+          "shoals": 19,
+          "regions": 144,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 1.2399219999997513,
+        "p95StepMs": 4.809565999999904,
+        "archiveBytesAtTick100": 159684
+      }
+    },
+    {
+      "id": "celestial",
+      "version": "3.0.0",
+      "baselineRegions": 18,
+      "targetRegions": 54,
+      "observed": {
+        "regions": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "systems": 9,
+          "bodies": 54,
+          "regions": 54,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.6553219999996145,
+        "p95StepMs": 4.088340999999673,
+        "archiveBytesAtTick100": 81067
+      }
+    },
+    {
+      "id": "megacity",
+      "version": "3.0.0",
+      "baselineRegions": 18,
+      "targetRegions": 54,
+      "observed": {
+        "regions": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "districts": 54,
+          "corridors": 93,
+          "regions": 54,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.7503630000001067,
+        "p95StepMs": 2.804550000000745,
+        "archiveBytesAtTick100": 95247
+      }
+    },
+    {
+      "id": "industrial",
+      "version": "3.0.0",
+      "baselineRegions": 18,
+      "targetRegions": 54,
+      "observed": {
+        "regions": 54,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "nodes": 54,
+          "routes": 76,
+          "shipments": 0,
+          "regions": 54,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.6043079999999463,
+        "p95StepMs": 2.2749919999996564,
+        "archiveBytesAtTick100": 81815
+      }
+    },
+    {
+      "id": "geology",
+      "version": "3.0.0",
+      "baselineRegions": 48,
+      "targetRegions": 144,
+      "observed": {
+        "regions": 144,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 12,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 9,
+        "quickInterventions": 18,
+        "metrics": 18,
+        "nativeCollections": {
+          "cells": 144,
+          "regions": 144,
+          "atlasActors": 12
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "PASS same-checkout legacy generator; independent historical fixture UNVERIFIED",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.9438209999998435,
+        "p95StepMs": 3.572269999999662,
+        "archiveBytesAtTick100": 133535
+      }
+    },
+    {
+      "id": "wild-meridian",
+      "version": "1.0.0",
+      "baselineRegions": 16,
+      "targetRegions": 48,
+      "observed": {
+        "regions": 48,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 48,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.5301209999997809,
+        "p95StepMs": 2.0424880000000485,
+        "archiveBytesAtTick100": 64298
+      }
+    },
+    {
+      "id": "hollow-deep",
+      "version": "1.0.0",
+      "baselineRegions": 16,
+      "targetRegions": 48,
+      "observed": {
+        "regions": 48,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 48,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.5107820000002903,
+        "p95StepMs": 1.7328919999999925,
+        "archiveBytesAtTick100": 66074
+      }
+    },
+    {
+      "id": "timeworn-empire",
+      "version": "1.0.0",
+      "baselineRegions": 12,
+      "targetRegions": 36,
+      "observed": {
+        "regions": 36,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 36,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.524663000000146,
+        "p95StepMs": 1.2098790000000008,
+        "archiveBytesAtTick100": 58787
+      }
+    },
+    {
+      "id": "terraforming-frontier",
+      "version": "1.0.0",
+      "baselineRegions": 16,
+      "targetRegions": 48,
+      "observed": {
+        "regions": 48,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 48,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.4475329999995665,
+        "p95StepMs": 1.3984110000001237,
+        "archiveBytesAtTick100": 65201
+      }
+    },
+    {
+      "id": "machine-wilderness",
+      "version": "1.0.0",
+      "baselineRegions": 16,
+      "targetRegions": 48,
+      "observed": {
+        "regions": 48,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 48,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.4648509999997259,
+        "p95StepMs": 0.9658229999995456,
+        "archiveBytesAtTick100": 64759
+      }
+    },
+    {
+      "id": "signal-expanse",
+      "version": "1.0.0",
+      "baselineRegions": 12,
+      "targetRegions": 36,
+      "observed": {
+        "regions": 36,
+        "pois": 36,
+        "poiArchetypes": 12,
+        "facilityFunctions": 12,
+        "actors": 36,
+        "actorRoles": 6,
+        "chains": 3,
+        "signatures": 1,
+        "scenarios": 3,
+        "quickInterventions": 3,
+        "metrics": 7,
+        "nativeCollections": {
+          "regions": 36,
+          "actors": 36
+        }
+      },
+      "proof": {
+        "territory": "PASS",
+        "siteInventory": "PASS",
+        "facilityOperations": "PASS unit fixtures; not all narrative archetypes independently playtested",
+        "actorRoleBreadth": "PASS implementation; long-run ecology/economy balance UNVERIFIED",
+        "legacyArchive": "not applicable",
+        "browser": "PASS first-site journey desktop/mobile; full 540-site playthrough UNVERIFIED"
+      },
+      "benchmark": {
+        "ticks": 100,
+        "p50StepMs": 0.4871389999998428,
+        "p95StepMs": 1.2047609999999622,
+        "archiveBytesAtTick100": 58791
+      }
+    }
+  ],
+  "verifiedSourceCommit": "6b19bd4aa43bf6d870246d6d68bdf487c1e2a912",
+  "additionalProof": {
+    "orderedJourneys": "PASS all 540 sites / 45 chains through discovery, travel, repair and evidence, with 1000 fuel/supplies and frozen initial environmental conditions; not default-economy balance",
+    "curiosityLeads": "PASS hidden-fact filtering, branch-local derivation, 48-tick expiry and nonmutation",
+    "browser": "PASS 8 production-build tests on desktop/mobile, including 15-world site operations and WebGL fallback; exact source SHA banner checked"
+  }
+}

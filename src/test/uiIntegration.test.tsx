@@ -173,6 +173,6 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     );
     expect(
       screen.getAllByText(/ALL CONTRACTS PASS/i).length,
-    ).toBe(10);
+    ).toBe(16);
   });
 });
