@@ -258,6 +258,7 @@ export class SimulationKernel<
    */
   flushCurrentTickCommands(
     phase: 'pre_systems' | 'post_systems' = 'post_systems',
+    onRejected: 'throw' | 'continue' = 'throw',
   ): SimulationCommand[] {
     // Consume only successful commands. A failure must not silently discard later
     // due commands or leave a false "command applied" event in the causal journal.
@@ -275,38 +276,38 @@ export class SimulationKernel<
       const journalBefore = this.journal.serialize();
 
       try {
-      const cmdEvent = this.journal.append(this.runId, this._tick, {
-        type: `command:${cmd.type}`,
-        severity: 'info',
-        title: `Command: ${cmd.label}`,
-        description: cmd.provenance
-          ? `Cross-world command via adapter "${cmd.provenance.adapterId}" from run ${cmd.provenance.sourceRunId}.`
-          : `User or scenario intervention command "${cmd.label}" (${cmd.type}) applied at tick ${this._tick}.`,
-        sourceSystem: 'command_bus',
-        causalLinkType: 'direct',
-        causalExplanation: cmd.provenance
-          ? `Translated explicitly from ${cmd.provenance.sourceWorldId} event ${cmd.provenance.sourceEventId}.`
-          : 'Explicit user/scenario command injected into simulation command bus.',
-        payload: {
-          commandId: cmd.id,
-          commandType: cmd.type,
-          ...cmd.payload,
-        },
-      });
+        const cmdEvent = this.journal.append(this.runId, this._tick, {
+          type: `command:${cmd.type}`,
+          severity: 'info',
+          title: `Command: ${cmd.label}`,
+          description: cmd.provenance
+            ? `Cross-world command via adapter "${cmd.provenance.adapterId}" from run ${cmd.provenance.sourceRunId}.`
+            : `User or scenario intervention command "${cmd.label}" (${cmd.type}) applied at tick ${this._tick}.`,
+          sourceSystem: 'command_bus',
+          causalLinkType: 'direct',
+          causalExplanation: cmd.provenance
+            ? `Translated explicitly from ${cmd.provenance.sourceWorldId} event ${cmd.provenance.sourceEventId}.`
+            : 'Explicit user/scenario command injected into simulation command bus.',
+          payload: {
+            commandId: cmd.id,
+            commandType: cmd.type,
+            ...cmd.payload,
+          },
+        });
 
-      const cmdCtx: CommandExecutionContext<TConfig> = {
-        runId: this.runId,
-        tick: this._tick,
-        config: this.currentConfig,
-        rng: this.rng,
-        emitEvent: (eventInput: EmitEventInput) =>
-          this.journal.append(this.runId, this._tick, {
-            ...eventInput,
-            causedByEventId: eventInput.causedByEventId ?? cmdEvent.id,
-            causalLinkType: eventInput.causalLinkType ?? 'direct',
-            correlationId: eventInput.correlationId ?? cmdEvent.correlationId,
-          }),
-      };
+        const cmdCtx: CommandExecutionContext<TConfig> = {
+          runId: this.runId,
+          tick: this._tick,
+          config: this.currentConfig,
+          rng: this.rng,
+          emitEvent: (eventInput: EmitEventInput) =>
+            this.journal.append(this.runId, this._tick, {
+              ...eventInput,
+              causedByEventId: eventInput.causedByEventId ?? cmdEvent.id,
+              causalLinkType: eventInput.causalLinkType ?? 'direct',
+              correlationId: eventInput.correlationId ?? cmdEvent.correlationId,
+            }),
+        };
 
         this.plugin.applyCommand(this.state, cmd, cmdCtx);
         this.pendingCommands = this.pendingCommands.filter((item) => item.id !== cmd.id);
@@ -331,8 +332,12 @@ export class SimulationKernel<
           causalExplanation: 'Command validation or execution failed; authoritative state and RNG were rolled back.',
           payload: { commandId: cmd.id, commandType: cmd.type, reason },
         });
-        if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
-        throw error;
+        if (onRejected === 'throw') {
+          if (completed.length > 0) this.recordMetricsAtCurrentTick(true);
+          throw error;
+        }
+        // Fixed-tick background progress is not allowed to skip a tick because
+        // a scheduled command failed; the event preserves the rejection cause.
       }
     }
 
@@ -353,13 +358,13 @@ export class SimulationKernel<
     const eventsBeforeCount = this.journal.count();
 
     // 1. Flush commands scheduled at current tick before advancing (post_systems of previous tick)
-    this.flushCurrentTickCommands('post_systems');
+    this.flushCurrentTickCommands('post_systems', 'continue');
 
     // 2. Advance simulation clock
     this._tick += 1;
 
     // 3. Flush commands scheduled specifically for the new tick (pre_systems of new tick)
-    this.flushCurrentTickCommands('pre_systems');
+    this.flushCurrentTickCommands('pre_systems', 'continue');
 
     // 4. Execute ordered systems deterministically
     const emittedThisTick: CausalEvent[] = [];

@@ -41,6 +41,21 @@ function suppliesIn(run: ReturnType<typeof createRun>) {
 }
 
 describe('Command execution atomicity', () => {
+  it('keeps fixed ticks advancing and applies valid same-tick commands after a rejected scheduled command', () => {
+    const run = createRun('atomic-scheduled');
+    const supplies = suppliesIn(run);
+    run.enqueueCommand({ tick: 1, type: 'injected_failure', label: 'Scheduled fault', payload: {} });
+    run.enqueueCommand({ tick: 1, type: 'test_valid', label: 'Scheduled valid action', payload: {} });
+    expect(() => run.step()).not.toThrow();
+    expect(run.tick).toBe(1);
+    expect(suppliesIn(run)).toBe(supplies - 1);
+    expect(run.getPendingCommands()).toHaveLength(0);
+    expect(run.getExecutedCommands().map(c => c.type)).toEqual(['test_valid']);
+    expect(run.getEvents().some(e => e.type === 'command_rejected' && e.tick === 1)).toBe(true);
+    expect(run.getEvents().some(e => e.type === 'fake_partial_success')).toBe(false);
+    expect(run.replayFromStart(run.tick).matchesAuthoritativeHash).toBe(true);
+  });
+
   it('rolls back state, RNG and emitted events after a failed plugin command; preserves later queued commands', () => {
     const run = createRun('atomic-reject-first');
     const before = run.getStateHash();
