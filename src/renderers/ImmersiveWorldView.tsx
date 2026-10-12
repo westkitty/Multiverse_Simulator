@@ -7,7 +7,6 @@ interface Props {
   atlas: ExplorationAtlas;
   exploration: ExplorationState;
   runId: string;
-  selectedSiteId: string;
   onSelectSite: (id: string) => void;
   onReturnToAtlas: () => void;
   reducedMotion?: boolean;
@@ -68,7 +67,7 @@ function landmarkShape(
 }
 
 export const ImmersiveWorldView: React.FC<Props> = ({
-  atlas, exploration, runId, selectedSiteId, onSelectSite, onReturnToAtlas, reducedMotion,
+  atlas, exploration, runId, onSelectSite, onReturnToAtlas, reducedMotion,
 }) => {
   const layout = useMemo(() => makeImmersiveLayout(atlas, exploration), [atlas, exploration]);
   const sceneHost = useRef<HTMLDivElement>(null);
@@ -80,8 +79,6 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
-  const layoutRef = useRef(layout);
-  layoutRef.current = layout;
 
   useEffect(() => {
     player.current = { x: layout.spawn.x, y: 2.2, z: layout.spawn.z };
@@ -124,7 +121,6 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const mainMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(profile.horizon).lerp(new THREE.Color(profile.ground), .6), roughness: .82, metalness: .12 });
     const accentMaterial = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: .48, emissive: profile.accent, emissiveIntensity: .24 });
     const unknownMaterial = new THREE.MeshStandardMaterial({ color: 0x7c8795, roughness: .78, metalness: .22 });
-    const selectedMaterial = new THREE.MeshStandardMaterial({ color: 0xfde68a, emissive: 0xeb9f20, emissiveIntensity: .42 });
     const objects = new THREE.Group();
     scene.add(objects);
     const collision: Array<{ x: number; z: number; radius: number }> = [];
@@ -269,7 +265,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           mesh.geometry.dispose();
         }
       });
-      [mainMaterial, accentMaterial, unknownMaterial, selectedMaterial, decorMat, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, decorMat, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
