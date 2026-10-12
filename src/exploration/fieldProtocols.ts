@@ -1,4 +1,4 @@
-import { DISCOVERY_ORDER, ExplorationAtlas, ExplorationState } from './contracts';
+import { ExplorationAtlas, ExplorationState } from './contracts';
 import { presentSite } from './engine';
 
 /**
