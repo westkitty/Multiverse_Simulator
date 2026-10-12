@@ -84,3 +84,19 @@ Additive cross-session ledger. Current operative state lives in OPERATIONAL_STAT
 
 **Remaining gates.** Strict CI typecheck/lint/test/acceptance/build/dist/browser pass at actual head, diff audit and safe integration if authorized, Pages admin activation, public live browser proof, semantic/historical breadth, late-life economy and physical hardware performance. Current owner of success claims: exact GitHub Actions and PR/branch API state, not these written intentions.
 
+## 2026-10-11 — OMNI III deterministic fork replay, proof-state UX
+
+### Baseline, purpose and authority
+- Current main at preflight: `2f7bd919e44bf46451d02ade267b6447ba4bc6ca`. Main workflow run 38189010957 was green through validation, failed only at Pages activation `configure-pages`; this does not prove a public site. Work isolated on `uplift/omniverse-branch-replay-provenance-20261011`; PR https://github.com/westkitty/Multiverse_Simulator/pull/5.
+- Accepted change groups: (1) fork checkpoint + RNG + causal-journal replay and inherited-parent command exclusion; (2) exact authoritative-hash proof and fail-closed historical/fork integrity; (3) History-screen honesty and dedicated regression tests. No dependencies, schema-version increment, default world-state changes, generated-content inflation or physical performance claims.
+
+### Implementation and evidence
+- `src/core/contracts.ts`: optional `CheckpointSnapshot.replayJournal`, emitted only for newly created branch origins. Root checkpoints retain previous serialization. `src/core/kernel.ts` pins the first branch-origin checkpoint, records journal baseline and includes it in budget telemetry. Replays start at fork tick and deterministically execute only child commands, restoring root or branch provenance without altering actual worlds.
+- Legacy child archives that have an intact original `reality_branched` event can reconstruct their causal boundary; archives missing the event fail closed. A historical tick with no stored independent checkpoint never returns a falsely successful hash. Corrupted snapshots and wrong sequence boundaries are rejected.
+- `src/store/multiverseStore.ts` and `src/ui/views/TimelineView.tsx`: visible status differentiates a validated replay, a real mismatch and an unavailable proof. Receipts are scoped to current run/tick/hash.
+- Tests: new `src/test/branchReplay.test.ts`, `src/test/branchReplayUi.test.tsx`, strengthened `src/test/siteChronicle.test.ts`. The first run reported a strict return variable typo, repaired in `3e8e1dd6`. Acceptance, browser and perf gates on the final documentation SHA must be read from actual Actions jobs; no result is claimed here.
+
+### Cautions, rollback and next actions
+- Preserve original nine legacy world behavior, all 15 new world IDs, root export shape and historical oracle values. Never overwrite golden archives merely to get green tests. For forks with an evicted legacy branch event, surface unverifiability, not a forged replay.
+- Existing `restoreCheckpoint` may retain later event journal entries; choose a bounded separately reviewed repair if confirmed in real UI journeys. Remaining requirements: substantial unique stories/mechanics, late-life economy controls, real-device performance, omitted binary originals, and Pages administration/public smoke.
+- Review complete patch and GitHub Actions run at exact head, then merge only on green validation under the established release gate. Record actual merge SHA and update the operational-state entry on the next pass.
