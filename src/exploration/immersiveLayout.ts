@@ -134,7 +134,7 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
     profile,
     sourceTransform: { centerX, centerZ, scale },
     regionAnchors,
-    extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
+    extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22), ...Object.values(regionAnchors).map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
   };
 }
 
