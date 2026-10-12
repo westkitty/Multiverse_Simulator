@@ -16,6 +16,7 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.worldSites ?? 0))).toBe(36);
   const coordinates = explorer.getByText(/^X -?\d+ \/ Z -?\d+$/);
   const initial = await coordinates.innerText();
+  await canvas.focus();
   await page.keyboard.down('w');
   await page.waitForTimeout(500);
   await page.keyboard.up('w');
