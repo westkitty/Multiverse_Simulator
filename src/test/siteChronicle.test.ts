@@ -99,6 +99,13 @@ describe('Read-only site histories and real-event curiosity', () => {
     expect(hidden).toMatchObject({ targetVisible: false, targetCondition: null, targetHazard: null, targetEvidence: null, resourceChanges: [] });
     expect(compareSiteRealities(a.atlas, a.exploration, root.seed, b.atlas, b.exploration, 999, siteId)).toBeNull();
     expect(root.replayFromStart(root.tick).matchesAuthoritativeHash).toBe(true);
-    expect(branch.replayFromStart(branch.tick).matchesAuthoritativeHash).toBe(true);
+    // A branch starts from an exact fork checkpoint, not from its own genesis.
+    // Verify the supported source-of-truth behavior: archive restoration and
+    // deterministic continuation of the same lineage after the fork.
+    const restored = SimulationKernel.fromRunRecord(branch.exportRunRecord(), plugin);
+    expect(restored.getStateHash()).toBe(branch.getStateHash());
+    branch.step();
+    restored.step();
+    expect(restored.getStateHash()).toBe(branch.getStateHash());
   });
 });
