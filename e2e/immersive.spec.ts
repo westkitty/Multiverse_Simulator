@@ -12,6 +12,8 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   const canvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
   await expect(canvas).toBeVisible();
   await expect.poll(() => canvas.evaluate(el => (el as HTMLCanvasElement).width)).toBeGreaterThan(10);
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(0);
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.worldSites ?? 0))).toBe(36);
   const coordinates = explorer.getByText(/^X -?\d+ \/ Z -?\d+$/);
   const initial = await coordinates.innerText();
   await page.keyboard.down('w');
@@ -51,7 +53,9 @@ test('all fifteen universes open real Three.js canvases without leaving explorat
     await switcher.getByRole('button', { name: new RegExp('World ' + letter + ':') }).click();
     await expect(page.getByRole('tab', { name: 'Explore in 3D' })).toHaveAttribute('aria-selected', 'true');
     await expect(explorer).toBeVisible();
-    await expect(explorer.getByLabel('Three.js playable universe').locator('canvas')).toHaveCount(1);
+    const activeCanvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
+    await expect(activeCanvas).toHaveCount(1);
+    await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(0);
     await expect(explorer.getByRole('button', { name: 'Forward' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Return to Atlas' })).toBeVisible();
   }
