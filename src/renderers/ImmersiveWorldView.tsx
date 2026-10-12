@@ -90,6 +90,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   liveActors.current = actors;
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
+  const [contextGeneration, setContextGeneration] = useState(0);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
 
   useEffect(() => {
@@ -161,6 +162,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const actorBody = new THREE.Object3D();
     const actorTarget = new THREE.Vector3();
     const actorMemory = new Map<string, THREE.Vector3>();
+    const regionAnchors = new Map(layout.points.map(point => [point.regionId, point] as const));
+    const actorFingerprints = new Map<string, number>();
     const activeTint = new THREE.Color(profile.accent);
     const tiredTint = new THREE.Color(0xed956e);
     let nearbyId = '';
@@ -213,7 +216,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
-    let lastTime = performance.now(), stamp = 0, frameId = 0;
+    let lastTime = performance.now(), stamp = 0, lastActorUpdate = 0, frameId = 0;
     const animate = (time: number) => {
       frameId = requestAnimationFrame(animate);
       const dt = Math.min(.045, Math.max(0, (time - lastTime) / 1000));
@@ -240,14 +243,18 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       camera.rotation.x = orientation.pitch;
       // Field units are sourced from real kernel actor state. Interpolation is
       // presentation-only; it never feeds positions or time into the simulation.
+      if (time - lastActorUpdate >= 90) {
+      lastActorUpdate = time;
       let actorCount = 0;
       const worldTransform = liveLayout.current.sourceTransform;
-      for (const actor of liveActors.current.slice(0, 180)) {
-        const neighbor = liveLayout.current.points.find(place => place.regionId === actor.regionId);
+      for (const actor of liveActors.current) {
+        if (actorCount >= 180) break;
+        const neighbor = regionAnchors.get(actor.regionId);
         if (!actor.nativePosition && !neighbor) continue;
         const baseX = actor.nativePosition ? (actor.nativePosition[0] - worldTransform.centerX) * worldTransform.scale : neighbor!.x;
         const baseZ = actor.nativePosition ? (actor.nativePosition[1] - worldTransform.centerZ) * worldTransform.scale : neighbor!.z;
-        const fingerprint = sceneHash(actor.id);
+        let fingerprint = actorFingerprints.get(actor.id);
+        if (fingerprint === undefined) { fingerprint = sceneHash(actor.id); actorFingerprints.set(actor.id, fingerprint); }
         const bearing = (fingerprint % 628) / 100;
         const distance = 2.8 + (fingerprint >>> 10) % 31 / 10;
         actorTarget.set(baseX + Math.cos(bearing) * distance, profile.movement === 'fly' ? 6 + fingerprint % 9 : 1.2, baseZ + Math.sin(bearing) * distance);
@@ -265,6 +272,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       actorMeshes.count = actorCount;
       actorMeshes.instanceMatrix.needsUpdate = true;
       if (actorMeshes.instanceColor) actorMeshes.instanceColor.needsUpdate = true;
+      }
       if (time - stamp > 200) {
         stamp = time;
         const nearby = targets
@@ -281,7 +289,9 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     };
     frameId = requestAnimationFrame(animate);
     const onLost = (event: Event) => { event.preventDefault(); setWebglFailed(true); cancelAnimationFrame(frameId); };
+    const onRestored = () => { setWebglFailed(false); setContextGeneration(generation => generation + 1); };
     pointer.addEventListener('webglcontextlost', onLost);
+    pointer.addEventListener('webglcontextrestored', onRestored);
     return () => {
       cancelAnimationFrame(frameId);
       observer.disconnect();
@@ -293,18 +303,20 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       pointer.removeEventListener('pointerup', pointerUp);
       pointer.removeEventListener('pointercancel', pointerUp);
       pointer.removeEventListener('webglcontextlost', onLost);
+      pointer.removeEventListener('webglcontextrestored', onRestored);
       actions.current.clear();
       scene.traverse(node => {
         const mesh = node as THREE.Mesh;
         if (mesh.isMesh) {
           mesh.geometry.dispose();
         }
+        if (node instanceof THREE.InstancedMesh) node.dispose();
       });
       [mainMaterial, accentMaterial, unknownMaterial, actorMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
-  }, [atlas.worldId, runId, layout.profile.architecture, reducedMotion]);
+  }, [atlas.worldId, runId, layout.profile.architecture, reducedMotion, contextGeneration]);
 
   const inspected = layout.points.find(point => point.id === inspectedSiteId);
   const observed = inspected ? presentSite(atlas, exploration, inspected.id) : null;
