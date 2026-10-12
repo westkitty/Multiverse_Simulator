@@ -329,8 +329,8 @@ export const App: React.FC = () => {
           boxSizing: 'border-box',
         }}
       >
-        {activeTab === 'explore' && <AtlasView key={activeRunId} initialImmersive />}
-        {activeTab === 'atlas' && <AtlasView key={activeRunId} />}
+        {activeTab === 'explore' && <AtlasView key={`explore:${activeRunId}`} initialImmersive />}
+        {activeTab === 'atlas' && <AtlasView key={`atlas:${activeRunId}`} />}
         {activeTab === 'library' && <WorldLibraryView />}
         {activeTab === 'observatory' && <ObservatoryView />}
         {activeTab === 'timeline' && <TimelineView />}
