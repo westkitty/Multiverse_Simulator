@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# Superseded pull-request revisions must not consume full archive/browser gates.
+# Production main deployments remain non-cancelable.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   validate:
     runs-on: ubuntu-latest

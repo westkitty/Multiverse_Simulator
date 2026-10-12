@@ -1,3 +1,5 @@
+> **2026-10-12 status override:** This document preserves historical failure receipts below. Repository `main` is now `c070beb6`; production deployment and separate public-site smoke succeeded in [run 38192688920](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38192688920), including 16 desktop/mobile emulation tests. PR #6's immersive Three.js implementation is *not* in that baseline and remains unmerged/unverified until its exact-head gates complete. Do not read the 2026-10-11 Pages-blocked paragraphs as current deployment state.
+
 # OMNIVERSE II — Phase 0 evidence
 
 ## Status (2026-10-11)

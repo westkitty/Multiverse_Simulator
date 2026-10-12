@@ -9,21 +9,24 @@ import { useMultiverseStore } from '../../store/multiverseStore';
 import { isFrontierState } from '../../worlds/frontiers/frontierPlugin';
 import { applyExplorationCommand, ExplorationCommand, presentSite, surveyCoverage } from '../../exploration/engine';
 import { ThreeWorldViewport } from '../../renderers/ThreeWorldViewport';
+import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
+import { projectImmersiveActors } from '../../exploration/immersiveLayout';
 import './atlas.css';
 
 const facilities = ['Supply camp: transfer stocks','Sensor: survey adjacent regions','Salvage ruin: recover two units','Refuge: restore local team energy using local supplies','Extraction: convert finite reserve to salvage','Crossing: reopen a blocked route','Workshop: repair using local salvage','Processor: use fuel for local engineering','Archive: recover historical records','Relay: detect contacts two links away','Containment: reduce local hazard','Generator: convert two supplies to one fuel'];
 const format = (value: number) => Number.isFinite(value) ? value.toLocaleString('en-US', { maximumFractionDigits: 3 }) : 'Unavailable';
 
 // A run is an inspection context: do not carry messages, filters or selection into another reality.
-export const AtlasView: React.FC = () => {
+export const AtlasView: React.FC<{ initialImmersive?: boolean }> = ({ initialImmersive = false }) => {
   const runId = useMultiverseStore(s => s.activeRunId);
-  return <AtlasSession key={runId} />;
+  return <AtlasSession key={`${runId}:${initialImmersive ? '3d' : 'atlas'}`} initialImmersive={initialImmersive} />;
 };
 
-const AtlasSession: React.FC = () => {
+const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersive }) => {
   const store = useMultiverseStore();
   const kernel = store.runs[store.activeRunId];
   const [selected, setSelected] = useState('');
+  const [immersive, setImmersive] = useState(initialImmersive);
   const [message, setMessage] = useState('');
   const [failed, setFailed] = useState(false);
   const [filterRegion, setFilterRegion] = useState('all');
@@ -34,7 +37,7 @@ const AtlasSession: React.FC = () => {
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
   const { atlas, exploration } = state;
-  const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
+  const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => s.facts.id === store.selectedEntityId) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
   const siteId = chosen.facts.id, delta = exploration.sites[siteId];
   const dossier = siteDossier(atlas, exploration, siteId), view = dossier.view;
   const next = suggestedAction(atlas, exploration, siteId);
@@ -69,20 +72,25 @@ const AtlasSession: React.FC = () => {
     try { refugePreview = planRefugeRest(state, siteId); }
     catch (error) { refugeReason = error instanceof Error ? error.message : String(error); }
   }
-  const selectSite = (id: string) => { setSelected(id); setMessage(''); setFailed(false); };
-  const action = (kind: ExplorationCommand['action'], resourceId?: string) => {
+  const selectSite = (id: string) => { setSelected(id); store.selectEntity(id); setMessage(''); setFailed(false); };
+  const action = (kind: ExplorationCommand['action'], resourceId?: string, targetSiteId = siteId): string => {
     try {
-      if (kind === 'operate' && isRefuge) {
-        const plan = planRefugeRest(state, siteId);
-        store.dispatchCommand('expedition.rest', 'Service local teams at refuge', {siteId});
-        setFailed(false); setMessage(`Restored ${format(plan.restored)} total team energy using ${format(plan.cost)} local supplies. Recorded in History & branches.`);
-        return;
+      const target = atlas.sites.find(s => s.facts.id === targetSiteId);
+      if (!target) throw new Error('Unknown site');
+      if (kind === 'operate' && Number(target.facts.extensions.structureRole) === 3) {
+        const plan = planRefugeRest(state, targetSiteId);
+        store.dispatchCommand('expedition.rest', 'Service local teams at refuge', {siteId:targetSiteId});
+        const confirmation = `Restored ${format(plan.restored)} total team energy using ${format(plan.cost)} local supplies. Recorded in History & branches.`;
+        setFailed(false); setMessage(confirmation);
+        return confirmation;
       }
-      const payload: ExplorationCommand = { action: kind, siteId, ...(resourceId ? { resourceId } : {}) };
+      const payload: ExplorationCommand = { action: kind, siteId: targetSiteId, ...(resourceId ? { resourceId } : {}) };
       applyExplorationCommand(atlas, exploration, payload, { tick: kernel.tick, branchId: kernel.runId });
       store.dispatchCommand('exploration.action', `Expedition: ${kind}`, payload);
-      setFailed(false); setMessage(`${kind} accepted at tick ${kernel.tick}.`);
-    } catch (error) { setFailed(true); setMessage(error instanceof Error ? error.message : String(error)); }
+      const confirmation = `${kind} accepted at tick ${kernel.tick}.`;
+      setFailed(false); setMessage(confirmation);
+      return confirmation;
+    } catch (error) { const reason = error instanceof Error ? error.message : String(error); setFailed(true); setMessage(reason); return reason; }
   };
   const resupply = () => {
     try {
@@ -105,6 +113,16 @@ const AtlasSession: React.FC = () => {
     if (kind === 'resolve') return rank !== 5;
     return false;
   };
+  // Entering a world is the primary game screen, not a 3D widget squeezed into the lab.
+  // The original scientific Atlas and all its verification controls remain available.
+  if (immersive) return <section aria-label="Three.js universe expedition" className="immersive-game-page">
+    <div className="immersive-game-heading">
+      <div><span className="atlas-kicker">LIVE FIELD RECONNAISSANCE / TICK {kernel.tick}</span><h1>{kernel.plugin.name}</h1><p>{state.regions.length} simulated regions · {atlas.sites.length} persistent sites · {Object.values(exploration.sites).filter(s => s.firstVisitedTick !== null).length} visited</p></div>
+      <div className="immersive-game-actions"><button type="button" onClick={() => store.toggleRunning()}>{store.isRunning ? 'Pause world' : 'Run world'}</button><button type="button" onClick={() => store.stepActiveRun(1)}>Step one tick</button><button type="button" onClick={() => { setImmersive(false); store.setActiveTab('atlas'); }}>Open Atlas & field records</button></div>
+    </div>
+    <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
+    <p className="immersive-game-disclaimer">Local movement is visual reconnaissance. Expedition routing, resources, discovery, and historical evidence remain governed by the underlying simulation.</p>
+  </section>;
   return <section className="atlas-workbench" aria-label="Living World Atlas" style={{ '--atlas-accent': kernel.plugin.accentColor } as React.CSSProperties}>
     <header className="atlas-panel atlas-heading">
       <div><p className="atlas-kicker">OMNIVERSE II / FIELD OBSERVATORY</p><h1>{kernel.plugin.name}</h1><p className="atlas-muted">A record of what is known. Not a promise of what is safe.</p></div>
@@ -120,9 +138,13 @@ const AtlasSession: React.FC = () => {
     </header>
     <div className="atlas-columns">
       <div className="atlas-panel atlas-map">
+        <div className="atlas-explore-mode" role="group" aria-label="Exploration view mode">
+          <button type="button" aria-pressed={!immersive} onClick={() => setImmersive(false)}>Atlas overview</button>
+          <button type="button" aria-pressed={immersive} onClick={() => setImmersive(true)}>Enter 3D world</button>
+        </div>
         <div className="atlas-section-heading"><div><p className="atlas-kicker">01 / SURVEY VOLUME</p><h2>Region explorer</h2></div><span className="atlas-badge">{store.preferences.simplified3D ? 'SCHEMATIC' : 'LIVE MODEL'}</span></div>
         <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />
-        <p className="atlas-muted">Four open links of instrument coverage. A signal is not yet a place; a place is not yet an explanation.</p>
+        <p className="atlas-muted">3D reconnaissance is a visual space for free movement and examining landmarks. Travel, surveying, and repairs still use authoritative simulation actions. A signal is not yet a place.</p>
         <label className="atlas-filter">Region filter <select value={filterRegion} onChange={e => setFilterRegion(e.target.value)}><option value="all">All surveyed contacts</option>{state.regions.map(r => <option key={r.id} value={r.id}>{r.id} · {r.biome}</option>)}</select></label>
         <div className="atlas-contacts" aria-label="Survey contacts">
           {atlas.sites.filter(s => (known.includes(s) || covered.has(s.facts.regionId)) && (filterRegion === 'all' || filterRegion === s.facts.regionId)).map(s => {

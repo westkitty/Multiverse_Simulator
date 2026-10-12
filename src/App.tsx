@@ -15,6 +15,7 @@ import { WorldLibraryView } from './ui/views/WorldLibraryView';
 import { CORE_WORLD_PLUGINS } from './worlds';
 
 const NAV_TABS: Array<{ id: MultiverseTab; label: string }> = [
+  { id: 'explore', label: 'Explore in 3D' },
   { id: 'atlas', label: 'Living World Atlas' },
   { id: 'library', label: `World Library (${CORE_WORLD_PLUGINS.length})` },
   { id: 'observatory', label: 'Active Observatory' },
@@ -100,11 +101,11 @@ export const App: React.FC = () => {
     const existing = Object.values(runs).find((r) => r.worldId === worldId);
     if (existing) {
       selectRun(existing.runId);
-      setActiveTab('observatory');
+      setActiveTab(activeTab === 'explore' ? 'explore' : 'observatory');
     } else {
       const runId = createNewRun({
         worldId,
-        switchToObservatory: true,
+        switchToObservatory: activeTab !== 'explore',
       });
       const created = useMultiverseStore.getState().runs[runId];
       if (created && created.tick === 0) {
@@ -266,6 +267,10 @@ export const App: React.FC = () => {
         </nav>
       </header>
 
+      <div style={{ padding: '8px 18px', borderBottom: '1px solid #1e293b', background: '#0b1119', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <button type="button" onClick={() => setActiveTab('explore')} style={{ background: '#8be1d9', color: '#081219', border: 'none', borderRadius: 5, padding: '10px 15px', cursor: 'pointer', fontWeight: 750 }}>Enter this universe in 3D →</button>
+        <span style={{ fontSize: 12, color: '#a9bac7' }}>WASD / arrows to move · drag to look · explore all fifteen simulated worlds</span>
+      </div>
       {/* Alert Notification Strip */}
       {systemAlerts.length > 0 && (
         <div
@@ -324,7 +329,8 @@ export const App: React.FC = () => {
           boxSizing: 'border-box',
         }}
       >
-        {activeTab === 'atlas' && <AtlasView key={activeRunId} />}
+        {activeTab === 'explore' && <AtlasView key={`explore:${activeRunId}`} initialImmersive />}
+        {activeTab === 'atlas' && <AtlasView key={`atlas:${activeRunId}`} />}
         {activeTab === 'library' && <WorldLibraryView />}
         {activeTab === 'observatory' && <ObservatoryView />}
         {activeTab === 'timeline' && <TimelineView />}

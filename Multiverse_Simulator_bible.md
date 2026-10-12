@@ -100,3 +100,18 @@ Additive cross-session ledger. Current operative state lives in OPERATIONAL_STAT
 - Preserve original nine legacy world behavior, all 15 new world IDs, root export shape and historical oracle values. Never overwrite golden archives merely to get green tests. For forks with an evicted legacy branch event, surface unverifiability, not a forged replay.
 - Existing `restoreCheckpoint` may retain later event journal entries; choose a bounded separately reviewed repair if confirmed in real UI journeys. Remaining requirements: substantial unique stories/mechanics, late-life economy controls, real-device performance, omitted binary originals, and Pages administration/public smoke.
 - Review complete patch and GitHub Actions run at exact head, then merge only on green validation under the established release gate. Record actual merge SHA and update the operational-state entry on the next pass.
+
+
+## 2026-10-12 — Immersive multiverse exploration direction and candidate implementation
+
+### User intent and product identity
+The project is not merely an abstract fifteen-world data laboratory. The explicitly corrected core journey is to **enter every multiverse in Three.js and explore actual navigable spaces with discoverable, actionable locations**. The original analytical lab remains a protected support experience. Treat visual-only flyover or repeated procedural primitives as an initial slice, not final game certification.
+
+### Source/authority decisions
+- Actual simulation state belongs to the original `SimulationKernel`, world plugins and exploration command validators. 3D positions, decorations, camera motion and actor tweening are presentation only; no renderer RNG may alter simulation replay or archives.
+- Scenes derive location positions, route topology, blockages, condition, discovery and actor populations from existing Atlas/native region data. Unknown identity and historical details remain sealed; there is no invented NPC population, economy, event or false historical proof.
+- In-world **Detect**, **Survey**, **Discover**, **Travel**, **Investigate**, **Repair**, **Operate** and tick advancement must reach the existing authoritative command path, not fake UI counters. Other complex operations remain in the full Atlas dossier until supported.
+- Keep controls keyboard, pointer and touch-capable; protect DOM accessibility and WebGL failure recovery. Make 3D entry a discoverable first-class route without removing old observatory functions.
+
+### Evidence and limits
+PR #6: https://github.com/westkitty/Multiverse_Simulator/pull/6. Main baseline `c070beb6` is publicly deployed with 16/16 Chromium desktop/mobile public-smoke cases (run 38192688920), but the gameplay candidate is **not** included in that deployed SHA. Check live PR-head CI for actual execution outcomes, then independently inspect the rendered experience before merge. Physical-device performance, semantic 3× expansion and authored world distinctiveness are not certified.
