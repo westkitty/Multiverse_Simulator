@@ -76,3 +76,8 @@ Environment for every number in this section: Chromium 153 (`@sparticuz/chromium
 - Long-session resources: hidden tabs skip rendering entirely; scene teardown disposes geometries (traverse), all materials (scene-owned lists), InstancedMesh buffers, and the sky `DataTexture`. Repeat entry/world switching covered by the 20/20 browser suite.
 
 What remains unmeasured: physical-device FPS/memory, GPU timing, sustained thermal behavior, and constrained-phone budgets. Treat the provisional 60 FPS desktop / 30 FPS mobile targets as **unverified**.
+
+
+## Semantic field-protocol overlay (2026-10-12; candidate, unverified)
+
+The authored field notebook is read-only over existing exploration sites, observations and cargo/condition/mitigation. It adds no GPU geometry, timers, core state, persistent schema or random streams. There are **no new frame-time measurements** and no legitimate FPS-gain claim. Compare matched SwiftShader or real-device scenarios before making performance claims; hardware targets remain unverified.

@@ -11,6 +11,7 @@ import { applyExplorationCommand, ExplorationCommand, presentSite, surveyCoverag
 import { ThreeWorldViewport } from '../../renderers/ThreeWorldViewport';
 import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
 import { projectImmersiveActors } from '../../exploration/immersiveLayout';
+import { fieldProtocolStatus } from '../../exploration/fieldProtocols';
 import './atlas.css';
 
 const facilities = ['Supply camp: transfer stocks','Sensor: survey adjacent regions','Salvage ruin: recover two units','Refuge: restore local team energy using local supplies','Extraction: convert finite reserve to salvage','Crossing: reopen a blocked route','Workshop: repair using local salvage','Processor: use fuel for local engineering','Archive: recover historical records','Relay: detect contacts two links away','Containment: reduce local hazard','Generator: convert two supplies to one fuel'];
@@ -37,6 +38,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
   const { atlas, exploration } = state;
+  const protocol = fieldProtocolStatus(atlas, exploration);
   const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => s.facts.id === store.selectedEntityId) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
   const siteId = chosen.facts.id, delta = exploration.sites[siteId];
   const dossier = siteDossier(atlas, exploration, siteId), view = dossier.view;
@@ -120,6 +122,18 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
       <div><span className="atlas-kicker">LIVE FIELD RECONNAISSANCE / TICK {kernel.tick}</span><h1>{kernel.plugin.name}</h1><p>{state.regions.length} simulated regions · {atlas.sites.length} persistent sites · {Object.values(exploration.sites).filter(s => s.firstVisitedTick !== null).length} visited</p></div>
       <div className="immersive-game-actions"><button type="button" onClick={() => store.toggleRunning()}>{store.isRunning ? 'Pause world' : 'Run world'}</button><button type="button" onClick={() => store.stepActiveRun(1)}>Step one tick</button><button type="button" onClick={() => { setImmersive(false); store.setActiveTab('atlas'); }}>Open Atlas & field records</button></div>
     </div>
+    {protocol && <section aria-label="World field protocol" className="atlas-panel" style={{ marginBottom: 12, padding: '12px 16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+        <h2 style={{ margin: 0, fontSize: 17 }}>{protocol.title}</h2>
+        <span aria-live="polite">{protocol.evidenceCount}/3 recorded samples · {protocol.proofMet ? 'field proof met' : 'field proof pending'} · {protocol.complete ? 'complete' : 'in progress'}</span>
+      </div>
+      <p style={{ margin: '7px 0' }}>{protocol.question}</p>
+      <details><summary>Field notebook: observations and next step</summary>
+        <ol>{protocol.stages.map(step => <li key={step.siteId}>{step.beat} — {step.collected ? `T${step.sample?.tick}: ${step.sample?.value} ${step.sample?.unit} (observed)` : step.label + ' / not recorded'}</li>)}</ol>
+        <p>{protocol.proofInstruction}</p>
+      </details>
+      <p aria-live="polite" style={{ margin: '7px 0 0' }}>{protocol.nextInstruction}</p>
+    </section>}
     <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
     <p className="immersive-game-disclaimer">Local movement is visual reconnaissance. Expedition routing, resources, discovery, and historical evidence remain governed by the underlying simulation.</p>
   </section>;
