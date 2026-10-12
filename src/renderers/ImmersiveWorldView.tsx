@@ -173,9 +173,14 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const tiredTint = new THREE.Color(0xed956e);
     let nearbyId = '';
     const pointer = renderer.domElement;
+    pointer.tabIndex = 0;
+    pointer.setAttribute('aria-label', 'Focus to control the three-dimensional environment');
     pointer.style.touchAction = 'none';
+    pointer.focus({ preventScroll: true });
 
     const down = (event: KeyboardEvent) => {
+      const explorer = host.closest('[aria-label="Immersive 3D world explorer"]');
+      if (!explorer?.contains(document.activeElement)) return;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName)) return;
       const keyMap: Record<string, Movement> = { w:'forward', ArrowUp:'forward', s:'back', ArrowDown:'back', a:'left', ArrowLeft:'left', d:'right', ArrowRight:'right', ' ':'up', Shift:'down' };
       const value = keyMap[event.key];
@@ -192,6 +197,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     };
     const pointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
+      pointer.focus({ preventScroll: true });
       lookPointer.current = { id: e.pointerId, x: e.clientX, y: e.clientY };
       pointer.setPointerCapture(e.pointerId);
     };
