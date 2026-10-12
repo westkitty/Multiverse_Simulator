@@ -52,7 +52,7 @@ const AtlasSession: React.FC = () => {
   const relatedRuns = Object.values(store.runs).filter(other =>
     other.runId !== kernel.runId && other.plugin.id === kernel.plugin.id &&
     other.seed === kernel.seed && isFrontierState(other.getState()) &&
-    other.getState().atlas.sites.some(site =>
+    other.getState().atlas.sites.some((site: (typeof atlas.sites)[number]) =>
       site.facts.id === siteId && site.facts.seed === chosen.facts.seed &&
       site.facts.archetypeId === chosen.facts.archetypeId &&
       JSON.stringify(site.facts.coordinates) === JSON.stringify(chosen.facts.coordinates))
