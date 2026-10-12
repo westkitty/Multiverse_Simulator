@@ -66,3 +66,21 @@ Additive cross-session ledger. Current operative state lives in OPERATIONAL_STAT
 1. Finish/verify current PR CI and review exact diff before main merge; preserve branch if unresolved failures.
 2. Enable Pages (GitHub repository settings, Source GitHub Actions) and obtain deploy + public smoke receipts. If denied, leave as blocker.
 3. Build/test richer historical semantics, unique 3× domain consequences, durable resource health and real device performance before claiming final brief fulfillment.
+
+## 2026-10-11 — OMNI site-memory uplift (PR #4)
+
+**Goal and baseline.** The user invoked `Omni` during continuing work on the established fifteen-world project. Current main `e393a3511d0728792c887ac9d12e0133fcbfb5f5` was verified from GitHub; repository Pages was still disabled and its production workflow had passed validation before failing the Pages configuration step. Existing `OPERATIONAL_STATE.md` and the global release-gate matrix were read before changes.
+
+**Frozen three-group change set.**
+1. Derived `siteChronicle` and `compareSiteRealities` selectors: show player-recorded transitions and real localized simulation events; preserve run, tick, branch and causal event IDs; expose no site history before visit or unsurveyed counterpart measurements; require identical world ID, deterministic seed, site archetype, seed and coordinates to compare. Differences are not themselves causes.
+2. Ground the Curiosity Engine in actual localized causal events (one journal indexing pass, fixed 48-tick expiry), preserving branch isolation and never revealing secret event identities to surveyed-only contacts.
+3. Build an accessible mobile Site Memory/parallel-run interface with observed deltas, casefile entries, selection, resource-difference drilldowns and production browser/unit tests.
+
+**Protected invariants.** All fifteen world IDs, plugins and domain state transitions; archived golden oracle values; historical ZIP compatibility; fixed timestep and RNG streams; save format and IndexedDB; unknown-site presentation boundary; native Three.js scenes and existing UI navigation. No new dependency or schema migration. Public publication, historical bytes, device hardware and semantic-depth certification are explicitly excluded from any green PR claim.
+
+**Implementation Git.** Branch `uplift/omniverse-site-chronicles-20261011`, PR #4. Source commits `75def170`, `4f72c593`, `39c9903f`, `a1586f40`, `2811f3d1`. TypeScript compilation initially reported an implicit-any site callback at AtlasView:55; the last source commit constrains the type to the existing SiteDefinition. CI on the final documentation head must be checked before claiming a verified outcome.
+
+**Evidence discipline.** This produces actual histories of gameplay within each simulated reality. It does NOT retroactively create unique simulated formation histories or guarantee all 540 POIs have divergent mechanics. Prior-art scout: Caves of Qud's developer materials illustrate historical accounts connecting sites and discoveries; adopted only the design lesson of tying a location's story to inspectable records, not any external code or assets (https://cavesofqud.com/roadmap/).
+
+**Remaining gates.** Strict CI typecheck/lint/test/acceptance/build/dist/browser pass at actual head, diff audit and safe integration if authorized, Pages admin activation, public live browser proof, semantic/historical breadth, late-life economy and physical hardware performance. Current owner of success claims: exact GitHub Actions and PR/branch API state, not these written intentions.
+

@@ -56,3 +56,12 @@ IndexedDB and portable archives remain local. Closed tabs and paused runs do not
 `src/exploration/dossier.ts` projects already-owned Atlas state into known chain labels, missing evidence conditions and frozen-sample/current-model comparisons. It never emits evidence, advances ticks or changes schemas. `AtlasView` still validates and dispatches actual actions through the existing exploration engine/store; its guidance is not a second authority. Frames are memoized against the kernel, tick and UI revision, with a regression test that checks both cache reuse and command invalidation.
 
 The inspection session is keyed by run ID. Mobile layout preserves DOM/focus order. Shared navigation styles are isolated in `src/ui/navigation.css`; the workbench tablist implements roving focus and arrow/Home/End selection. Current proof and remaining release limits are in `docs/uplift/REVIEW.md`.
+
+## OMNI derived site memory (2026-10-11)
+
+`src/exploration/forensics.ts` is strictly a projection layer: `siteChronicle` merges already-recorded branch-specific exploration actions and real kernel CausalEventJournal entries. It deduplicates the kernel's exploration event echoes and labels only known before/after values; generated history is never rewritten into an observed event. Future-dated entries are excluded. An actual site visit is required before the casefile can expose event details.
+
+`compareSiteRealities` evaluates two independent run states without mutating either. It requires the same world, genesis seed, archetype and immutable site coordinates. The other run's state remains sealed until surveyed, and local stocks/evidence remain withheld until visited. A difference does **not** establish its cause, especially when run ticks differ.
+
+`src/exploration/leads.ts` indexes recent localized causal events once per projection, then selects from the existing site discovery state and 48-tick evidence window. Recorded event titles are gated by visit; surveyed-only contacts may receive generic state-based leads without leaking event identity. These selectors never advance simulation ticks, enqueue commands, alter saved schemas or create content-count claims.
+
