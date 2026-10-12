@@ -116,6 +116,7 @@ export function addImmersiveScenery(
     corridors.count = edgeCount;
     corridors.instanceMatrix.needsUpdate = true;
     if (corridors.instanceColor) corridors.instanceColor.needsUpdate = true;
+    corridors.computeBoundingSphere();
   };
   updateRoutes(exploration);
   scene.add(corridors);
