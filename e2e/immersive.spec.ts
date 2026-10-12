@@ -12,7 +12,9 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   const canvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
   await expect(canvas).toBeVisible();
   await expect.poll(() => canvas.evaluate(el => (el as HTMLCanvasElement).width)).toBeGreaterThan(10);
-  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(0);
+  // The spawn view must face scene content, not an empty quadrant: a populated
+  // first frame submits far more than the handful of always-on layers.
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(20);
   await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.worldSites ?? 0))).toBe(36);
   const coordinates = explorer.getByText(/^X -?\d+ \/ Z -?\d+$/);
   const initial = await coordinates.innerText();

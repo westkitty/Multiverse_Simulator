@@ -15,24 +15,39 @@ export interface SceneProfile {
     'city' | 'factory' | 'crags' | 'wilds' | 'cavern' | 'ruins' | 'terraform' | 'machines' | 'signal';
   movement: 'walk' | 'fly';
   description: string;
+  /** Gradient sky dome zenith color (visual only). */
+  skyZenith: number;
+  /** Star density 0..1; 0 disables the starfield. */
+  starfield: number;
+  /** Distant sky feature that anchors each world's horizon. */
+  celestial: 'sun' | 'moon' | 'ringed-giant' | 'binary-suns' | 'nebula' | 'storm-eye' | 'void';
+  celestialColor: number;
+  /** Ground displacement style for the walkable/flyable surface. */
+  terrain: 'flat' | 'rolling' | 'dunes' | 'crags' | 'terraces' | 'peaks' | 'mounds' | 'deck' | 'cloud-bands';
+  /** Peak-to-trough displacement in scene units (visual only). */
+  terrainAmplitude: number;
+  /** Secondary ground tone mixed into terrain vertex colors. */
+  groundTint: number;
+  /** Optional translucent ceiling/surface plane height (ocean surface, cavern roof). */
+  canopyHeight: number | null;
 }
 
 export const SCENE_PROFILES: Record<string, SceneProfile> = {
-  ecosystem: { sky: 0x7499aa, horizon: 0x9fc9b2, ground: 0x334e3d, accent: 0x9bdb82, architecture: 'forest', movement: 'walk', description: 'Living woodland, field stations and restored wetlands' },
-  station: { sky: 0x070e1b, horizon: 0x1a2845, ground: 0x202e3f, accent: 0x55d9e8, architecture: 'habitat', movement: 'walk', description: 'Pressure doors, service corridors and derelict habitats' },
-  civilization: { sky: 0xb8b2a0, horizon: 0xd2c39e, ground: 0x6e6851, accent: 0xe9ba73, architecture: 'settlement', movement: 'walk', description: 'River settlements, bridges and deserted civic works' },
-  atmosphere: { sky: 0x576b88, horizon: 0x95a9bd, ground: 0x3e5268, accent: 0xc1ebff, architecture: 'storm', movement: 'fly', description: 'Storm fronts, weather towers and remote instruments' },
-  ocean: { sky: 0x051e34, horizon: 0x0a4d65, ground: 0x1b4047, accent: 0x72e2dc, architecture: 'reef', movement: 'fly', description: 'Submerged installations, reef towers and deep-sea ruins' },
-  celestial: { sky: 0x01030c, horizon: 0x080b20, ground: 0x232741, accent: 0xffc87b, architecture: 'orbit', movement: 'fly', description: 'Orbital platforms, distant worlds and stellar stations' },
-  megacity: { sky: 0x101e32, horizon: 0x394b62, ground: 0x242d42, accent: 0xed83d9, architecture: 'city', movement: 'walk', description: 'Dense tower districts and infrastructure corridors' },
-  industrial: { sky: 0x5b6268, horizon: 0x8d8275, ground: 0x4d504b, accent: 0xffbc6a, architecture: 'factory', movement: 'walk', description: 'Conveyors, smokestacks and silent freight terminals' },
-  geology: { sky: 0x765d52, horizon: 0xb38d6f, ground: 0x57433c, accent: 0xff9871, architecture: 'crags', movement: 'walk', description: 'Fault escarpments, basalt ridges and monitoring arrays' },
-  'wild-meridian': { sky: 0x839e80, horizon: 0xc0bd83, ground: 0x53663e, accent: 0xebe085, architecture: 'wilds', movement: 'walk', description: 'Overgrown frontier trails and unexpected wilderness' },
-  'hollow-deep': { sky: 0x090e19, horizon: 0x18263a, ground: 0x323b47, accent: 0x78e2ee, architecture: 'cavern', movement: 'walk', description: 'Cavern columns, subterranean pools and forgotten routes' },
-  'timeworn-empire': { sky: 0x9e8d7f, horizon: 0xc4a993, ground: 0x61534b, accent: 0xffcc91, architecture: 'ruins', movement: 'walk', description: 'Layered ruins, fallen monuments and reclaimed streets' },
-  'terraforming-frontier': { sky: 0x7f7b9c, horizon: 0xb19abb, ground: 0x70546b, accent: 0xa3ffd1, architecture: 'terraform', movement: 'walk', description: 'Artificial habitats, greenhouse domes and unfinished ecology' },
-  'machine-wilderness': { sky: 0x384957, horizon: 0x66828d, ground: 0x3c4b4a, accent: 0x75fff0, architecture: 'machines', movement: 'walk', description: 'Autonomous structures among abandoned service networks' },
-  'signal-expanse': { sky: 0x070920, horizon: 0x24204c, ground: 0x252443, accent: 0xba94ff, architecture: 'signal', movement: 'fly', description: 'Transmission spires, resonance fields and luminous relays' },
+  ecosystem: { sky: 0x7499aa, horizon: 0x9fc9b2, ground: 0x334e3d, accent: 0x9bdb82, architecture: 'forest', movement: 'walk', description: 'Living woodland, field stations and restored wetlands', skyZenith: 0x3d6f96, starfield: 0, celestial: 'sun', celestialColor: 0xffe6b8, terrain: 'rolling', terrainAmplitude: 3.4, groundTint: 0x4c6b45, canopyHeight: null },
+  station: { sky: 0x070e1b, horizon: 0x1a2845, ground: 0x202e3f, accent: 0x55d9e8, architecture: 'habitat', movement: 'walk', description: 'Pressure doors, service corridors and derelict habitats', skyZenith: 0x04070f, starfield: 0, celestial: 'void', celestialColor: 0x55d9e8, terrain: 'deck', terrainAmplitude: 0.9, groundTint: 0x2b3d52, canopyHeight: 26 },
+  civilization: { sky: 0xb8b2a0, horizon: 0xd2c39e, ground: 0x6e6851, accent: 0xe9ba73, architecture: 'settlement', movement: 'walk', description: 'River settlements, bridges and deserted civic works', skyZenith: 0x7d91a8, starfield: 0, celestial: 'sun', celestialColor: 0xffd9a0, terrain: 'rolling', terrainAmplitude: 2.6, groundTint: 0x8a7c58, canopyHeight: null },
+  atmosphere: { sky: 0x576b88, horizon: 0x95a9bd, ground: 0x3e5268, accent: 0xc1ebff, architecture: 'storm', movement: 'fly', description: 'Storm fronts, weather towers and remote instruments', skyZenith: 0x2c4260, starfield: 0, celestial: 'storm-eye', celestialColor: 0xd8ecff, terrain: 'cloud-bands', terrainAmplitude: 7.5, groundTint: 0x6c86a0, canopyHeight: null },
+  ocean: { sky: 0x051e34, horizon: 0x0a4d65, ground: 0x1b4047, accent: 0x72e2dc, architecture: 'reef', movement: 'fly', description: 'Submerged installations, reef towers and deep-sea ruins', skyZenith: 0x02101f, starfield: 0, celestial: 'void', celestialColor: 0x72e2dc, terrain: 'mounds', terrainAmplitude: 4.2, groundTint: 0x14525c, canopyHeight: 54 },
+  celestial: { sky: 0x01030c, horizon: 0x080b20, ground: 0x232741, accent: 0xffc87b, architecture: 'orbit', movement: 'fly', description: 'Orbital platforms, distant worlds and stellar stations', skyZenith: 0x01020a, starfield: 1, celestial: 'ringed-giant', celestialColor: 0xffc87b, terrain: 'deck', terrainAmplitude: 1.4, groundTint: 0x2e3358, canopyHeight: null },
+  megacity: { sky: 0x101e32, horizon: 0x394b62, ground: 0x242d42, accent: 0xed83d9, architecture: 'city', movement: 'walk', description: 'Dense tower districts and infrastructure corridors', skyZenith: 0x0a1626, starfield: .25, celestial: 'moon', celestialColor: 0xb9c6ff, terrain: 'deck', terrainAmplitude: 0.8, groundTint: 0x2f3a52, canopyHeight: null },
+  industrial: { sky: 0x5b6268, horizon: 0x8d8275, ground: 0x4d504b, accent: 0xffbc6a, architecture: 'factory', movement: 'walk', description: 'Conveyors, smokestacks and silent freight terminals', skyZenith: 0x3d464e, starfield: 0, celestial: 'sun', celestialColor: 0xffc98d, terrain: 'flat', terrainAmplitude: 1.1, groundTint: 0x5a5348, canopyHeight: null },
+  geology: { sky: 0x765d52, horizon: 0xb38d6f, ground: 0x57433c, accent: 0xff9871, architecture: 'crags', movement: 'walk', description: 'Fault escarpments, basalt ridges and monitoring arrays', skyZenith: 0x4e3a40, starfield: 0, celestial: 'sun', celestialColor: 0xffb189, terrain: 'crags', terrainAmplitude: 6.2, groundTint: 0x6e4a3a, canopyHeight: null },
+  'wild-meridian': { sky: 0x839e80, horizon: 0xc0bd83, ground: 0x53663e, accent: 0xebe085, architecture: 'wilds', movement: 'walk', description: 'Overgrown frontier trails and unexpected wilderness', skyZenith: 0x5d86a0, starfield: 0, celestial: 'sun', celestialColor: 0xffe9a8, terrain: 'rolling', terrainAmplitude: 4.6, groundTint: 0x6a7a42, canopyHeight: null },
+  'hollow-deep': { sky: 0x090e19, horizon: 0x18263a, ground: 0x323b47, accent: 0x78e2ee, architecture: 'cavern', movement: 'walk', description: 'Cavern columns, subterranean pools and forgotten routes', skyZenith: 0x05080f, starfield: .12, celestial: 'void', celestialColor: 0x78e2ee, terrain: 'crags', terrainAmplitude: 5.4, groundTint: 0x27323f, canopyHeight: 30 },
+  'timeworn-empire': { sky: 0x9e8d7f, horizon: 0xc4a993, ground: 0x61534b, accent: 0xffcc91, architecture: 'ruins', movement: 'walk', description: 'Layered ruins, fallen monuments and reclaimed streets', skyZenith: 0x6d7892, starfield: 0, celestial: 'sun', celestialColor: 0xffd6a5, terrain: 'terraces', terrainAmplitude: 3.8, groundTint: 0x7a6350, canopyHeight: null },
+  'terraforming-frontier': { sky: 0x7f7b9c, horizon: 0xb19abb, ground: 0x70546b, accent: 0xa3ffd1, architecture: 'terraform', movement: 'walk', description: 'Artificial habitats, greenhouse domes and unfinished ecology', skyZenith: 0x544f80, starfield: .35, celestial: 'moon', celestialColor: 0xc9b7ff, terrain: 'dunes', terrainAmplitude: 3.2, groundTint: 0x7d5c72, canopyHeight: null },
+  'machine-wilderness': { sky: 0x384957, horizon: 0x66828d, ground: 0x3c4b4a, accent: 0x75fff0, architecture: 'machines', movement: 'walk', description: 'Autonomous structures among abandoned service networks', skyZenith: 0x22323e, starfield: .18, celestial: 'moon', celestialColor: 0x9fd8e8, terrain: 'mounds', terrainAmplitude: 3.6, groundTint: 0x44564f, canopyHeight: null },
+  'signal-expanse': { sky: 0x070920, horizon: 0x24204c, ground: 0x252443, accent: 0xba94ff, architecture: 'signal', movement: 'fly', description: 'Transmission spires, resonance fields and luminous relays', skyZenith: 0x03041a, starfield: .85, celestial: 'nebula', celestialColor: 0xba94ff, terrain: 'flat', terrainAmplitude: 1.6, groundTint: 0x2f2b55, canopyHeight: null },
 };
 
 export interface ImmersiveLandmark {
@@ -111,17 +126,22 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
   // a clear viewing angle where that contact is closer than neighboring sites.
   const local = points.find(point => point.regionId === state.expedition.regionId && point.discovery !== 'UNKNOWN')
     ?? points.find(point => point.regionId === state.expedition.regionId) ?? points[0];
-  const spawnRadius = 5.5;
-  const candidates = Array.from({ length: 32 }, (_, index) => {
-    const angle = index * Math.PI * 2 / 32;
-    const x = (local?.x ?? 0) + Math.cos(angle) * spawnRadius;
-    const z = (local?.z ?? 0) + Math.sin(angle) * spawnRadius;
-    const rivals = points.filter(point => point.id !== local?.id);
-    const nearestRival = rivals.reduce((best, point) => Math.min(best, Math.hypot(point.x - x, point.z - z)), Infinity);
-    return { x, z, margin: nearestRival - spawnRadius };
-  });
-  candidates.sort((a, b) => b.margin - a.margin);
-  const spawn = candidates[0] ?? { x: 0, z: 0 };
+  // Wide enough that landmark facades do not bury the camera at spawn, while
+  // staying inside the 12-unit inspection range of the local contact.
+  const placeSpawn = (spawnRadius: number) => {
+    const candidates = Array.from({ length: 32 }, (_, index) => {
+      const angle = index * Math.PI * 2 / 32;
+      const x = (local?.x ?? 0) + Math.cos(angle) * spawnRadius;
+      const z = (local?.z ?? 0) + Math.sin(angle) * spawnRadius;
+      const rivals = points.filter(point => point.id !== local?.id);
+      const nearestRival = rivals.reduce((best, point) => Math.min(best, Math.hypot(point.x - x, point.z - z)), Infinity);
+      return { x, z, margin: nearestRival - spawnRadius };
+    });
+    candidates.sort((a, b) => b.margin - a.margin);
+    return candidates[0] ?? { x: 0, z: 0, margin: -Infinity };
+  };
+  let spawn = placeSpawn(8.5);
+  if (!(spawn.margin > 0)) spawn = placeSpawn(5.5);
   const regionAnchors: Record<string, { x: number; z: number }> = Object.fromEntries(regionPositions.map(region => [region.id, { x: (region.position[0] - centerX) * scale, z: (region.position[2] - centerZ) * scale }]));
   for (const region of atlas.regions) {
     if (Object.hasOwn(regionAnchors, region.id)) continue;
@@ -136,6 +156,56 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
     regionAnchors,
     extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22), ...Object.values(regionAnchors).map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
   };
+}
+
+/**
+ * Movement basis aligned with the Three.js YXZ camera (verified against
+ * THREE.PerspectiveCamera.getWorldDirection). Forward is the camera's world
+ * look direction projected to the ground plane; right is perpendicular.
+ */
+export function movementBasis(yaw: number): { forward: readonly [number, number]; right: readonly [number, number] } {
+  return {
+    forward: [-Math.sin(yaw), -Math.cos(yaw)],
+    right: [Math.cos(yaw), -Math.sin(yaw)],
+  };
+}
+
+/**
+ * Camera orientation for first impression and post-arrival. The player never
+ * spawns staring into an empty quadrant: among deterministic candidate
+ * directions, choose the yaw that reveals the most scene content (sites are
+ * weighted by proximity). The nearest landmark contributes strong weight at
+ * spawn distance, so it stays framed whenever its surroundings are not empty.
+ * Presentation-only; never feeds into simulation movement.
+ */
+export function spawnViewAngles(layout: ImmersiveLayout): { yaw: number; pitch: number } {
+  if (!layout.points.length) return { yaw: -.5, pitch: -.12 };
+  const scoreFor = (yaw: number) => {
+    let score = 0;
+    for (const point of layout.points) {
+      const dx = point.x - layout.spawn.x, dz = point.z - layout.spawn.z;
+      const distance = Math.hypot(dx, dz);
+      if (distance > 110) continue;
+      const basis = movementBasis(yaw);
+      const lookX = basis.forward[0], lookZ = basis.forward[1];
+      const dot = (dx * lookX + dz * lookZ) / (distance || 1);
+      if (dot > Math.cos(.62)) score += 1 / (1 + distance / 35);
+    }
+    return score;
+  };
+  let yaw = 0;
+  let bestScore = -1;
+  for (let bin = 0; bin < 16; bin++) {
+    const candidate = bin * Math.PI / 8;
+    const score = scoreFor(candidate);
+    if (score > bestScore) { bestScore = score; yaw = candidate; }
+  }
+  return { yaw, pitch: -.1 };
+}
+
+/** Yaw that turns the camera toward a world-space point. */
+export function yawToward(fromX: number, fromZ: number, toX: number, toZ: number): number {
+  return Math.atan2(-(toX - fromX), -(toZ - fromZ));
 }
 
 
