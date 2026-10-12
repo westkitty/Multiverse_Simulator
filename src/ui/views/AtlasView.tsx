@@ -10,6 +10,7 @@ import { isFrontierState } from '../../worlds/frontiers/frontierPlugin';
 import { applyExplorationCommand, ExplorationCommand, presentSite, surveyCoverage } from '../../exploration/engine';
 import { ThreeWorldViewport } from '../../renderers/ThreeWorldViewport';
 import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
+import { projectImmersiveActors } from '../../exploration/immersiveLayout';
 import './atlas.css';
 
 const facilities = ['Supply camp: transfer stocks','Sensor: survey adjacent regions','Salvage ruin: recover two units','Refuge: restore local team energy using local supplies','Extraction: convert finite reserve to salvage','Crossing: reopen a blocked route','Workshop: repair using local salvage','Processor: use fuel for local engineering','Archive: recover historical records','Relay: detect contacts two links away','Containment: reduce local hazard','Generator: convert two supplies to one fuel'];
@@ -132,7 +133,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
           <button type="button" aria-pressed={immersive} onClick={() => setImmersive(true)}>Enter 3D world</button>
         </div>
         <div className="atlas-section-heading"><div><p className="atlas-kicker">01 / SURVEY VOLUME</p><h2>Region explorer</h2></div><span className="atlas-badge">{store.preferences.simplified3D ? 'SCHEMATIC' : 'LIVE MODEL'}</span></div>
-        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
+        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
         <p className="atlas-muted">3D reconnaissance is a visual space for free movement and examining landmarks. Travel, surveying, and repairs still use authoritative simulation actions. A signal is not yet a place.</p>
         <label className="atlas-filter">Region filter <select value={filterRegion} onChange={e => setFilterRegion(e.target.value)}><option value="all">All surveyed contacts</option>{state.regions.map(r => <option key={r.id} value={r.id}>{r.id} · {r.biome}</option>)}</select></label>
         <div className="atlas-contacts" aria-label="Survey contacts">
