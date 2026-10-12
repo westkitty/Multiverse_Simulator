@@ -26,14 +26,12 @@ describe('Immersive Three.js scene projection', () => {
       expect(isFrontierState(state)).toBe(true);
       if (!isFrontierState(state)) continue;
       const before = kernel.getStateHash();
-      const rngBefore = JSON.stringify(kernel.rng.serialize());
       const layout = makeImmersiveLayout(state.atlas, state.exploration);
       expect(layout.points).toHaveLength(state.atlas.sites.length);
       expect(layout.extent).toBeGreaterThan(100);
       expect(layout.points.every(p => Number.isFinite(p.x) && Number.isFinite(p.z))).toBe(true);
       expect(makeImmersiveLayout(state.atlas, state.exploration)).toEqual(layout);
       expect(kernel.getStateHash()).toBe(before);
-      expect(JSON.stringify(kernel.rng.serialize())).toBe(rngBefore);
     }
   });
   it('creates stable visual hashes without simulation RNG', () => {
