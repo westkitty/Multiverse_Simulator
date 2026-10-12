@@ -104,6 +104,8 @@ describe('Read-only site histories and real-event curiosity', () => {
     // deterministic continuation of the same lineage after the fork.
     const restored = SimulationKernel.fromRunRecord(branch.exportRunRecord(), plugin);
     expect(restored.getStateHash()).toBe(branch.getStateHash());
+    expect(branch.replayFromStart().matchesAuthoritativeHash).toBe(true);
+    expect(restored.replayFromStart().matchesAuthoritativeHash).toBe(true);
     branch.step();
     restored.step();
     expect(restored.getStateHash()).toBe(branch.getStateHash());
