@@ -288,6 +288,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       actorMeshes.count = actorCount;
       actorMeshes.instanceMatrix.needsUpdate = true;
       if (actorMeshes.instanceColor) actorMeshes.instanceColor.needsUpdate = true;
+      actorMeshes.computeBoundingSphere();
       for (const site of layout.points) {
         const marker = beacons.get(site.id);
         const progress = liveExploration.current.sites[site.id]?.discoveryState;
