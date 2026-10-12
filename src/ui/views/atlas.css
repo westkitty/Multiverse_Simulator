@@ -1,4 +1,3 @@
-.atlas-columns.immersive-world { grid-template-columns:minmax(0,1fr); }
 .atlas-explore-mode { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
 .atlas-explore-mode button[aria-pressed=true] { background:#b7e9dc; border-color:#b7e9dc; color:#091519; font-weight:750; }
 .atlas-workbench { --atlas-accent: #78ceb2; display:grid; gap:18px; color:#d9e3e9; font-size:14px; line-height:1.55; }
@@ -132,3 +131,15 @@
  .atlas-chronicle-meta { flex-direction:row; flex-wrap:wrap; align-items:center; }
  .atlas-parallel-results dl { grid-template-columns:1fr; }
 }
+
+/* A dedicated first-person play surface: the Atlas remains a separate workbench. */
+.immersive-game-page { display:grid; gap:12px; color:#dbe8ed; min-width:0; }
+.immersive-game-heading { display:flex; gap:12px 26px; justify-content:space-between; align-items:center; flex-wrap:wrap; padding:12px 16px; border:1px solid #34515e; border-left:3px solid #8edbd1; background:#0b1823; }
+.immersive-game-heading h1 { font-size:clamp(18px,2.5vw,28px); line-height:1.2; margin:5px 0; color:#eaf8f9; }
+.immersive-game-heading p { font-size:12px; color:#b5c9d2; margin:0; }
+.immersive-game-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.immersive-game-actions button { min-height:44px; padding:8px 13px; color:#e8f6f6; background:#193343; border:1px solid #688b9b; border-radius:5px; font:600 12px system-ui,sans-serif; cursor:pointer; }
+.immersive-game-actions button:last-child { color:#061b18; background:#a9e6d4; border-color:#a9e6d4; }
+.immersive-game-actions button:focus-visible { outline:2px solid #f0e6bc; outline-offset:2px; }
+.immersive-game-disclaimer { font:11px/1.5 ui-monospace,monospace; color:#9cb2c2; margin:0 2px; }
+@media (max-width:650px) { .immersive-game-heading { padding:10px; } .immersive-game-actions { width:100%; } .immersive-game-actions button { flex:1 1 100px; } }
