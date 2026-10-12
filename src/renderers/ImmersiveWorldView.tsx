@@ -2,12 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
 import { ExplorationCommand, presentSite } from '../exploration/engine';
-import { makeImmersiveLayout, SceneProfile } from '../exploration/immersiveLayout';
+import { ImmersiveActorMarker, makeImmersiveLayout, sceneHash, SceneProfile } from '../exploration/immersiveLayout';
 import { addImmersiveScenery } from './immersiveScenery';
 
 interface Props {
   atlas: ExplorationAtlas;
   exploration: ExplorationState;
+  regions: ReadonlyArray<{ id: string; position: readonly [number, number, number] }>;
+  actors: ImmersiveActorMarker[];
   runId: string;
   onSelectSite: (id: string) => void;
   onSiteAction: (id: string, kind: ExplorationCommand['action']) => string;
@@ -71,9 +73,9 @@ function landmarkShape(
 }
 
 export const ImmersiveWorldView: React.FC<Props> = ({
-  atlas, exploration, runId, onSelectSite, onSiteAction, onAdvanceTime, onReturnToAtlas, reducedMotion,
+  atlas, exploration, regions, actors, runId, onSelectSite, onSiteAction, onAdvanceTime, onReturnToAtlas, reducedMotion,
 }) => {
-  const layout = useMemo(() => makeImmersiveLayout(atlas, exploration), [atlas, exploration]);
+  const layout = useMemo(() => makeImmersiveLayout(atlas, exploration, regions), [atlas, exploration, regions]);
   const sceneHost = useRef<HTMLDivElement>(null);
   const actions = useRef(new Set<Movement>());
   const view = useRef({ yaw: -.5, pitch: -.12 });
@@ -84,6 +86,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const [interactionResult, setInteractionResult] = useState('');
   const liveLayout = useRef(layout);
   liveLayout.current = layout;
+  const liveActors = useRef(actors);
+  liveActors.current = actors;
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
@@ -146,6 +150,19 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
     const sceneryMaterials = addImmersiveScenery(scene, atlas, exploration, layout);
+    const actorGeometry = profile.movement === 'fly' ? new THREE.OctahedronGeometry(.85, 1)
+      : profile.architecture === 'machines' || profile.architecture === 'factory' ? new THREE.BoxGeometry(.85, 1.8, .85)
+      : new THREE.CapsuleGeometry(.44, 1.15, 4, 8);
+    const actorMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .52, metalness: .25 });
+    const actorMeshes = new THREE.InstancedMesh(actorGeometry, actorMaterial, 180);
+    actorMeshes.count = 0;
+    actorMeshes.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    scene.add(actorMeshes);
+    const actorBody = new THREE.Object3D();
+    const actorTarget = new THREE.Vector3();
+    const actorMemory = new Map<string, THREE.Vector3>();
+    const activeTint = new THREE.Color(profile.accent);
+    const tiredTint = new THREE.Color(0xed956e);
     let nearbyId = '';
     const pointer = renderer.domElement;
     pointer.style.touchAction = 'none';
@@ -221,6 +238,33 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       camera.rotation.order = 'YXZ';
       camera.rotation.y = orientation.yaw;
       camera.rotation.x = orientation.pitch;
+      // Field units are sourced from real kernel actor state. Interpolation is
+      // presentation-only; it never feeds positions or time into the simulation.
+      let actorCount = 0;
+      const worldTransform = liveLayout.current.sourceTransform;
+      for (const actor of liveActors.current.slice(0, 180)) {
+        const neighbor = liveLayout.current.points.find(place => place.regionId === actor.regionId);
+        if (!actor.nativePosition && !neighbor) continue;
+        const baseX = actor.nativePosition ? (actor.nativePosition[0] - worldTransform.centerX) * worldTransform.scale : neighbor!.x;
+        const baseZ = actor.nativePosition ? (actor.nativePosition[1] - worldTransform.centerZ) * worldTransform.scale : neighbor!.z;
+        const fingerprint = sceneHash(actor.id);
+        const bearing = (fingerprint % 628) / 100;
+        const distance = 2.8 + (fingerprint >>> 10) % 31 / 10;
+        actorTarget.set(baseX + Math.cos(bearing) * distance, profile.movement === 'fly' ? 6 + fingerprint % 9 : 1.2, baseZ + Math.sin(bearing) * distance);
+        let position = actorMemory.get(actor.id);
+        if (!position) { position = actorTarget.clone(); actorMemory.set(actor.id, position); }
+        position.lerp(actorTarget, reducedMotion ? 1 : Math.min(1, dt * 4));
+        actorBody.position.copy(position);
+        actorBody.rotation.y = bearing;
+        actorBody.scale.setScalar(.8 + (actor.role % 4) * .12);
+        actorBody.updateMatrix();
+        actorMeshes.setMatrixAt(actorCount, actorBody.matrix);
+        actorMeshes.setColorAt(actorCount, actor.energy < 25 ? tiredTint : activeTint);
+        actorCount++;
+      }
+      actorMeshes.count = actorCount;
+      actorMeshes.instanceMatrix.needsUpdate = true;
+      if (actorMeshes.instanceColor) actorMeshes.instanceColor.needsUpdate = true;
       if (time - stamp > 200) {
         stamp = time;
         const nearby = targets
@@ -256,7 +300,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           mesh.geometry.dispose();
         }
       });
-      [mainMaterial, accentMaterial, unknownMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, actorMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
@@ -285,6 +329,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         <div style={{ background:'#07111ad9', padding:'9px 12px', color:'#e1f2f9', maxWidth:'70%', borderLeft:'3px solid #89c7d4' }}>
           <strong>{atlas.worldId.replace(/-/g, ' ').toUpperCase()} · 3D EXPLORATION</strong>
           <small style={{ display:'block', color:'#bdd0dc' }}>{layout.profile.description}</small>
+          <small style={{ display:'block', color:'#bdd0dc' }}>{layout.points.length} mapped places · {actors.length} simulated field units</small>
           <small style={{ display:'block', color:'#bdd0dc' }}>{readout}</small>
         </div>
         <div style={{ background:'#07111ad9', padding:8, font:'11px monospace', color:'#d2ecf0' }}>X {location.x} / Z {location.z}</div>
