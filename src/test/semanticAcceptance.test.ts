@@ -57,7 +57,7 @@ describe.runIf(process.env.RUN_SEMANTIC_ACCEPTANCE==='1')('Semantic content acce
   });
   const coverage=results.filter(item=>item.accepted && item.changedMetricCount>0).length;
   const report={schemaVersion:1,method:'Matched four-tick deterministic paired runs, same world/seed/config and run ID; only treatment receives one pre-existing world-native command. Count numeric metric differences over 1e-6, not labels, props, scenario descriptions or metadata. These are measured functional responses, not proof of 3x semantic content or novel authored stories.',worldsTested:results.length,worldsWithMeasuredResponse:coverage,results};
-  writeFileSync('docs/acceptance/native-field-variety.json',JSON.stringify(report,null,2)+'\\n');
+  writeFileSync('docs/acceptance/native-field-variety.json',JSON.stringify(report,null,2)+'\n');
   console.log('Controlled native field response coverage:',coverage+'/'+results.length,
     results.map(item=>item.world+':'+item.changedMetricCount).join(' '));
   expect(results.filter(item=>!item.accepted).map(item=>item.world)).toEqual([]);
