@@ -38,6 +38,20 @@ describe('Immersive Three.js scene projection', () => {
       expect(kernel.getStateHash()).toBe(before);
     }
   });
+  it('spawns beside the known local expedition contact instead of an unknown neighbor', () => {
+    const plugin = CORE_WORLD_PLUGINS.find(world => world.id === 'ecosystem')!;
+    const scenario = plugin.scenarios[0];
+    const kernel = new SimulationKernel({ runId: 'spawn-proof', name: 'Spawn proof', plugin, seed: scenario.seed, config: scenario.config });
+    const state = kernel.getState();
+    expect(isFrontierState(state)).toBe(true);
+    if (!isFrontierState(state)) return;
+    const layout = makeImmersiveLayout(state.atlas, state.exploration, state.regions);
+    const local = layout.points.find(site => site.regionId === state.exploration.expedition.regionId && site.discovery !== 'UNKNOWN');
+    expect(local).toBeDefined();
+    const nearest = [...layout.points].sort((a,b) => Math.hypot(a.x - layout.spawn.x, a.z - layout.spawn.z) - Math.hypot(b.x - layout.spawn.x, b.z - layout.spawn.z))[0];
+    expect(nearest.id).toBe(local!.id);
+  });
+
   it('renders actual region corridors and updates their geometry when an authoritative route closes', () => {
     const plugin = CORE_WORLD_PLUGINS.find(world => world.id === 'ecosystem')!;
     const scenario = plugin.scenarios[0];
