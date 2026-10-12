@@ -64,7 +64,7 @@ test.describe('immersive 3D gameplay', () => {
   await expect(soil).toBeVisible();
   const beforeSoil = await soil.innerText();
   await lab.getByRole('button', { name: /Increase Soil Fertility/ }).click();
-  await expect(lab.getByRole('status')).toContainText('Validated command recorded at tick');
+  await expect(lab.getByTestId('native-intervention-feedback')).toContainText('Validated command recorded at tick');
   await expect(lab).toContainText('Command event');
   await expect.poll(() => soil.innerText()).not.toBe(beforeSoil);
   await dossier.getByRole('button', { name: 'Full dossier' }).click();
