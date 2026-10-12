@@ -129,3 +129,12 @@ Verified production baseline `82384387251536212ccfc8e5c087c73d9db74fec` (PR #6 m
 
 ### Evidence and limits
 Unit 181/181 (3 environment-skipped) incl. 4 new immersive regression tests; acceptance 11/11; performance gate 5/5; build + dist verification PASS; Playwright 20/20 desktop + Pixel 7 emulation with a new spawn-content assertion. Spawn-view draw calls rose from 4–15 (empty quadrant) to 108–186 (measured content) across nine audited worlds; at matched workload SwiftShader frame time is ~1.7–2× baseline — recorded, not hidden. Unfinished: physical-device FPS/memory certification, semantic 3× content expansion, long-run economy balance, human art review of the new atmospheres, and a possible megacity brightness accessibility option. Protected invariants (kernel determinism, archives, site privacy, route gating, Atlas/observatory fallback, Pages deployment) are unchanged and re-verified by the suites above.
+
+
+## 2026-10-12 — Candidate semantic field protocols (PR pending)
+
+- Branch: `arena/semantic-field-protocols-20261012`, based on GitHub main `0ccc227e45b927c06ec6ef50a17ba966628b832c`.
+- Introduced 15 authored, world-specific field questions attached to the first existing three-site investigation chain of each world. Six distinct proof types: observations, restoration, resolution, salvage, archive recovery and containment; completion is calculated from existing recorded evidence and kernel-owned exploration state, never prop or metadata counts. No sites or authoritative mechanics were added. Not a 3× semantic-content expansion.
+- Immersive 3D view now includes a collapsible field notebook with verified sample values, tick provenance and context-specific next step. Unknown contacts stay unnamed; authored historical interpretations are explicitly hypotheses, not observed evidence.
+- Protected: all 15 worlds and original scripts; kernel, RNG, branching/replay, archive/IndexedDB, economy, route validators and scientific Atlas unchanged. No new state format. Added unit tests and browser assertion; validation at PR head is **pending** (do not represent this entry as a green test result).
+- Pending: exact-head GitHub Actions verification, software-rendered browser behavior, independent meaningful-content metric beyond this increment, long-run economy, hardware FPS, human art accessibility.
