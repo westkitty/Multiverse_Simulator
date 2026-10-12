@@ -8,15 +8,21 @@ export function curiosityLeads(
   atlas: ExplorationAtlas, state: ExplorationState, tick: number,
   events: readonly CausalEvent[] = [], activeRunId?: string,
 ) {
+  // One bounded scan of the causal journal per frame, not a full scan per POI.
+  const newest = new Map<string, CausalEvent>();
+  for (const event of events) {
+    if (!event.sourceEntityId || (activeRunId !== undefined && event.runId !== activeRunId) ||
+        event.tick > tick || tick - event.tick > 48 ||
+        event.type.startsWith('exploration.') || event.type.startsWith('command:') ||
+        event.type === 'command_rejected') continue;
+    const prior = newest.get(event.sourceEntityId);
+    if (!prior || event.tick > prior.tick || (event.tick === prior.tick && event.id > prior.id))
+      newest.set(event.sourceEntityId, event);
+  }
   return atlas.sites.flatMap(site => {
     const delta = state.sites[site.facts.id];
     if (DISCOVERY_ORDER.indexOf(delta.discoveryState) < 2 || delta.discoveryState === 'RESOLVED') return [];
-    const event = events.filter(e => e.sourceEntityId === site.facts.id &&
-      (activeRunId === undefined || e.runId === activeRunId) &&
-      e.tick <= tick && tick - e.tick <= 48 &&
-      !e.type.startsWith('exploration.') && !e.type.startsWith('command:') &&
-      e.type !== 'command_rejected'
-    ).sort((a, b) => b.tick - a.tick || b.id.localeCompare(a.id, 'en'))[0];
+    const event = newest.get(site.facts.id);
     const lastObservation = Math.max(0, delta.firstVisitedTick ?? 0,
       ...delta.evidence.map(e => e.tick),
       ...state.journal.filter(e => e.siteId === site.facts.id).map(e => e.tick),

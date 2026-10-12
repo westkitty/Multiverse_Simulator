@@ -69,7 +69,7 @@ export function siteChronicle(
     causalEventId: null, causedByEventId: null,
   }));
   const physical: SiteChronicleEntry[] = events.filter(event =>
-    event.runId === activeRunId && event.sourceEntityId === siteId &&
+    event.tick <= state.lastTick && event.runId === activeRunId && event.sourceEntityId === siteId &&
     !event.type.startsWith('exploration.') && !event.type.startsWith('command:') &&
     event.type !== 'command_rejected'
   ).map(event => ({

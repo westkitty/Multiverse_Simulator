@@ -32,10 +32,15 @@ describe('Read-only site histories and real-event curiosity', () => {
       sourceEntityId: siteId, deltas: [{ metricOrField: 'condition', before: 70, after: 55, unit: '%' }],
     });
     const hash = run.getStateHash();
+    const future = run.getJournal().append(run.runId, run.tick + 12, {
+      type: 'site.deterioration', title: 'Future-only signal', severity: 'warning',
+      description: 'Must not appear before it happens', sourceSystem: 'test', sourceEntityId: siteId,
+    });
     const entries = siteChronicle(state.atlas, run.getState().exploration, siteId, run.getEvents(), run.runId);
+    expect(entries.some(e => e.causalEventId === future.id)).toBe(false);
     expect(entries.some(e => e.kind === 'ACTION' && e.title === 'repair' &&
       e.changes.some(change => change.field === 'condition' &&
-        change.before === beforeCondition && change.after > Number(change.before)))).toBe(true);
+        change.before === beforeCondition && Number(change.after) > Number(change.before)))).toBe(true);
     expect(entries.some(e => e.kind === 'SIMULATION' && e.causalEventId === event.id &&
       e.changes.some(change => change.field === 'condition' && change.after === 55))).toBe(true);
     expect(entries.some(e => e.title === 'exploration.repair')).toBe(false);
