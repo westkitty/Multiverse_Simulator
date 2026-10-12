@@ -34,6 +34,7 @@ describe('Immersive Three.js scene projection', () => {
       expect(layout.points.every(p => Number.isFinite(p.x) && Number.isFinite(p.z))).toBe(true);
       expect(makeImmersiveLayout(state.atlas, state.exploration, state.regions)).toEqual(layout);
       expect(Object.keys(layout.regionAnchors)).toHaveLength(state.atlas.regions.length);
+      expect(Object.values(layout.regionAnchors).every(pos => Math.max(Math.abs(pos.x), Math.abs(pos.z)) + 20 <= layout.extent)).toBe(true);
       expect(projectImmersiveActors(state).length).toBeGreaterThan(0);
       expect(kernel.getStateHash()).toBe(before);
     }
