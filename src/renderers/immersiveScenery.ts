@@ -24,7 +24,7 @@ export function addImmersiveScenery(
   atlas: ExplorationAtlas,
   exploration: ExplorationState,
   layout: ImmersiveLayout,
-): THREE.Material[] {
+): { materials: THREE.Material[]; refresh: (current: ExplorationState) => void } {
   const style = layout.profile.architecture;
   const sky = new THREE.Color(layout.profile.horizon);
   const earth = new THREE.Color(layout.profile.ground);
@@ -33,6 +33,7 @@ export function addImmersiveScenery(
     color: 0xffffff, roughness: .91, metalness: style === 'machines' || style === 'orbit' ? .6 : .08,
   });
   const geometry = scenicGeometry(style);
+  geometry.computeBoundingBox();
   const meshes = new THREE.InstancedMesh(geometry, scenicMaterial, layout.points.length * 5);
   const dummy = new THREE.Object3D();
   const tint = new THREE.Color();
@@ -53,7 +54,6 @@ export function addImmersiveScenery(
       dummy.scale.set(size, size * height, size);
       // Native primitive origin is at the center; keep decorative structures grounded.
       if (lift === 0 && style !== 'reef' && style !== 'orbit' && style !== 'signal') {
-        geometry.computeBoundingBox();
         dummy.position.y = -geometry.boundingBox!.min.y * size * height;
       }
       dummy.updateMatrix();
@@ -70,44 +70,48 @@ export function addImmersiveScenery(
 
   // Traversable corridors reflect the actual region graph, not invented world connections.
   // Lines in remote/underwater/orbital worlds are elevated survey-guidance filaments.
-  const regionCenters = new Map<string, { x: number; z: number }>();
-  for (const region of atlas.regions) {
-    const places = layout.points.filter(p => p.regionId === region.id);
-    if (!places.length) continue;
-    regionCenters.set(region.id, {
-      x: places.reduce((sum, p) => sum + p.x, 0) / places.length,
-      z: places.reduce((sum, p) => sum + p.z, 0) / places.length,
-    });
-  }
+  const regionCenters = new Map(Object.entries(layout.regionAnchors));
   const corridors = new THREE.InstancedMesh(
     new THREE.BoxGeometry(1, 1, 1),
     new THREE.MeshStandardMaterial({
       color: 0xffffff, roughness: .85, metalness: .2,
       transparent: true, opacity: style === 'orbit' || style === 'signal' ? .62 : .75,
     }),
-    Math.max(1, atlas.routes.length),
+    Math.max(1, atlas.routes.length * 2),
   );
   const isFlying = layout.profile.movement === 'fly';
-  let edgeCount = 0;
-  for (const route of atlas.routes) {
-    const a = regionCenters.get(route.from), b = regionCenters.get(route.to);
-    if (!a || !b) continue;
-    const dx = b.x - a.x, dz = b.z - a.z;
-    const len = Math.hypot(dx, dz);
-    if (len < 2) continue;
-    dummy.position.set((a.x + b.x) / 2, isFlying ? 8 : .065, (a.z + b.z) / 2);
-    dummy.rotation.set(0, Math.atan2(dx, dz), 0);
-    dummy.scale.set(isFlying ? .18 : 2.2, isFlying ? .14 : .12, len);
-    dummy.updateMatrix();
-    corridors.setMatrixAt(edgeCount, dummy.matrix);
-    // Blocked passages are displayed as broken access, never implied to be traversable.
-    const blocked = exploration.blockedRoutes[route.id] ?? route.blocked;
-    corridors.setColorAt(edgeCount, new THREE.Color(blocked ? 0x943f45 : layout.profile.accent).lerp(earth, blocked ? .25 : .55));
-    edgeCount++;
-  }
-  corridors.count = edgeCount;
-  corridors.instanceMatrix.needsUpdate = true;
-  if (corridors.instanceColor) corridors.instanceColor.needsUpdate = true;
+  const openTint = new THREE.Color(layout.profile.accent).lerp(earth, .55);
+  const closedTint = new THREE.Color(0x943f45).lerp(earth, .25);
+  let previousRouteSignature = '';
+  const updateRoutes = (current: ExplorationState) => {
+    const signature = atlas.routes.map(route => current.blockedRoutes[route.id] ? '1' : '0').join('');
+    if (signature === previousRouteSignature) return;
+    previousRouteSignature = signature;
+    let edgeCount = 0;
+    for (const route of atlas.routes) {
+      const a = regionCenters.get(route.from), b = regionCenters.get(route.to);
+      if (!a || !b) continue;
+      const dx = b.x - a.x, dz = b.z - a.z;
+      const len = Math.hypot(dx, dz);
+      if (len < 2) continue;
+      const blocked = current.blockedRoutes[route.id] ?? route.blocked;
+      // A visibly broken route has a genuine gap, not just a cosmetic red tint.
+      const fractions = blocked ? [0.18, 0.82] : [0.5];
+      for (const fraction of fractions) {
+        dummy.position.set(a.x + dx * fraction, isFlying ? 8 : .065, a.z + dz * fraction);
+        dummy.rotation.set(0, Math.atan2(dx, dz), 0);
+        dummy.scale.set(isFlying ? .18 : 2.2, isFlying ? .14 : .12, blocked ? len * .34 : len);
+        dummy.updateMatrix();
+        corridors.setMatrixAt(edgeCount, dummy.matrix);
+        corridors.setColorAt(edgeCount, blocked ? closedTint : openTint);
+        edgeCount++;
+      }
+    }
+    corridors.count = edgeCount;
+    corridors.instanceMatrix.needsUpdate = true;
+    if (corridors.instanceColor) corridors.instanceColor.needsUpdate = true;
+  };
+  updateRoutes(exploration);
   scene.add(corridors);
 
   // A large, world-specific silhouette near a real existing Atlas site acts as an
@@ -156,5 +160,5 @@ export function addImmersiveScenery(
   }
   // ThreeWorldView owns all geometry disposal via scene traversal. Return only
   // the newly owned materials so shared meshes are not double-disposed.
-  return [scenicMaterial, corridors.material as THREE.Material, monumentMaterial];
+  return { materials: [scenicMaterial, corridors.material as THREE.Material, monumentMaterial], refresh: updateRoutes };
 }
