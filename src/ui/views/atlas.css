@@ -1,3 +1,6 @@
+.atlas-columns.immersive-world { grid-template-columns:minmax(0,1fr); }
+.atlas-explore-mode { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.atlas-explore-mode button[aria-pressed=true] { background:#b7e9dc; border-color:#b7e9dc; color:#091519; font-weight:750; }
 .atlas-workbench { --atlas-accent: #78ceb2; display:grid; gap:18px; color:#d9e3e9; font-size:14px; line-height:1.55; }
 .atlas-workbench * { min-width:0; }
 .atlas-workbench h1,.atlas-workbench h2,.atlas-workbench h3,.atlas-workbench h4 { color:#edf2f5; line-height:1.22; text-wrap:balance; }
