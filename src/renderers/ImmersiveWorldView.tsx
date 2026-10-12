@@ -91,6 +91,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   liveActors.current = actors;
   const liveExploration = useRef(exploration);
   liveExploration.current = exploration;
+  const previousExpeditionRegion = useRef(exploration.expedition.regionId);
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [contextGeneration, setContextGeneration] = useState(0);
@@ -104,6 +105,20 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     setInspectedSiteId(null);
     setInteractionResult('');
   }, [runId, atlas.worldId]);
+
+  // The simulation, not the camera, decides when an expedition actually
+  // arrives. Reposition the visual player only after its region truly changes.
+  useEffect(() => {
+    const nextRegion = exploration.expedition.regionId;
+    if (previousExpeditionRegion.current === nextRegion) return;
+    previousExpeditionRegion.current = nextRegion;
+    const site = layout.points.find(point => point.regionId === nextRegion && point.discovery !== 'UNKNOWN')
+      ?? layout.points.find(point => point.regionId === nextRegion);
+    const anchor = site ?? layout.regionAnchors[nextRegion];
+    if (anchor) player.current = { x: anchor.x + 5.2, y: 2.2, z: anchor.z + 3.2 };
+    setInspectedSiteId(null);
+    setTarget(null);
+  }, [exploration.expedition.regionId, layout]);
 
   useEffect(() => {
     const host = sceneHost.current;
