@@ -34,17 +34,23 @@ export function addImmersiveScenery(
   });
   const geometry = scenicGeometry(style);
   geometry.computeBoundingBox();
-  const meshes = new THREE.InstancedMesh(geometry, scenicMaterial, layout.points.length * 5);
+  // Source both named sites and the surrounding real simulated regions.
+  // Unvisited territory receives atmospheric geometry, never fabricated POIs.
+  const scenicAnchors = [
+    ...layout.points.map(site => ({ id: site.id, x: site.x, z: site.z, count: 5 })),
+    ...atlas.regions.map(region => ({ id: `region:${region.id}`, x: layout.regionAnchors[region.id]?.x ?? 0, z: layout.regionAnchors[region.id]?.z ?? 0, count: 3 })),
+  ];
+  const meshes = new THREE.InstancedMesh(geometry, scenicMaterial, scenicAnchors.reduce((sum, anchor) => sum + anchor.count, 0));
   const dummy = new THREE.Object3D();
   const tint = new THREE.Color();
   let count = 0;
-  for (const site of layout.points) {
-    for (let i = 0; i < 5; i++) {
+  for (const site of scenicAnchors) {
+    for (let i = 0; i < site.count; i++) {
       const seed = sceneHash(atlas.worldId + ':' + site.id + ':environment:' + i);
       const angle = (seed % 65536) / 65536 * Math.PI * 2;
       const radius = 9 + (seed >>> 16) % 19;
       const x = site.x + Math.cos(angle) * radius, z = site.z + Math.sin(angle) * radius;
-      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 6) continue;
+      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 6 || layout.points.some(point => Math.hypot(point.x - x, point.z - z) < 3.8)) continue;
       dummy.position.set(x, 0, z);
       dummy.rotation.set(0, seed % 628 / 100, 0);
       const size = .48 + (seed >>> 4) % 130 / 100;
