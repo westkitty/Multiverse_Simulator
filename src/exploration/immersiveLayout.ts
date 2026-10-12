@@ -54,6 +54,7 @@ export interface ImmersiveLayout {
   spawn: { x: number; z: number };
   profile: SceneProfile;
   extent: number;
+  sourceTransform: { centerX: number; centerZ: number; scale: number };
 }
 
 /** Stable geometry variation; visual-only, never consumes SimulationKernel RNG. */
@@ -65,21 +66,22 @@ export function sceneHash(value: string): number {
   return h >>> 0;
 }
 
-export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationState): ImmersiveLayout {
+export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationState, regionPositions: ReadonlyArray<{ id: string; position: readonly [number, number, number] }> = []): ImmersiveLayout {
   const profile = SCENE_PROFILES[atlas.worldId] ?? SCENE_PROFILES.ecosystem;
   const sites = atlas.sites;
-  const xs = sites.map(s => s.facts.coordinates[0]);
-  const zs = sites.map(s => s.facts.coordinates[2]);
+  const xs = [...sites.map(s => s.facts.coordinates[0]), ...regionPositions.map(r => r.position[0])];
+  const zs = [...sites.map(s => s.facts.coordinates[2]), ...regionPositions.map(r => r.position[2])];
   const minX = Math.min(0, ...xs), maxX = Math.max(0, ...xs);
   const minZ = Math.min(0, ...zs), maxZ = Math.max(0, ...zs);
   const span = Math.max(1, maxX - minX, maxZ - minZ);
   const centerX = (minX + maxX) / 2, centerZ = (minZ + maxZ) / 2;
+  const scale = 210 / span;
   const coverage = surveyCoverage(atlas, state);
   const placed: Array<{ x: number; z: number }> = [];
   const points = sites.map(site => {
     const fact = site.facts;
-    let x = (fact.coordinates[0] - centerX) * 210 / span;
-    let z = (fact.coordinates[2] - centerZ) * 210 / span;
+    let x = (fact.coordinates[0] - centerX) * scale;
+    let z = (fact.coordinates[2] - centerZ) * scale;
     // Small deterministic display offsets for coincident module coordinates.
     // Actual native coordinates remain untouched in the Atlas and saved history.
     for (let attempt = 0; attempt < 12 && placed.some(other => Math.hypot(other.x - x, other.z - z) < 4); attempt++) {
@@ -109,6 +111,7 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
     points,
     spawn: { x: (local?.x ?? 0) + 7, z: (local?.z ?? 0) + 9 },
     profile,
+    sourceTransform: { centerX, centerZ, scale },
     extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
   };
 }
@@ -120,6 +123,7 @@ export interface ImmersiveActorMarker {
   role: number;
   energy: number;
   task: string;
+  nativePosition: [number, number] | null;
 }
 
 /**
@@ -138,13 +142,16 @@ export function projectImmersiveActors(raw: unknown): ImmersiveActorMarker[] {
     if (!candidate || typeof candidate !== 'object') continue;
     const actor = candidate as Record<string, unknown>;
     const regionIndex = typeof actor.region === 'number' ? actor.region : -1;
-    const region = regions[regionIndex] as { id?: unknown } | undefined;
+    const region = regions[regionIndex] as { id?: unknown; position?: unknown } | undefined;
     const regionId = typeof actor.regionId === 'string' ? actor.regionId
       : typeof region?.id === 'string' ? region.id : null;
     if (!regionId || typeof actor.id !== 'string') continue;
     const role = typeof actor.role === 'number' && Number.isFinite(actor.role) ? actor.role : 0;
     const energy = typeof actor.energy === 'number' && Number.isFinite(actor.energy) ? actor.energy : 0;
-    result.push({ id: actor.id, regionId, role, energy, task: typeof actor.task === 'string' ? actor.task : 'field-work' });
+    const nativeRegion = regions.find(candidate => !!candidate && typeof candidate === 'object' && (candidate as { id?: unknown }).id === regionId) as { position?: unknown } | undefined;
+    const position = nativeRegion?.position;
+    const nativePosition: [number, number] | null = Array.isArray(position) && position.length === 3 && Number.isFinite(position[0]) && Number.isFinite(position[2]) ? [position[0], position[2]] : null;
+    result.push({ id: actor.id, regionId, role, energy, task: typeof actor.task === 'string' ? actor.task : 'field-work', nativePosition });
     if (result.length >= 180) break;
   }
   return result;
