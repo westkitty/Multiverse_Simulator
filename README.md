@@ -40,6 +40,8 @@ The six new signatures are **Silent Valley**, **Cathedral Below**, **City of Thr
 4. Investigate measured evidence; repair or operate local installations using actual resources. Investigations enforce predecessor evidence. The final site of each chain requires restoration evidence before resolution.
 5. **Investigate next** offers branch-local hypotheses with observation timestamps and 48-tick expiry—not claims of proven causation.
 6. Use History & branches, the Scientific Observatory, Experiment Lab and comparison workbenches for counterfactual experiments.
+7. After visiting a site, expand its **Site Memory**: each entry is an actual recorded expedition action or simulation event, with available before/after field changes. This is not a fabricated explanation of pre-simulation history.
+8. If a second same-seed run is loaded, use **Compare with loaded parallel run** to inspect that site's different integrity, hazards, evidence and stocks. Unsurveyed parallel-site details remain sealed. Different ticks and different interventions can both create differences; do not infer causation from the comparison alone.
 
 Actors survey, collect, maintain, deliver carried supplies, construct and assess risks. They operate in simulation time even when off-camera. They do **not** execute while the simulation is paused or the browser is closed.
 

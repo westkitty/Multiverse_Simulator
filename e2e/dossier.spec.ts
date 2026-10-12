@@ -24,6 +24,9 @@ test('field dossier preserves a sample while telemetry changes, rejects resupply
   const difference=await row.locator('td').nth(2).innerText();
   expect(difference).not.toMatch(/^0\n/);
   await expect(evidence).toContainText('GENERATED HISTORY / NOT AN OBSERVED EVENT');
+  const chronicle=page.getByRole('region',{name:'Site causal casefile'});
+  await expect(chronicle).toBeVisible();
+  await expect(chronicle.getByRole('list',{name:'Recorded site changes'})).toContainText('investigate');
   await page.getByLabel('Region filter').selectOption({index:1});
   await page.getByRole('group',{name:'Quick World Switcher'}).getByRole('button',{name:/World K:/}).click();
   // Quick-switch intentionally returns to the Scientific Observatory; preserve that journey.

@@ -80,3 +80,14 @@ The unrelated main CI failure was a single `<15ms/tick` wall-clock sample taken 
 - Activate Pages with repository administrator access and verify live source identity and complete public journeys.
 
 **Completion verdict: PARTIAL.** The source is a substantial fifteen-world implementation with meaningful simulation and traceable content records, but semantic depth, hardware performance and public live delivery remain open requirements.
+
+## 2026-10-11 — OMNI site-memory incremental acceptance (PR #4)
+
+- **IMPLEMENTED / CI FINAL HEAD PENDING:** `siteChronicle` provides bounded authentic localized activity history after a visit, with real action state deltas and kernel event provenance; never a claim that generated prehistory has been observed.
+- **IMPLEMENTED / CI FINAL HEAD PENDING:** `compareSiteRealities` shows parallel same-seed site-state differences while withholding undiscovered and unvisited data in the other run.
+- **IMPLEMENTED / CI FINAL HEAD PENDING:** causal-event-grounded Curiosity Engine leads maintain 48-tick expiration, hide future/unvisited event titles and use one indexed event scan rather than repeated POI scans.
+- **IMPLEMENTED / CI FINAL HEAD PENDING:** accessible React Site Memory with a recorded history list, safe run dropdown, differences and mobile layout; unit/UI/browser tests accompany changes.
+- GitHub change branch: `uplift/omniverse-site-chronicles-20261011`; pull request https://github.com/westkitty/Multiverse_Simulator/pull/4. Confirm full GitHub Actions green and final merge receipt before promoting these entries to `VERIFIED`.
+- **NOT SATISFIED BY THIS UPLIFT:** 3× separately meaningful mechanics per world, reconstructed original ZIP bytes/screenshots, sustainable unattended late economy, real phone GPU/thermal testing, Pages admin enablement, and an actual published HTTPS app.
+
+- **Newly identified existing limitation (not fixed by this read-only PR):** `SimulationKernel.replayFromStart()` starts a branch replay at its own genesis rather than restoring the frozen fork-origin checkpoint. For a branch created after exploring sites, the equivalence check can report `matchesAuthoritativeHash:false` even when saved branch restoration and continuation are deterministic. This test no longer asserts unsupported full-genesis replay for forks; it checks the actual archive restore/continuation behavior and retains the root-run replay oracle. Separate kernel repair must retain fork-origin history, history-bound event context, and old archive semantics without changing saved state hashes.

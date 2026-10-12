@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { departureBriefing, nearbyInvestigations } from '../../exploration/departure';
 import { planRefugeRest, refugeRoster } from '../../exploration/refuge';
 import { curiosityLeads } from '../../exploration/leads';
+import { compareSiteRealities, siteChronicle } from '../../exploration/forensics';
 import { DISCOVERY_ORDER } from '../../exploration/contracts';
 import { resupplyAvailability, siteDossier, suggestedAction } from '../../exploration/dossier';
 import { useMultiverseStore } from '../../store/multiverseStore';
@@ -27,6 +28,7 @@ const AtlasSession: React.FC = () => {
   const [failed, setFailed] = useState(false);
   const [filterRegion, setFilterRegion] = useState('all');
   const [planning, setPlanning] = useState(false);
+  const [compareRunId, setCompareRunId] = useState('');
   // Selection and filters don't change the world. Keep its frame stable on those renders.
   const frame = useMemo(() => kernel?.extractRenderFrame(), [kernel, kernel?.tick, store.uiRevision]);
   const state = kernel?.getState();
@@ -39,10 +41,27 @@ const AtlasSession: React.FC = () => {
   const expedition = exploration.expedition;
   const known = atlas.sites.filter(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN');
   const covered = surveyCoverage(atlas, exploration);
-  const leads = curiosityLeads(atlas, exploration, kernel.tick);
+  const events = kernel.getEvents();
+  const leads = curiosityLeads(atlas, exploration, kernel.tick, events, kernel.runId);
   const rank = DISCOVERY_ORDER.indexOf(delta.discoveryState);
   const briefing = departureBriefing(atlas, exploration, siteId, kernel.tick);
   const recommendations = planning ? nearbyInvestigations(atlas, exploration, kernel.tick) : [];
+  // These views are projections only; neither may advance time or reveal another
+  // run's undiscovered site data. A parallel site must share seed and identity.
+  const casefile = dossier.visited ? siteChronicle(atlas, exploration, siteId, events, kernel.runId) : [];
+  const relatedRuns = Object.values(store.runs).filter(other =>
+    other.runId !== kernel.runId && other.plugin.id === kernel.plugin.id &&
+    other.seed === kernel.seed && isFrontierState(other.getState()) &&
+    other.getState().atlas.sites.some((site: (typeof atlas.sites)[number]) =>
+      site.facts.id === siteId && site.facts.seed === chosen.facts.seed &&
+      site.facts.archetypeId === chosen.facts.archetypeId &&
+      JSON.stringify(site.facts.coordinates) === JSON.stringify(chosen.facts.coordinates))
+  );
+  const compareRun = relatedRuns.find(other => other.runId === compareRunId);
+  const otherState = compareRun?.getState();
+  const parallel = compareRun && isFrontierState(otherState)
+    ? compareSiteRealities(atlas, exploration, kernel.seed, otherState.atlas,
+        otherState.exploration, compareRun.seed, siteId) : null;
   const isRefuge = Number(chosen.facts.extensions.structureRole) === 3;
   const localCrew = dossier.visited && isRefuge ? refugeRoster(state).filter(a => a.regionId === chosen.facts.regionId) : [];
   let refugeReason = '', refugePreview: ReturnType<typeof planRefugeRest> | null = null;
@@ -148,9 +167,44 @@ const AtlasSession: React.FC = () => {
       <div className="atlas-table-scroll"><table><caption>Recorded field sample compared with current model state at tick {kernel.tick}</caption><thead><tr><th scope="col">Measurement</th><th scope="col">Recorded sample</th><th scope="col">Current model</th><th scope="col">Difference</th></tr></thead><tbody>{dossier.readings.map(reading => <tr key={reading.field}><th scope="row">{reading.label}<small>{reading.unit || 'Native model field'}</small></th><td>{reading.sample ? <>{format(reading.sample.value)} {reading.sample.unit}<small>OBSERVED · tick {reading.sample.tick} · {reading.sample.branchId}</small></> : <span className="atlas-muted">Not sampled</span>}</td><td>{format(reading.current)} {reading.unit}<small>MODEL · tick {kernel.tick}</small></td><td>{reading.difference === null ? '—' : `${reading.difference > 0 ? '+' : ''}${format(reading.difference)}`}<small>{reading.difference === null ? 'No comparison yet' : 'Since recorded sample'}</small></td></tr>)}</tbody></table></div>
       <div className="atlas-records"><article><p className="atlas-kicker">GENERATED HISTORY / NOT AN OBSERVED EVENT</p><h3>{view?.history?.formationEpoch}</h3><p>{view?.history?.origin}</p><p className="atlas-muted">This account belongs to the generated setting. Field measurements can support a hypothesis, but do not independently verify this history.</p></article><article><p className="atlas-kicker">OPEN QUESTION</p><h3>{String(chosen.facts.extensions.evidenceQuestion ?? 'What conditions account for this site’s current state?')}</h3><h4>Inventory & evidence</h4><p className="atlas-inventory">{Object.entries(delta.resources).map(([key,value]) => `${key}: ${format(value)}`).join(' · ')}</p><ul>{view?.evidence.map(e => <li key={e.evidenceId}>OBSERVED · {e.evidenceId}: {format(e.value)} {e.unit} · tick {e.tick} · {e.branchId}</li>)}</ul></article></div>
     </section>}
+    {dossier.visited && <section className="atlas-panel atlas-chronicles" aria-label="Site causal casefile">
+      <div className="atlas-section-heading"><div><p className="atlas-kicker">04 / SITE MEMORY</p><h2>This place has a history that continues</h2></div><span className="atlas-badge">RECORDED, NOT INVENTED</span></div>
+      <p className="atlas-muted">These entries come from this branch’s actual expedition actions and simulation event journal. State differences describe what changed; they do not independently establish why. No prior generated history has been rewritten.</p>
+      {casefile.length ? <ol className="atlas-chronicle-list" aria-label="Recorded site changes">
+        {casefile.map(entry => <li key={entry.kind + entry.id}>
+          <div className="atlas-chronicle-meta"><span>T{entry.tick}</span><span>{entry.kind === 'ACTION' ? 'EXPEDITION' : 'SIMULATION'}</span><small>{entry.branchId}</small></div>
+          <div><h3>{entry.title}</h3><p>{entry.detail}</p>
+            {!!entry.changes.length && <ul aria-label="Recorded state differences">{entry.changes.slice(0, 6).map(change => <li key={change.field}><b>{change.field}</b> {String(change.before)} → {String(change.after)}</li>)}</ul>}
+            {entry.changes.length > 6 && <small>{entry.changes.length - 6} further state differences omitted from this compact view.</small>}
+            {entry.causalEventId && <small>Event {entry.causalEventId}{entry.causedByEventId ? ' · recorded upstream ' + entry.causedByEventId : ''}</small>}
+          </div>
+        </li>)}
+      </ol> : <p>No retained site-specific actions or simulation events. Bounded journal history may have been compacted; absence is not proof that nothing happened.</p>}
+      <div className="atlas-parallel" aria-label="Parallel site comparison">
+        <p className="atlas-kicker">COUNTERFACTUAL LAB / LOADED SAME-GENESIS RUNS</p><h3>What happened to this place elsewhere?</h3>
+        {relatedRuns.length ? <>
+          <label>Compare with loaded parallel run
+            <select value={compareRunId} onChange={event => setCompareRunId(event.target.value)}>
+              <option value="">Select another same-seed run</option>
+              {relatedRuns.map(other => <option key={other.runId} value={other.runId}>{other.name} · T{other.tick}</option>)}
+            </select>
+          </label>
+          {parallel && <div className="atlas-parallel-results" role="status">
+            <p>Other run: {compareRun?.name} · tick {compareRun?.tick}. This is a difference, not proof that an intervention caused it. Ticks may differ.</p>
+            {parallel.targetVisible ? <dl>
+              <div><dt>Discovery</dt><dd>{delta.discoveryState} / {parallel.targetStage}</dd></div>
+              <div><dt>Integrity · current / other</dt><dd>{format(parallel.currentCondition)}% / {format(parallel.targetCondition!)}% · difference {format(parallel.conditionDifference!)} points</dd></div>
+              <div><dt>Hazard · current / other</dt><dd>{format(parallel.currentHazard)}% / {format(parallel.targetHazard!)}% · difference {format(parallel.hazardDifference!)} points</dd></div>
+              <div><dt>Evidence records</dt><dd>{parallel.currentEvidence} / {parallel.targetEvidence === null ? 'not visited' : parallel.targetEvidence}</dd></div>
+            </dl> : <p>This location is unsurveyed in the other run. Its readings, resources and history are withheld.</p>}
+            {parallel.resourceChanges.length > 0 && <details><summary>Compare visited site stocks</summary><ul>{parallel.resourceChanges.map(change => <li key={change.field}>{change.field}: {String(change.before)} → {String(change.after)}</li>)}</ul></details>}
+          </div>}
+        </> : <p className="atlas-muted">No other loaded run shares this world, seed and exact site identity. Fork this run in History & branches to compare local consequences.</p>}
+      </div>
+    </section>}
     <div className="atlas-bottom">
       <section className="atlas-panel" aria-label="Live investigation leads"><p className="atlas-kicker">UNRESOLVED / HYPOTHESES</p><h2>Investigate next</h2><p className="atlas-muted">Branch-local leads expire 48 ticks after the latest observation. These are questions, not established causes.</p>
-        {leads.length ? leads.map(lead => <article className="atlas-lead" key={lead.siteId}><button onClick={() => selectSite(lead.siteId)}>{presentSite(atlas,exploration,lead.siteId)!.label}: {lead.reason}</button><p>{lead.hypothesis}</p><small>{lead.confidence} · expires tick {lead.expiresAt}</small></article>) : <p>No fresh qualifying signals. Survey nearby regions for new leads.</p>}
+        {leads.length ? leads.map(lead => <article className="atlas-lead" key={lead.siteId}><button onClick={() => selectSite(lead.siteId)}>{presentSite(atlas,exploration,lead.siteId)!.label}: {lead.reason}</button><p>{lead.hypothesis}</p><small>{lead.confidence}{lead.observedTick === null ? '' : ' · event tick ' + lead.observedTick} · expires tick {lead.expiresAt}</small></article>) : <p>No fresh qualifying signals. Survey nearby regions for new leads.</p>}
       </section>
       <section className="atlas-panel atlas-journal"><p className="atlas-kicker">BRANCH / CHRONOLOGY</p><h2>Discovery journal</h2><p className="atlas-muted">Latest 128 actions retained; evidence persists. Paused and closed-browser simulations do not advance.</p><ol>{exploration.journal.slice(-20).reverse().map(e => <li key={e.id}><span>T{e.tick}</span><div><b>{e.action}</b> · {presentSite(atlas,exploration,e.siteId)?.label ?? 'Unidentified site'}<small>{e.branchId}</small></div></li>)}</ol></section>
     </div>

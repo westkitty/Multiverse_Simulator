@@ -48,3 +48,10 @@ Schema validation/cloning remains a CPU cost. Actor/connection rendering is not 
 ## Refuge/departure cost — latest local uplift
 
 This is a behavior/correctness uplift, not a claimed FPS optimization. Nearby route search is only requested when the planner is expanded. Existing render-frame reuse passes its regression test. Main compressed JS increased from 69.11 kB to 70.96 kB; CSS from 2.29 kB to 2.44 kB. Worker raw size increased from 534.69 kB to 537.00 kB. Scientific/vendor chunks are unchanged. Final build sizes and scope are recorded in `docs/refuge-uplift/REVIEW.md`; no physical-device speedup is claimed.
+
+## OMNI projection cost and limits (2026-10-11)
+
+New live curiosity leads preprocess the bounded causal event journal **once per Atlas projection** (O(E + S + J), where E is retained events, S is sites and J is bounded exploration action history), instead of searching all events separately for every POI. The selected site's short casefile filters recorded entries and caps the displayed result at twelve. Parallel-run comparison reads two matching site deltas; it does not simulate, clone the world, allocate new GPU objects or alter authoritative tick cadence.
+
+These are algorithmic complexity changes only. No measured FPS, memory savings or physical-device performance improvement is claimed. Run the same software/hardware representative workloads before asserting such a gain.
+
