@@ -72,19 +72,24 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     catch (error) { refugeReason = error instanceof Error ? error.message : String(error); }
   }
   const selectSite = (id: string) => { setSelected(id); setMessage(''); setFailed(false); };
-  const action = (kind: ExplorationCommand['action'], resourceId?: string) => {
+  const action = (kind: ExplorationCommand['action'], resourceId?: string, targetSiteId = siteId): string => {
     try {
-      if (kind === 'operate' && isRefuge) {
-        const plan = planRefugeRest(state, siteId);
-        store.dispatchCommand('expedition.rest', 'Service local teams at refuge', {siteId});
-        setFailed(false); setMessage(`Restored ${format(plan.restored)} total team energy using ${format(plan.cost)} local supplies. Recorded in History & branches.`);
-        return;
+      const target = atlas.sites.find(s => s.facts.id === targetSiteId);
+      if (!target) throw new Error('Unknown site');
+      if (kind === 'operate' && Number(target.facts.extensions.structureRole) === 3) {
+        const plan = planRefugeRest(state, targetSiteId);
+        store.dispatchCommand('expedition.rest', 'Service local teams at refuge', {siteId:targetSiteId});
+        const confirmation = `Restored ${format(plan.restored)} total team energy using ${format(plan.cost)} local supplies. Recorded in History & branches.`;
+        setFailed(false); setMessage(confirmation);
+        return confirmation;
       }
-      const payload: ExplorationCommand = { action: kind, siteId, ...(resourceId ? { resourceId } : {}) };
+      const payload: ExplorationCommand = { action: kind, siteId: targetSiteId, ...(resourceId ? { resourceId } : {}) };
       applyExplorationCommand(atlas, exploration, payload, { tick: kernel.tick, branchId: kernel.runId });
       store.dispatchCommand('exploration.action', `Expedition: ${kind}`, payload);
-      setFailed(false); setMessage(`${kind} accepted at tick ${kernel.tick}.`);
-    } catch (error) { setFailed(true); setMessage(error instanceof Error ? error.message : String(error)); }
+      const confirmation = `${kind} accepted at tick ${kernel.tick}.`;
+      setFailed(false); setMessage(confirmation);
+      return confirmation;
+    } catch (error) { const reason = error instanceof Error ? error.message : String(error); setFailed(true); setMessage(reason); return reason; }
   };
   const resupply = () => {
     try {
@@ -127,7 +132,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
           <button type="button" aria-pressed={immersive} onClick={() => setImmersive(true)}>Enter 3D world</button>
         </div>
         <div className="atlas-section-heading"><div><p className="atlas-kicker">01 / SURVEY VOLUME</p><h2>Region explorer</h2></div><span className="atlas-badge">{store.preferences.simplified3D ? 'SCHEMATIC' : 'LIVE MODEL'}</span></div>
-        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
+        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
         <p className="atlas-muted">3D reconnaissance is a visual space for free movement and examining landmarks. Travel, surveying, and repairs still use authoritative simulation actions. A signal is not yet a place.</p>
         <label className="atlas-filter">Region filter <select value={filterRegion} onChange={e => setFilterRegion(e.target.value)}><option value="all">All surveyed contacts</option>{state.regions.map(r => <option key={r.id} value={r.id}>{r.id} · {r.biome}</option>)}</select></label>
         <div className="atlas-contacts" aria-label="Survey contacts">
