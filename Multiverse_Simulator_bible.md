@@ -138,3 +138,12 @@ Unit 181/181 (3 environment-skipped) incl. 4 new immersive regression tests; acc
 - Immersive 3D view now includes a collapsible field notebook with verified sample values, tick provenance and context-specific next step. Unknown contacts stay unnamed; authored historical interpretations are explicitly hypotheses, not observed evidence.
 - Protected: all 15 worlds and original scripts; kernel, RNG, branching/replay, archive/IndexedDB, economy, route validators and scientific Atlas unchanged. No new state format. Added unit tests and browser assertion; validation at PR head is **pending** (do not represent this entry as a green test result).
 - Pending: exact-head GitHub Actions verification, software-rendered browser behavior, independent meaningful-content metric beyond this increment, long-run economy, hardware FPS, human art accessibility.
+
+
+## 2026-10-12 — Immersive world-system experiments (candidate)
+
+Player request remains: all fifteen worlds should be worth exploring as games without replacing deterministic science. Building on the successfully released PR #10 field notebooks, this candidate adds an explicitly player-triggered **native intervention loop** in the 3D expedition screen: choose one existing world-plugin command, inspect command-bus proof, advance simulated time as desired, read three native numerical metrics, and compare values with the pre-intervention snapshot. The overlay creates no alternate simulation or historical account.
+
+The controlled-response acceptance exercise duplicates each world with the same seed, scenario configuration and run identity, changes one native intervention in the treatment, advances four ticks on both branches, and records actual numeric metric differences. Its coverage is a behavioral breadth indicator, *not* a tripling metric or proof of independently designed facilities. Command families for six frontier worlds still share policy/restoration plumbing. The scientific Observatory keeps its full controls; the in-world deck is a curated entry point.
+
+Implementation is on `arena/native-field-lab-20261012`. Initial QA/CI and release state remain unverified at this dated candidate entry. Do not overwrite this claim with a future success without GitHub Actions and merge/deploy receipts.

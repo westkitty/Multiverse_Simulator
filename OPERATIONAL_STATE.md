@@ -132,3 +132,20 @@ Publication requires a new coding session and authorized Pages configuration: **
 - Immersive 3D view now includes a collapsible field notebook with verified sample values, tick provenance and context-specific next step. Unknown contacts stay unnamed; authored historical interpretations are explicitly hypotheses, not observed evidence.
 - Protected: all 15 worlds and original scripts; kernel, RNG, branching/replay, archive/IndexedDB, economy, route validators and scientific Atlas unchanged. No new state format. Added unit tests and browser assertion; validation at PR head is **pending** (do not represent this entry as a green test result).
 - Pending: exact-head GitHub Actions verification, software-rendered browser behavior, independent meaningful-content metric beyond this increment, long-run economy, hardware FPS, human art accessibility.
+
+
+## 2026-10-12 — Candidate native field experiment console (PR pending)
+
+- Verified baseline: PR #10 merge `b503fd6643cfb76fb28c20523e720fb11a96c071`; GitHub Actions run 38285955840 passed validate, Pages deployment and public smoke.
+- Branch: `arena/native-field-lab-20261012`. The immersive expedition now offers two existing plugin-owned interventions and three genuinely measured simulation metrics per world. Player activation uses the existing atomic command bus. A successful result is reported only after a matching command-bus causal event; rejected or missing receipts are not presented as success.
+- Telemetry changes are compared with the pre-intervention tick and clearly marked observational; uncontrolled post-command changes are not asserted to prove causality. The scientific Observatory remains the complete command deck.
+- Semantic-variety acceptance now includes an actual matched-seed/config/run-ID treatment-control experiment for each of 15 worlds (four simulation ticks). Its measured numeric effects are **separate from authored labels, site counts, visual props and metadata**. Generated per-world evidence: `docs/acceptance/native-field-variety.json` at acceptance execution. This is not a claim of threefold authored content expansion.
+- Protected: existing 15 plug-ins, kernel, RNG, replay, routes, archives, IndexedDB, worker lifecycle, old tests/oracles and accessible Atlas unchanged. No new persistent fields or engine commands. CI, mobile browser and physical device performance: **pending/unverified** until independently observed at exact PR head.
+
+
+### 2026-10-12 — Native field experiment QQQ browser selector repair (PR #11)
+
+- First PR-head CI: run 38304030707. Historical fixtures, TypeScript, lint, unit, performance, controlled semantic acceptance (15/15 measured treatment responses), build and dist verification all **PASS**. Browser: **18 passed, 2 failed** on the same new Ecosystem interaction assertion across desktop and mobile.
+- **Reproduction:** `getByRole('region', { name: 'World system experiment' }).getByRole('status')` matched four legitimate live regions: three native HTML `<output>` elements (implicitly status) plus the explicit intervention confirmation `<p role="status">`. Playwright correctly rejected an ambiguous selector. The logs show the confirmation message already contained "Validated command recorded at tick" and the soil nutrient readout had updated.
+- **Root cause:** an overly broad test locator, not a rejected intervention, missing receipt, or a simulation corruption. Fixed by giving only the explicit confirmation `data-testid="native-intervention-feedback"` and targeting that element in Playwright. The success-message expectation and distinct before/after scientific-metric assertion remain unchanged; there is no broad retry, DOM-only success shortcut, suppression or weakened assertion.
+- This is a candidate repair on `arena/native-field-lab-20261012`. Final-head CI, browser outcome, merge and public deployment **pending**.

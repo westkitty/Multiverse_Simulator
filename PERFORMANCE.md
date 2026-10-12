@@ -81,3 +81,8 @@ What remains unmeasured: physical-device FPS/memory, GPU timing, sustained therm
 ## Semantic field-protocol overlay (2026-10-12; candidate, unverified)
 
 The authored field notebook is read-only over existing exploration sites, observations and cargo/condition/mitigation. It adds no GPU geometry, timers, core state, persistent schema or random streams. There are **no new frame-time measurements** and no legitimate FPS-gain claim. Compare matched SwiftShader or real-device scenarios before making performance claims; hardware targets remain unverified.
+
+
+## Native field experiment overlay — candidate, 2026-10-12
+
+The optional collapsed HTML experiment panel reads three existing `getLatestMetrics()` values per view update and dispatches an intervention only on explicit user action. It introduces no new rendering loop, Three.js geometry, polling, shaders, texture assets, simulation workers or persistence fields. Four-tick matched treatment/control tests measure **semantic behavior**, not frame time. No before/after FPS, GPU memory or real-device result is claimed for this candidate; the previous SwiftShader software-rendering limitations still apply.

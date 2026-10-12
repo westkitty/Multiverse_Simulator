@@ -12,6 +12,8 @@ import { ThreeWorldViewport } from '../../renderers/ThreeWorldViewport';
 import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
 import { projectImmersiveActors } from '../../exploration/immersiveLayout';
 import { fieldProtocolStatus } from '../../exploration/fieldProtocols';
+import { fieldInterventions, fieldTelemetry } from '../../exploration/nativeFieldExperiments';
+import type { QuickInterventionDescriptor } from '../../core/contracts';
 import './atlas.css';
 
 const facilities = ['Supply camp: transfer stocks','Sensor: survey adjacent regions','Salvage ruin: recover two units','Refuge: restore local team energy using local supplies','Extraction: convert finite reserve to salvage','Crossing: reopen a blocked route','Workshop: repair using local salvage','Processor: use fuel for local engineering','Archive: recover historical records','Relay: detect contacts two links away','Containment: reduce local hazard','Generator: convert two supplies to one fuel'];
@@ -33,12 +35,16 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
   const [filterRegion, setFilterRegion] = useState('all');
   const [planning, setPlanning] = useState(false);
   const [compareRunId, setCompareRunId] = useState('');
+  const [experimentBaseline, setExperimentBaseline] = useState<{ before: Record<string, number>; label: string; tick: number; eventId: string } | null>(null);
+  const [experimentMessage, setExperimentMessage] = useState('');
   // Selection and filters don't change the world. Keep its frame stable on those renders.
   const frame = useMemo(() => kernel?.extractRenderFrame(), [kernel, kernel?.tick, store.uiRevision]);
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
   const { atlas, exploration } = state;
   const protocol = fieldProtocolStatus(atlas, exploration);
+  const fieldControls = fieldInterventions(kernel.plugin.id, kernel.plugin.quickInterventions);
+  const fieldGauges = fieldTelemetry(kernel.plugin.id, kernel.plugin.metricDefinitions, kernel.getLatestMetrics(), experimentBaseline?.before ?? null);
   const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => s.facts.id === store.selectedEntityId) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
   const siteId = chosen.facts.id, delta = exploration.sites[siteId];
   const dossier = siteDossier(atlas, exploration, siteId), view = dossier.view;
@@ -115,6 +121,27 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     if (kind === 'resolve') return rank !== 5;
     return false;
   };
+  const runNativeFieldIntervention = (item: QuickInterventionDescriptor) => {
+    const existingEvents = new Set(kernel.getEvents().map(event => event.id));
+    const before = kernel.getLatestMetrics();
+    try {
+      // This is the existing authoritative command bus, not a renderer effect.
+      // A successful "command:" event survives only if the plugin accepted it.
+      store.dispatchCommand(item.commandType, item.label, item.defaultPayload);
+      const applied = kernel.getEvents().find(event =>
+        !existingEvents.has(event.id) && event.type === 'command:' + item.commandType);
+      if (!applied) {
+        setExperimentBaseline(null);
+        setExperimentMessage('Command receipt unverified. Consult History & branches before treating this action as applied.');
+        return;
+      }
+      setExperimentBaseline({ before, label: item.label, tick: kernel.tick, eventId: applied.id });
+      setExperimentMessage('Validated command recorded at tick ' + kernel.tick + '. Advance simulation time to study the measured response.');
+    } catch (error) {
+      setExperimentBaseline(null);
+      setExperimentMessage('Rejected without confirmed changes: ' + (error instanceof Error ? error.message : String(error)));
+    }
+  };
   // Entering a world is the primary game screen, not a 3D widget squeezed into the lab.
   // The original scientific Atlas and all its verification controls remain available.
   if (immersive) return <section aria-label="Three.js universe expedition" className="immersive-game-page">
@@ -134,6 +161,27 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
       </details>
       <p aria-live="polite" style={{ margin: '7px 0 0' }}>{protocol.nextInstruction}</p>
     </section>}
+    <section aria-label="World system experiment" className="atlas-panel" style={{ marginBottom: 12, padding: '12px 16px' }}>
+      <details>
+        <summary style={{ cursor: 'pointer', fontWeight: 700 }}>Experiment with this world's real simulation</summary>
+        <p style={{ margin: '8px 0' }}>These controls change the active reality using its existing validated simulation commands. They do not move the camera or expedition. Changes in measurements are observations, not proof of causation.</p>
+        <div aria-label="Native field measurements" style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 9 }}>
+          {fieldGauges.map(gauge => <div key={gauge.id} style={{ flex: '1 1 130px', borderLeft: '2px solid #729aa9', paddingLeft: 10 }}>
+            <small style={{ display: 'block' }}>{gauge.label}</small>
+            <output data-testid={'field-gauge-' + gauge.id}>{format(gauge.value)} {gauge.unit}</output>
+            {gauge.delta !== null && <small style={{ display: 'block' }}>Change from T{experimentBaseline?.tick}: {gauge.delta > 0 ? '+' : ''}{format(gauge.delta)} {gauge.unit}</small>}
+          </div>)}
+        </div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {fieldControls.map(item => <button type="button" key={item.id} title={item.description} onClick={() => runNativeFieldIntervention(item)}
+            style={{ minHeight: 44, padding: '8px 12px', background: '#203d4a', border: '1px solid #86b9c0', color: '#f0fbff', borderRadius: 6 }}>
+            {item.label}
+          </button>)}
+        </div>
+        {experimentBaseline && <p style={{ fontSize: 12, margin: '8px 0' }}>Command event {experimentBaseline.eventId} · {experimentBaseline.label} · T{experimentBaseline.tick}</p>}
+        {experimentMessage && <p role="status" data-testid="native-intervention-feedback" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
+      </details>
+    </section>
     <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
     <p className="immersive-game-disclaimer">Local movement is visual reconnaissance. Expedition routing, resources, discovery, and historical evidence remain governed by the underlying simulation.</p>
   </section>;
