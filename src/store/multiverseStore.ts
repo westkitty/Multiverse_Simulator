@@ -150,6 +150,9 @@ export interface MultiverseState {
     passed: boolean;
     authoritativeHash: string;
     replayedHash: string;
+    originTick?: number;
+    verificationBasis?: 'genesis' | 'fork_checkpoint' | 'legacy_fork_journal';
+    unavailableReason?: string;
   } | null;
 
   // Actions
@@ -586,18 +589,38 @@ export const useMultiverseStore = create<MultiverseState>((set, get) => ({
     const { runs, activeRunId } = get();
     const target = runs[runId ?? activeRunId];
     if (!target) return false;
-    const res = target.replayFromStart(target.tick);
-    set((s) => ({
-      lastReplayCheck: {
-        runId: target.runId,
-        tick: target.tick,
-        passed: res.matchesAuthoritativeHash,
-        authoritativeHash: res.authoritativeHash,
-        replayedHash: res.replayedHash,
-      },
-      uiRevision: s.uiRevision + 1,
-    }));
-    return res.matchesAuthoritativeHash;
+    try {
+      const res = target.replayFromStart(target.tick);
+      set((s) => ({
+        lastReplayCheck: {
+          runId: target.runId,
+          tick: target.tick,
+          passed: res.matchesAuthoritativeHash,
+          authoritativeHash: res.authoritativeHash,
+          replayedHash: res.replayedHash,
+          originTick: res.originTick,
+          verificationBasis: res.verificationBasis,
+        },
+        uiRevision: s.uiRevision + 1,
+      }));
+      return res.matchesAuthoritativeHash;
+    } catch (error) {
+      // Missing proof is not equivalent to a deterministic state mismatch.
+      const reason = error instanceof Error ? error.message : String(error);
+      set((s) => ({
+        lastReplayCheck: {
+          runId: target.runId,
+          tick: target.tick,
+          passed: false,
+          authoritativeHash: target.getStateHash(),
+          replayedHash: '',
+          originTick: target.getLineage().parentRunId ? target.getLineage().forkedAtTick : 0,
+          unavailableReason: reason,
+        },
+        uiRevision: s.uiRevision + 1,
+      }));
+      return false;
+    }
   },
 
   async executeExperiment(definition) {
