@@ -16,16 +16,16 @@ const facilities = ['Supply camp: transfer stocks','Sensor: survey adjacent regi
 const format = (value: number) => Number.isFinite(value) ? value.toLocaleString('en-US', { maximumFractionDigits: 3 }) : 'Unavailable';
 
 // A run is an inspection context: do not carry messages, filters or selection into another reality.
-export const AtlasView: React.FC = () => {
+export const AtlasView: React.FC<{ initialImmersive?: boolean }> = ({ initialImmersive = false }) => {
   const runId = useMultiverseStore(s => s.activeRunId);
-  return <AtlasSession key={runId} />;
+  return <AtlasSession key={runId} initialImmersive={initialImmersive} />;
 };
 
-const AtlasSession: React.FC = () => {
+const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersive }) => {
   const store = useMultiverseStore();
   const kernel = store.runs[store.activeRunId];
   const [selected, setSelected] = useState('');
-  const [immersive, setImmersive] = useState(false);
+  const [immersive, setImmersive] = useState(initialImmersive);
   const [message, setMessage] = useState('');
   const [failed, setFailed] = useState(false);
   const [filterRegion, setFilterRegion] = useState('all');
@@ -120,14 +120,14 @@ const AtlasSession: React.FC = () => {
       </div>
       <div className="atlas-expedition"><span><b>TICK {kernel.tick}</b> · {store.isRunning ? 'Advancing' : 'Paused'}</span><span>Position / {expedition.regionId}</span><span>Fuel / {format(expedition.fuel)}</span><span>Supplies / {format(expedition.supplies)}</span><span>{expedition.journey ? `IN TRANSIT · arrival ${expedition.journey.arrivalTick}` : 'AT REST'}</span></div>
     </header>
-    <div className="atlas-columns">
+    <div className={immersive ? 'atlas-columns immersive-world' : 'atlas-columns'}>
       <div className="atlas-panel atlas-map">
         <div className="atlas-explore-mode" role="group" aria-label="Exploration view mode">
           <button type="button" aria-pressed={!immersive} onClick={() => setImmersive(false)}>Atlas overview</button>
           <button type="button" aria-pressed={immersive} onClick={() => setImmersive(true)}>Enter 3D world</button>
         </div>
         <div className="atlas-section-heading"><div><p className="atlas-kicker">01 / SURVEY VOLUME</p><h2>Region explorer</h2></div><span className="atlas-badge">{store.preferences.simplified3D ? 'SCHEMATIC' : 'LIVE MODEL'}</span></div>
-        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onReturnToAtlas={() => setImmersive(false)} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
+        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} runId={kernel.runId} onSelectSite={selectSite} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
         <p className="atlas-muted">3D reconnaissance is a visual space for free movement and examining landmarks. Travel, surveying, and repairs still use authoritative simulation actions. A signal is not yet a place.</p>
         <label className="atlas-filter">Region filter <select value={filterRegion} onChange={e => setFilterRegion(e.target.value)}><option value="all">All surveyed contacts</option>{state.regions.map(r => <option key={r.id} value={r.id}>{r.id} · {r.biome}</option>)}</select></label>
         <div className="atlas-contacts" aria-label="Survey contacts">
