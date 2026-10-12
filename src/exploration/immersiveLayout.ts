@@ -107,7 +107,21 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
       visualSeed: sceneHash(fact.id),
     };
   });
-  const local = points.find(point => point.regionId === state.expedition.regionId) ?? points[0];
+  // Start next to a legitimate, locally recognized expedition contact. Choose
+  // a clear viewing angle where that contact is closer than neighboring sites.
+  const local = points.find(point => point.regionId === state.expedition.regionId && point.discovery !== 'UNKNOWN')
+    ?? points.find(point => point.regionId === state.expedition.regionId) ?? points[0];
+  const spawnRadius = 5.5;
+  const candidates = Array.from({ length: 32 }, (_, index) => {
+    const angle = index * Math.PI * 2 / 32;
+    const x = (local?.x ?? 0) + Math.cos(angle) * spawnRadius;
+    const z = (local?.z ?? 0) + Math.sin(angle) * spawnRadius;
+    const rivals = points.filter(point => point.id !== local?.id);
+    const nearestRival = rivals.reduce((best, point) => Math.min(best, Math.hypot(point.x - x, point.z - z)), Infinity);
+    return { x, z, margin: nearestRival - spawnRadius };
+  });
+  candidates.sort((a, b) => b.margin - a.margin);
+  const spawn = candidates[0] ?? { x: 0, z: 0 };
   const regionAnchors: Record<string, { x: number; z: number }> = Object.fromEntries(regionPositions.map(region => [region.id, { x: (region.position[0] - centerX) * scale, z: (region.position[2] - centerZ) * scale }]));
   for (const region of atlas.regions) {
     if (Object.hasOwn(regionAnchors, region.id)) continue;
@@ -116,7 +130,7 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
   }
   return {
     points,
-    spawn: { x: (local?.x ?? 0) + 7, z: (local?.z ?? 0) + 9 },
+    spawn: { x: spawn.x, z: spawn.z },
     profile,
     sourceTransform: { centerX, centerZ, scale },
     regionAnchors,
