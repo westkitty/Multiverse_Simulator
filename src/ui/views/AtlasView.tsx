@@ -113,6 +113,16 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     if (kind === 'resolve') return rank !== 5;
     return false;
   };
+  // Entering a world is the primary game screen, not a 3D widget squeezed into the lab.
+  // The original scientific Atlas and all its verification controls remain available.
+  if (immersive) return <section aria-label="Three.js universe expedition" className="immersive-game-page">
+    <div className="immersive-game-heading">
+      <div><span className="atlas-kicker">LIVE FIELD RECONNAISSANCE / TICK {kernel.tick}</span><h1>{kernel.plugin.name}</h1><p>{state.regions.length} simulated regions · {atlas.sites.length} persistent sites · {Object.values(exploration.sites).filter(s => s.firstVisitedTick !== null).length} visited</p></div>
+      <div className="immersive-game-actions"><button type="button" onClick={() => store.toggleRunning()}>{store.isRunning ? 'Pause world' : 'Run world'}</button><button type="button" onClick={() => store.stepActiveRun(1)}>Step one tick</button><button type="button" onClick={() => { setImmersive(false); store.setActiveTab('atlas'); }}>Open Atlas & field records</button></div>
+    </div>
+    <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
+    <p className="immersive-game-disclaimer">Local movement is visual reconnaissance. Expedition routing, resources, discovery, and historical evidence remain governed by the underlying simulation.</p>
+  </section>;
   return <section className="atlas-workbench" aria-label="Living World Atlas" style={{ '--atlas-accent': kernel.plugin.accentColor } as React.CSSProperties}>
     <header className="atlas-panel atlas-heading">
       <div><p className="atlas-kicker">OMNIVERSE II / FIELD OBSERVATORY</p><h1>{kernel.plugin.name}</h1><p className="atlas-muted">A record of what is known. Not a promise of what is safe.</p></div>
@@ -126,14 +136,14 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
       </div>
       <div className="atlas-expedition"><span><b>TICK {kernel.tick}</b> · {store.isRunning ? 'Advancing' : 'Paused'}</span><span>Position / {expedition.regionId}</span><span>Fuel / {format(expedition.fuel)}</span><span>Supplies / {format(expedition.supplies)}</span><span>{expedition.journey ? `IN TRANSIT · arrival ${expedition.journey.arrivalTick}` : 'AT REST'}</span></div>
     </header>
-    <div className={immersive ? 'atlas-columns immersive-world' : 'atlas-columns'}>
+    <div className="atlas-columns">
       <div className="atlas-panel atlas-map">
         <div className="atlas-explore-mode" role="group" aria-label="Exploration view mode">
           <button type="button" aria-pressed={!immersive} onClick={() => setImmersive(false)}>Atlas overview</button>
           <button type="button" aria-pressed={immersive} onClick={() => setImmersive(true)}>Enter 3D world</button>
         </div>
         <div className="atlas-section-heading"><div><p className="atlas-kicker">01 / SURVEY VOLUME</p><h2>Region explorer</h2></div><span className="atlas-badge">{store.preferences.simplified3D ? 'SCHEMATIC' : 'LIVE MODEL'}</span></div>
-        {immersive ? <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} /> : <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />}
+        <ThreeWorldViewport frame={frame} selectedEntityId={siteId} onSelectEntity={id => { if (id && atlas.sites.some(s => s.facts.id === id)) selectSite(id); }} reducedMotion={store.preferences.reducedMotion} simplifiedMode={store.preferences.simplified3D} />
         <p className="atlas-muted">3D reconnaissance is a visual space for free movement and examining landmarks. Travel, surveying, and repairs still use authoritative simulation actions. A signal is not yet a place.</p>
         <label className="atlas-filter">Region filter <select value={filterRegion} onChange={e => setFilterRegion(e.target.value)}><option value="all">All surveyed contacts</option>{state.regions.map(r => <option key={r.id} value={r.id}>{r.id} · {r.biome}</option>)}</select></label>
         <div className="atlas-contacts" aria-label="Survey contacts">
