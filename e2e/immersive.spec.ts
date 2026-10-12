@@ -25,13 +25,17 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   await explorer.getByRole('button', { name: 'Inspect nearby' }).click();
   const dossier = explorer.getByRole('complementary', { name: 'Nearby site investigation' });
   await expect(dossier).toBeVisible();
-  await expect(dossier).toContainText('UNKNOWN');
-  await dossier.getByRole('button', { name: 'Detect', exact: true }).click();
+  // The native ecosystem baseline starts with its first site already detected;
+  // advancing its real discovery stage must mutate kernel-owned exploration.
   await expect(dossier).toContainText('DETECTED');
-  await expect(dossier.getByRole('status')).toContainText('detect accepted');
+  await dossier.getByRole('button', { name: 'Survey', exact: true }).click();
+  await expect(dossier).toContainText('SURVEYED');
+  await expect(dossier.getByRole('status')).toContainText('survey accepted');
   await dossier.getByRole('button', { name: 'Full dossier' }).click();
   await expect(page.getByRole('tab', { name: 'Living World Atlas' })).toHaveAttribute('aria-selected', 'true');
-  await expect(page.getByRole('region', { name: 'Site investigation inspector' })).toBeVisible();
+  const fullDossier = page.getByRole('region', { name: 'Site investigation inspector' });
+  await expect(fullDossier).toBeVisible();
+  await expect(fullDossier).toContainText('SURVEYED');
   expect(errors).toEqual([]);
 });
 
