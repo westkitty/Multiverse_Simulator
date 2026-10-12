@@ -50,6 +50,7 @@ import {
 registerBuiltInWorlds();
 
 export type MultiverseTab =
+  | 'explore'
   | 'atlas'
   | 'library'
   | 'observatory'
