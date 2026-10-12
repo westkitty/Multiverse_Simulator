@@ -19,7 +19,7 @@ const format = (value: number) => Number.isFinite(value) ? value.toLocaleString(
 // A run is an inspection context: do not carry messages, filters or selection into another reality.
 export const AtlasView: React.FC<{ initialImmersive?: boolean }> = ({ initialImmersive = false }) => {
   const runId = useMultiverseStore(s => s.activeRunId);
-  return <AtlasSession key={runId} initialImmersive={initialImmersive} />;
+  return <AtlasSession key={`${runId}:${initialImmersive ? '3d' : 'atlas'}`} initialImmersive={initialImmersive} />;
 };
 
 const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersive }) => {
