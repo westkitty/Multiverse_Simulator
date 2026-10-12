@@ -115,3 +115,17 @@ The project is not merely an abstract fifteen-world data laboratory. The explici
 
 ### Evidence and limits
 PR #6: https://github.com/westkitty/Multiverse_Simulator/pull/6. Main baseline `c070beb6` is publicly deployed with 16/16 Chromium desktop/mobile public-smoke cases (run 38192688920), but the gameplay candidate is **not** included in that deployed SHA. Check live PR-head CI for actual execution outcomes, then independently inspect the rendered experience before merge. Physical-device performance, semantic 3× expansion and authored world distinctiveness are not certified.
+
+## 2026-10-12 — OMNI/AWE/AAA gameplay uplift (feature branch `arena/a0f4ba85-multiverse-simulator`)
+
+### Authority and baseline
+Verified production baseline `82384387251536212ccfc8e5c087c73d9db74fec` (PR #6 merged and deployed; workflow 38212561808, 20 public-site browser tests). The prior section's note that the gameplay candidate was "not included in that deployed SHA" described its own pre-merge checkpoint and is superseded: enterable Three.js exploration is live on `main`. This work unit executes the engineering directive `Multiverse_Simulator_OMNI_AWE_AAA_QQQ_Performance_Repair_2026-10-12.pdf` on top of that baseline.
+
+### Implemented (presentation layer; simulation authority untouched)
+- **World identity**: 15 profile-driven atmospheres (gradient sky textures, starfields, sun/moon/ringed-giant/nebula/storm-eye anchors, adaptive fill light), deterministic terrain heightfields with vertex-colored ground and canopy planes, composed scenery (site rings, region clusters, route dressing) plus a flora layer. All randomness is `sceneHash`-derived; kernel RNG and state hashes are covered by tests as unchanged.
+- **Game feel**: content-argmax spawn and arrival facing; velocity-damped movement; Shift sprint on foot; reduced-motion-aware head bob and sprint FOV; terrain ground-following; interaction distance in the HUD readout.
+- **QQQ repair (P1)**: the shipped movement basis was horizontally mirrored against the Three.js camera (`W` drifted sideways at most headings). `movementBasis(yaw)` is now shared by view and tests, verified against `THREE.PerspectiveCamera.getWorldDirection` at six headings. Previous tests asserted only coordinate change, never direction.
+- **Performance**: layout-projection cache (0.45 ms → 0.009 ms signature on unchanged ticks), zero per-frame allocation in movement, hidden-tab render suspension, Lambert terrain, trimmed mesh/star budgets after measurement, full disposal of atmosphere/terrain/flora resources. Matched SwiftShader measurements are recorded in `PERFORMANCE.md`; hardware GPU remains unverified.
+
+### Evidence and limits
+Unit 181/181 (3 environment-skipped) incl. 4 new immersive regression tests; acceptance 11/11; performance gate 5/5; build + dist verification PASS; Playwright 20/20 desktop + Pixel 7 emulation with a new spawn-content assertion. Spawn-view draw calls rose from 4–15 (empty quadrant) to 108–186 (measured content) across nine audited worlds; at matched workload SwiftShader frame time is ~1.7–2× baseline — recorded, not hidden. Unfinished: physical-device FPS/memory certification, semantic 3× content expansion, long-run economy balance, human art review of the new atmospheres, and a possible megacity brightness accessibility option. Protected invariants (kernel determinism, archives, site privacy, route gating, Atlas/observatory fallback, Pages deployment) are unchanged and re-verified by the suites above.

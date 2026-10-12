@@ -3,8 +3,10 @@ import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
 import { ExplorationCommand, presentSite } from '../exploration/engine';
 import { suggestedAction } from '../exploration/dossier';
-import { ImmersiveActorMarker, makeImmersiveLayout, sceneHash, SceneProfile } from '../exploration/immersiveLayout';
-import { addImmersiveScenery } from './immersiveScenery';
+import { ImmersiveActorMarker, ImmersiveLayout, makeImmersiveLayout, movementBasis, sceneHash, SceneProfile, spawnViewAngles, yawToward } from '../exploration/immersiveLayout';
+import { addImmersiveScenery, addImmersiveFlora } from './immersiveScenery';
+import { addImmersiveAtmosphere } from './immersiveAtmosphere';
+import { addImmersiveTerrain, terrainHeight } from './immersiveTerrain';
 
 interface Props {
   atlas: ExplorationAtlas;
@@ -18,7 +20,7 @@ interface Props {
   onReturnToAtlas: () => void;
   reducedMotion?: boolean;
 }
-type Movement = 'forward' | 'back' | 'left' | 'right' | 'up' | 'down';
+type Movement = 'forward' | 'back' | 'left' | 'right' | 'up' | 'down' | 'sprint';
 
 function landmarkShape(
   group: THREE.Group, profile: SceneProfile, seed: number, x: number, z: number,
@@ -76,7 +78,25 @@ function landmarkShape(
 export const ImmersiveWorldView: React.FC<Props> = ({
   atlas, exploration, regions, actors, runId, onSelectSite, onSiteAction, onAdvanceTime, onReturnToAtlas, reducedMotion,
 }) => {
-  const layout = useMemo(() => makeImmersiveLayout(atlas, exploration, regions), [atlas, exploration, regions]);
+  // Layout rebuilds are gated on the only exploration fields that affect the
+  // projection (discovery/condition/hazard/visit/region). Simulation ticks that
+  // do not change these fields reuse the cached geometry plan.
+  const layoutSignature = useMemo(() => {
+    let sig = atlas.worldId + '|' + exploration.expedition.regionId;
+    for (const site of atlas.sites) {
+      const delta = exploration.sites[site.facts.id];
+      sig += delta ? `${delta.discoveryState}${Math.round(delta.condition)}${Math.round(delta.hazard)}${delta.firstVisitedTick !== null ? 'v' : '-'}` : '?';
+    }
+    for (const region of regions) sig += `#${Math.round(region.position[0])},${Math.round(region.position[2])}`;
+    return sig;
+  }, [atlas, exploration, regions]);
+  const layoutCache = useRef<{ key: string; value: ImmersiveLayout } | null>(null);
+  const layout = useMemo(() => {
+    if (layoutCache.current?.key === layoutSignature) return layoutCache.current.value;
+    const value = makeImmersiveLayout(atlas, exploration, regions);
+    layoutCache.current = { key: layoutSignature, value };
+    return value;
+  }, [atlas, exploration, regions, layoutSignature]);
   const sceneHost = useRef<HTMLDivElement>(null);
   const actions = useRef(new Set<Movement>());
   const view = useRef({ yaw: -.5, pitch: -.12 });
@@ -92,14 +112,16 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const liveExploration = useRef(exploration);
   liveExploration.current = exploration;
   const previousExpeditionRegion = useRef(exploration.expedition.regionId);
-  const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
+  const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · SPRINT: SHIFT · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [contextGeneration, setContextGeneration] = useState(0);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
 
+  // Re-arm only on run/world entry. Discovery updates must never teleport the
+  // player back to spawn mid-exploration.
   useEffect(() => {
     player.current = { x: layout.spawn.x, y: 2.2, z: layout.spawn.z };
-    view.current = { yaw: -.5, pitch: -.12 };
+    view.current = spawnViewAngles(layout);
     actions.current.clear();
     setTarget(null);
     setInspectedSiteId(null);
@@ -115,7 +137,16 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const site = layout.points.find(point => point.regionId === nextRegion && point.discovery !== 'UNKNOWN')
       ?? layout.points.find(point => point.regionId === nextRegion);
     const anchor = site ?? layout.regionAnchors[nextRegion];
-    if (anchor) player.current = { x: anchor.x + 5.2, y: 2.2, z: anchor.z + 3.2 };
+    if (anchor) {
+      player.current = { x: anchor.x + 5.2, y: 2.2, z: anchor.z + 3.2 };
+      // Arrive looking at the destination, not into empty terrain.
+      if (site) {
+        view.current = {
+          yaw: yawToward(player.current.x, player.current.z, site.x, site.z),
+          pitch: -.1,
+        };
+      }
+    }
     setInspectedSiteId(null);
     setTarget(null);
   }, [exploration.expedition.regionId, layout]);
@@ -138,19 +169,22 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     host.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     const profile = layout.profile;
+    const visualSeed = sceneHash(atlas.worldId);
     scene.background = new THREE.Color(profile.sky);
-    scene.fog = new THREE.Fog(profile.horizon, 75, Math.max(190, layout.extent * 2));
-    scene.add(new THREE.HemisphereLight(profile.horizon, profile.ground, 2.1));
-    const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+    scene.fog = new THREE.Fog(profile.horizon, 60 + profile.terrainAmplitude * 6, Math.max(220, layout.extent * 2.2));
+    // Dark-sky worlds need stronger ambient fill so landmark silhouettes stay
+    // readable; bright worlds keep directional contrast.
+    const skyLuma = (() => {
+      const c = new THREE.Color(profile.sky);
+      return (c.r + c.g + c.b) / 3;
+    })();
+    scene.add(new THREE.HemisphereLight(profile.horizon, profile.ground, 1.9 + (1 - skyLuma) * 1.1));
+    const sun = new THREE.DirectionalLight(profile.celestialColor, 1.9);
     sun.position.set(50, 85, 15);
     scene.add(sun);
-    const camera = new THREE.PerspectiveCamera(73, 1, .1, 800);
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(layout.extent * 2.7, layout.extent * 2.7),
-      new THREE.MeshStandardMaterial({ color: profile.ground, roughness: 1 }),
-    );
-    ground.rotation.x = -Math.PI / 2;
-    scene.add(ground);
+    const camera = new THREE.PerspectiveCamera(73, 1, .1, 1200);
+    const atmosphere = addImmersiveAtmosphere(scene, profile, layout.extent, visualSeed);
+    const terrain = addImmersiveTerrain(scene, profile, layout.extent, visualSeed);
     const mainMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(profile.horizon).lerp(new THREE.Color(profile.ground), .6), roughness: .82, metalness: .12 });
     const accentMaterial = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: .48, emissive: profile.accent, emissiveIntensity: .24 });
     const unknownMaterial = new THREE.MeshStandardMaterial({ color: 0x7c8795, roughness: .78, metalness: .22 });
@@ -172,6 +206,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
     const scenery = addImmersiveScenery(scene, atlas, exploration, layout);
+    const flora = addImmersiveFlora(scene, layout);
     let routeSnapshot = exploration;
     const actorGeometry = profile.movement === 'fly' ? new THREE.OctahedronGeometry(.85, 1)
       : profile.architecture === 'machines' || profile.architecture === 'factory' ? new THREE.BoxGeometry(.85, 1.8, .85)
@@ -196,12 +231,21 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     // Do not steal focus from keyboard-operated navigation. Mouse/touch entry
     // explicitly focuses the canvas; keyboard users can tab into it.
 
+    const keyToMovement = (key: string): Movement | null => {
+      const keyMap: Record<string, Movement> = {
+        w: 'forward', ArrowUp: 'forward', s: 'back', ArrowDown: 'back',
+        a: 'left', ArrowLeft: 'left', d: 'right', ArrowRight: 'right',
+        ' ': 'up',
+        // Sprint on foot; vertical descent while flying (existing behavior).
+        Shift: profile.movement === 'fly' ? 'down' : 'sprint',
+      };
+      return keyMap[key] ?? null;
+    };
     const down = (event: KeyboardEvent) => {
       const explorer = host.closest('[aria-label="Immersive 3D world explorer"]');
       if (!explorer?.contains(document.activeElement)) return;
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName)) return;
-      const keyMap: Record<string, Movement> = { w:'forward', ArrowUp:'forward', s:'back', ArrowDown:'back', a:'left', ArrowLeft:'left', d:'right', ArrowRight:'right', ' ':'up', Shift:'down' };
-      const value = keyMap[event.key];
+      const value = keyToMovement(event.key);
       if (value) { actions.current.add(value); event.preventDefault(); }
       if (event.key.toLowerCase() === 'e') {
         const t = targets.find(t => t.id === nearbyId);
@@ -209,8 +253,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       }
     };
     const up = (event: KeyboardEvent) => {
-      const keyMap: Record<string, Movement> = { w:'forward', ArrowUp:'forward', s:'back', ArrowDown:'back', a:'left', ArrowLeft:'left', d:'right', ArrowRight:'right', ' ':'up', Shift:'down' };
-      const value = keyMap[event.key];
+      const value = keyToMovement(event.key);
       if (value) actions.current.delete(value);
     };
     const pointerDown = (e: PointerEvent) => {
@@ -245,31 +288,65 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
+    // Preallocated scratch vectors: the animation loop performs no per-frame
+    // heap allocation for movement math.
+    const moveDir = new THREE.Vector3();
+    const desiredVelocity = new THREE.Vector3();
+    const smoothVelocity = new THREE.Vector3();
+    const isWalking = profile.movement === 'walk';
+    const baseSpeed = isWalking ? 12 : 19;
+    let walkPhase = 0;
+    let fovCurrent = 73;
     let lastTime = performance.now(), stamp = 0, lastActorUpdate = 0, lastDiagnostics = 0, frameId = 0;
     const animate = (time: number) => {
-      frameId = requestAnimationFrame(animate);
-      const dt = Math.min(.045, Math.max(0, (time - lastTime) / 1000));
+      frameId = requestAnimationFrame(animateEntry);
+      // Clamp long frames (slow devices/software rasterizers) to a still-
+      // playable catch-up step; collision radii bound any tunneling risk.
+      const dt = Math.min(.1, Math.max(0, (time - lastTime) / 1000));
       lastTime = time;
       const orientation = view.current;
       const p = player.current;
       const f = Number(actions.current.has('forward')) - Number(actions.current.has('back'));
       const r = Number(actions.current.has('right')) - Number(actions.current.has('left'));
-      const direction = new THREE.Vector3(
-        Math.sin(orientation.yaw) * f + Math.cos(orientation.yaw) * r, 0,
-        -Math.cos(orientation.yaw) * f + Math.sin(orientation.yaw) * r,
+      const sprinting = isWalking && actions.current.has('sprint') && (f !== 0 || r !== 0);
+      const speed = baseSpeed * (sprinting ? 1.55 : 1);
+      // Movement basis verified against THREE camera world direction.
+      const basis = movementBasis(orientation.yaw);
+      moveDir.set(
+        basis.forward[0] * f + basis.right[0] * r, 0,
+        basis.forward[1] * f + basis.right[1] * r,
       );
-      if (direction.lengthSq() > 0) direction.normalize().multiplyScalar(dt * (profile.movement === 'fly' ? 19 : 12));
-      const nx = Math.max(-layout.extent, Math.min(layout.extent, p.x + direction.x));
-      const nz = Math.max(-layout.extent, Math.min(layout.extent, p.z + direction.z));
-      const blocked = profile.movement === 'walk' && collision.some(c => Math.hypot(nx - c.x, nz - c.z) < c.radius + .7);
+      if (moveDir.lengthSq() > 0) moveDir.normalize();
+      desiredVelocity.copy(moveDir).multiplyScalar(speed);
+      // Responsive acceleration with quick settle: input feels immediate but
+      // starts/stops without a velocity pop.
+      smoothVelocity.lerp(desiredVelocity, 1 - Math.exp(-(desiredVelocity.lengthSq() > 0 ? 11 : 14) * dt));
+      const nx = Math.max(-layout.extent, Math.min(layout.extent, p.x + smoothVelocity.x * dt));
+      const nz = Math.max(-layout.extent, Math.min(layout.extent, p.z + smoothVelocity.z * dt));
+      const blocked = isWalking && collision.some(c => Math.hypot(nx - c.x, nz - c.z) < c.radius + .7);
       if (!blocked) { p.x = nx; p.z = nz; }
-      if (profile.movement === 'fly') {
+      if (!isWalking) {
         p.y = Math.max(2.2, Math.min(72, p.y + (Number(actions.current.has('up')) - Number(actions.current.has('down'))) * dt * 12));
-      } else p.y = 2.2;
-      camera.position.set(p.x, p.y, p.z);
+      } else {
+        // Ground-following over the visual heightfield, with a gentle head bob.
+        const groundY = terrainHeight(p.x, p.z, profile, visualSeed) + 2.2;
+        p.y += (groundY - p.y) * Math.min(1, dt * 9);
+        if (!reducedMotion && smoothVelocity.lengthSq() > 1) {
+          walkPhase += dt * (sprinting ? 11.5 : 8.2);
+        }
+      }
+      const bob = isWalking && !reducedMotion ? Math.sin(walkPhase) * .055 : 0;
+      camera.position.set(p.x, p.y + bob, p.z);
       camera.rotation.order = 'YXZ';
       camera.rotation.y = orientation.yaw;
       camera.rotation.x = orientation.pitch;
+      // Subtle sprint FOV response (skipped under reduced motion).
+      const fovTarget = reducedMotion ? 73 : 73 + (sprinting ? 5 : 0);
+      if (Math.abs(fovCurrent - fovTarget) > .05) {
+        fovCurrent += (fovTarget - fovCurrent) * Math.min(1, dt * 6);
+        camera.fov = fovCurrent;
+        camera.updateProjectionMatrix();
+      }
       // Field units are sourced from real kernel actor state. Interpolation is
       // presentation-only; it never feeds positions or time into the simulation.
       if (time - lastActorUpdate >= 90) {
@@ -290,7 +367,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         if (fingerprint === undefined) { fingerprint = sceneHash(actor.id); actorFingerprints.set(actor.id, fingerprint); }
         const bearing = (fingerprint % 628) / 100;
         const distance = 2.8 + (fingerprint >>> 10) % 31 / 10;
-        actorTarget.set(baseX + Math.cos(bearing) * distance, profile.movement === 'fly' ? 6 + fingerprint % 9 : 1.2, baseZ + Math.sin(bearing) * distance);
+        actorTarget.set(baseX + Math.cos(bearing) * distance, isWalking ? 1.2 : 6 + fingerprint % 9, baseZ + Math.sin(bearing) * distance);
         let position = actorMemory.get(actor.id);
         if (!position) { position = actorTarget.clone(); actorMemory.set(actor.id, position); }
         position.lerp(actorTarget, reducedMotion ? 1 : Math.min(1, dt * 4));
@@ -322,7 +399,11 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         setTarget(previous => previous === (inRange?.id ?? null) ? previous : (inRange?.id ?? null));
         setLocation({ x: Math.round(p.x), z: Math.round(p.z) });
         const observed = liveLayout.current.points.find(site => site.id === inRange?.id);
-        setReadout(inRange ? ((observed?.label ?? 'Unidentified contact') + ' · E / INSPECT') : 'Move toward a structure to investigate');
+        setReadout(inRange
+          ? `${observed?.label ?? 'Unidentified contact'} · ${Math.round(inRange.distance)} m · E / INSPECT`
+          : nearby
+            ? `Nearest contact ${Math.round(nearby.distance)} m — move closer to investigate`
+            : 'Move toward a structure to investigate');
       }
       renderer.render(scene, camera);
       // Actual WebGL submission counters, sampled slowly for automated browser proof.
@@ -333,7 +414,17 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         pointer.dataset.simulatedActors = String(actorMeshes.count);
       }
     };
-    frameId = requestAnimationFrame(animate);
+    // Hidden tabs suspend GPU work entirely; the loop keeps scheduling so state
+    // stays coherent on return, but skips rendering and per-frame updates.
+    const animateEntry = (time: number) => {
+      if (document.hidden) {
+        lastTime = time;
+        frameId = requestAnimationFrame(animateEntry);
+        return;
+      }
+      animate(time);
+    };
+    frameId = requestAnimationFrame(animateEntry);
     const onLost = (event: Event) => { event.preventDefault(); setWebglFailed(true); cancelAnimationFrame(frameId); };
     const onRestored = () => { setWebglFailed(false); setContextGeneration(generation => generation + 1); };
     pointer.addEventListener('webglcontextlost', onLost);
@@ -358,7 +449,10 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         }
         if (node instanceof THREE.InstancedMesh) node.dispose();
       });
-      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial, ...scenery.materials, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial,
+        ...scenery.materials, ...flora.materials, ...atmosphere.materials, ...terrain.materials,
+      ].forEach(m => m.dispose());
+      atmosphere.textures.forEach(texture => texture.dispose());
       renderer.dispose();
       pointer.remove();
     };

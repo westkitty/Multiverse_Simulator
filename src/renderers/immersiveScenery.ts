@@ -18,6 +18,8 @@ function scenicGeometry(style: SceneProfile['architecture']): THREE.BufferGeomet
   }
 }
 
+interface ScenicAnchor { id: string; x: number; z: number; count: number }
+
 /** An atmospheric, visual-only projection: no changes to the Atlas, simulation RNG, routes, or persistence. */
 export function addImmersiveScenery(
   scene: THREE.Scene,
@@ -34,13 +36,21 @@ export function addImmersiveScenery(
   });
   const geometry = scenicGeometry(style);
   geometry.computeBoundingBox();
-  // Source both named sites and the surrounding real simulated regions.
+  // Composition: a loose ring of scenery around every named site, clusters at
+  // real simulated region anchors, and sparse dressing along actual routes.
   // Unvisited territory receives atmospheric geometry, never fabricated POIs.
-  const scenicAnchors = [
-    ...layout.points.map(site => ({ id: site.id, x: site.x, z: site.z, count: 5 })),
-    ...atlas.regions.map(region => ({ id: `region:${region.id}`, x: layout.regionAnchors[region.id]?.x ?? 0, z: layout.regionAnchors[region.id]?.z ?? 0, count: 3 })),
+  const scenicAnchors: ScenicAnchor[] = [
+    ...layout.points.map(site => ({ id: site.id, x: site.x, z: site.z, count: 4 })),
+    ...atlas.regions.map(region => ({ id: `region:${region.id}`, x: layout.regionAnchors[region.id]?.x ?? 0, z: layout.regionAnchors[region.id]?.z ?? 0, count: 4 })),
+    ...atlas.routes.map(route => {
+      const a = layout.regionAnchors[route.from], b = layout.regionAnchors[route.to];
+      if (!a || !b) return null;
+      return { id: `route:${route.id}`, x: (a.x + b.x) / 2, z: (a.z + b.z) / 2, count: 3 };
+    }).filter((anchor): anchor is ScenicAnchor => anchor !== null),
   ];
-  const meshes = new THREE.InstancedMesh(geometry, scenicMaterial, scenicAnchors.reduce((sum, anchor) => sum + anchor.count, 0));
+  const planned = scenicAnchors.reduce((sum, anchor) => sum + anchor.count, 0);
+  const meshes = new THREE.InstancedMesh(geometry, scenicMaterial, Math.max(1, planned));
+  meshes.userData.role = 'scenic';
   const dummy = new THREE.Object3D();
   const tint = new THREE.Color();
   let count = 0;
@@ -85,6 +95,7 @@ export function addImmersiveScenery(
     }),
     Math.max(1, atlas.routes.length * 2),
   );
+  corridors.userData.role = 'routes';
   const isFlying = layout.profile.movement === 'fly';
   const openTint = new THREE.Color(layout.profile.accent).lerp(earth, .55);
   const closedTint = new THREE.Color(0x943f45).lerp(earth, .25);
@@ -168,4 +179,66 @@ export function addImmersiveScenery(
   // ThreeWorldView owns all geometry disposal via scene traversal. Return only
   // the newly owned materials so shared meshes are not double-disposed.
   return { materials: [scenicMaterial, corridors.material as THREE.Material, monumentMaterial], refresh: updateRoutes };
+}
+
+/**
+ * Secondary ground-level dressing: a second instanced layer of small shapes so
+ * each world reads at two scales instead of one repeated primitive. Visual
+ * only; omitted from addImmersiveScenery so its strict two-mesh contract holds.
+ */
+export function addImmersiveFlora(
+  scene: THREE.Scene,
+  layout: ImmersiveLayout,
+): { materials: THREE.Material[] } {
+  const style = layout.profile.architecture;
+  const accent = new THREE.Color(layout.profile.accent);
+  const earth = new THREE.Color(layout.profile.groundTint);
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xffffff, roughness: .95,
+    metalness: style === 'machines' || style === 'city' || style === 'factory' ? .45 : .05,
+    transparent: style === 'reef' || style === 'signal', opacity: style === 'reef' || style === 'signal' ? .85 : 1,
+  });
+  const geometry = ((): THREE.BufferGeometry => {
+    switch (style) {
+      case 'forest': case 'wilds': return new THREE.DodecahedronGeometry(.9, 0); // boulders/ferns
+      case 'reef': return new THREE.ConeGeometry(.7, 2.4, 5); // coral spikes
+      case 'cavern': case 'crags': return new THREE.DodecahedronGeometry(1.1, 0); // rubble
+      case 'orbit': case 'signal': return new THREE.TetrahedronGeometry(1.1, 0); // drifting shards
+      case 'city': case 'settlement': case 'ruins': return new THREE.BoxGeometry(1.6, .7, 1.6); // street furniture
+      case 'factory': case 'machines': return new THREE.CylinderGeometry(.35, .5, 1.6, 6); // pipe stacks
+      case 'habitat': case 'terraform': return new THREE.SphereGeometry(.8, 8, 6); // planters
+      case 'storm': return new THREE.OctahedronGeometry(1, 0); // hail cores
+    }
+  })();
+  const planned = Math.max(1, layout.points.length * 5);
+  const mesh = new THREE.InstancedMesh(geometry, material, planned);
+  mesh.userData.role = 'flora';
+  const dummy = new THREE.Object3D();
+  const tint = new THREE.Color();
+  let count = 0;
+  for (const site of layout.points) {
+    for (let i = 0; i < 5; i++) {
+      const seed = sceneHash(layout.profile.architecture + ':' + site.id + ':flora:' + i);
+      const angle = (seed % 65536) / 65536 * Math.PI * 2;
+      const radius = 4.2 + (seed >>> 16) % 26;
+      const x = site.x + Math.cos(angle) * radius, z = site.z + Math.sin(angle) * radius;
+      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 3.2) continue;
+      const floating = style === 'orbit' || style === 'signal';
+      dummy.position.set(x, floating ? 6 + seed % 14 : 0, z);
+      dummy.rotation.set(0, seed % 628 / 100, floating ? (seed % 100) / 100 : 0);
+      const size = .5 + (seed >>> 3) % 90 / 100;
+      dummy.scale.set(size, size * (.7 + (seed >>> 9) % 60 / 100), size);
+      if (!floating) dummy.position.y = .28 * size;
+      dummy.updateMatrix();
+      mesh.setMatrixAt(count, dummy.matrix);
+      tint.copy(earth).lerp(accent, ((seed >>> 17) % 30) / 100);
+      mesh.setColorAt(count, tint);
+      count++;
+    }
+  }
+  mesh.count = count;
+  mesh.instanceMatrix.needsUpdate = true;
+  if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+  scene.add(mesh);
+  return { materials: [material] };
 }

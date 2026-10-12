@@ -55,3 +55,24 @@ New live curiosity leads preprocess the bounded causal event journal **once per 
 
 These are algorithmic complexity changes only. No measured FPS, memory savings or physical-device performance improvement is claimed. Run the same software/hardware representative workloads before asserting such a gain.
 
+
+## Immersive rendering uplift — matched measurements (2026-10-12)
+
+Environment for every number in this section: Chromium 153 (`@sparticuz/chromium` binary) with `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader`, Linux, viewport 1280×900, DPR 1, production builds served by `vite preview`. **Software rasterization only — these are not hardware GPU certifications.** Frame intervals are rAF wall-clock deltas (include compositing), sample sizes stated per row.
+
+- Spawn-view WebGL draw calls, initial frame after entering 3D (9-world sweep A,B,D,E,F,G,K,L,O): baseline `8238438` **4–15**; this branch **108–186**. Cause: the baseline spawned at a fixed yaw facing empty terrain in most worlds; spawn facing is now the content-argmax yaw (`spawnViewAngles`), and scenery/flora layers were added. Same seed/scenario per world.
+- Heading-sweep frame intervals, Ecosystem, 8 headings × 80 frames each (scripts/acceptance/heading-probe.mjs):
+
+  | visible draw calls | baseline p50 | candidate p50 |
+  |---:|---:|---:|
+  | 4–6 | 66.6 ms | 116.7 ms |
+  | ~20 | 83.4 ms | 166.7 ms |
+  | ~100 | 150 ms | 283 ms |
+  | ~175 | 167 ms | 300 ms |
+
+  At matched workload the candidate costs ~1.7–2× baseline frame time on SwiftShader. The always-on additions are a gradient sky background fill, a displaced terrain mesh (40-segment Lambert heightfield vs a 2-triangle plane), and a flora instanced layer. An earlier candidate build measured 367 ms p50 at spawn; terrain mesh density, sky geometry, star budgets and scenery counts were trimmed (283 ms p50 at the same spawn), and terrain shading moved from Standard to Lambert (p99 466→350 ms in the 240-frame spawn probe). Hardware GPU cost is expected to be far lower (the scene is ~180 draw calls / well under 200k triangles) but is **unverified**.
+- Layout projection cache (Node 22, vitest, same scenario seeds, 200-call samples): `makeImmersiveLayout` **0.448 ms** (Ecosystem) / **0.163 ms** (Megacity) per call vs cache signature **0.009 ms**. The projection now recomputes only when discovery/condition/hazard/visit/expedition-region/region-position fields change; every other exploration-state mutation (tick advances, journal entries) reuses the cached layout. No FPS claim is derived from this CPU measurement.
+- Input responsiveness: movement integrates with velocity damping and a 100 ms frame-dt clamp (was 45 ms) so slow-frame environments do not collapse into slow motion; collision radii bound the largest possible step (1.2 units vs ≥1.7-unit collision clearance). Zero heap allocation in the per-frame movement path (three preallocated scratch vectors).
+- Long-session resources: hidden tabs skip rendering entirely; scene teardown disposes geometries (traverse), all materials (scene-owned lists), InstancedMesh buffers, and the sky `DataTexture`. Repeat entry/world switching covered by the 20/20 browser suite.
+
+What remains unmeasured: physical-device FPS/memory, GPU timing, sustained thermal behavior, and constrained-phone budgets. Treat the provisional 60 FPS desktop / 30 FPS mobile targets as **unverified**.
