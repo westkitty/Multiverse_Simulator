@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
 import { ExplorationCommand, presentSite } from '../exploration/engine';
+import { suggestedAction } from '../exploration/dossier';
 import { ImmersiveActorMarker, makeImmersiveLayout, sceneHash, SceneProfile } from '../exploration/immersiveLayout';
 import { addImmersiveScenery } from './immersiveScenery';
 
@@ -350,11 +351,9 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const inspected = layout.points.find(point => point.id === inspectedSiteId);
   const observed = inspected ? presentSite(atlas, exploration, inspected.id) : null;
   const stage = inspected ? exploration.sites[inspected.id].discoveryState : null;
-  const stageActions: Record<string, ExplorationCommand['action'] | null> = {
-    UNKNOWN: 'detect', DETECTED: 'survey', SURVEYED: 'discover', DISCOVERED: 'travel',
-    VISITED: 'investigate', INVESTIGATED: 'resolve', RESOLVED: null,
-  };
-  const nextStage = stage ? stageActions[stage] : null;
+  const guidance = inspected ? suggestedAction(atlas, exploration, inspected.id) : null;
+  const nextStage = (['detect','survey','discover','travel','investigate','repair','resolve','operate','recover'] as const)
+    .find(action => action === guidance?.action) ?? null;
   const isLocal = !!inspected && exploration.expedition.regionId === inspected.regionId && exploration.sites[inspected.id].firstVisitedTick !== null;
   const records = isLocal && inspected ? exploration.journal.filter(event => event.siteId === inspected.id).slice(-3) : [];
   const actionButton = (label: string, movement: Movement) => (
@@ -391,6 +390,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         <div style={{ display:'flex', justifyContent:'space-between', gap:8, alignItems:'center' }}><strong>{observed?.label ?? 'Unidentified contact'}</strong><button type="button" aria-label="Close nearby site investigation" onClick={() => setInspectedSiteId(null)} style={{ background:'#273f52', color:'white', border:0, padding:'6px 11px' }}>×</button></div>
         <p style={{ fontSize:12, color:'#b9d2df', margin:'7px 0' }}>Region {inspected.regionId} · {stage}</p>
         <p style={{ fontSize:13 }}>{observed?.description ?? 'An unclassified field contact. Your instruments have not identified its origin.'}</p>
+        {guidance && <p style={{ fontSize:12, color:'#aed9d9', borderLeft:'2px solid #7dbbb6', paddingLeft:9 }}>{guidance.instruction}</p>}
         {observed?.condition !== null && observed?.condition !== undefined && <p style={{ fontSize:12 }}>Installation integrity: {observed.condition.toFixed(1)}%</p>}
         {nextStage && <button type="button" disabled={target !== inspected.id || !!exploration.expedition.journey} onClick={() => setInteractionResult(onSiteAction(inspected.id, nextStage))} style={{ minHeight:44, background:'#a7ddcd', color:'#091916', border:0, padding:'8px 12px', borderRadius:5, fontWeight:700, marginRight:6 }}>{nextStage === 'travel' ? 'Begin expedition travel' : nextStage.charAt(0).toUpperCase()+nextStage.slice(1)}</button>}
         {isLocal && <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8, marginBottom:8 }}>
