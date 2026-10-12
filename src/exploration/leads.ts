@@ -22,7 +22,11 @@ export function curiosityLeads(
   return atlas.sites.flatMap(site => {
     const delta = state.sites[site.facts.id];
     if (DISCOVERY_ORDER.indexOf(delta.discoveryState) < 2 || delta.discoveryState === 'RESOLVED') return [];
-    const event = newest.get(site.facts.id);
+    // Environmental event titles can contain site identity/history. A surveyed
+    // contact may generate generic state leads but not full event descriptions
+    // until the expedition has actually visited the site.
+    const event = DISCOVERY_ORDER.indexOf(delta.discoveryState) >=
+      DISCOVERY_ORDER.indexOf('VISITED') ? newest.get(site.facts.id) : undefined;
     const lastObservation = Math.max(0, delta.firstVisitedTick ?? 0,
       ...delta.evidence.map(e => e.tick),
       ...state.journal.filter(e => e.siteId === site.facts.id).map(e => e.tick),

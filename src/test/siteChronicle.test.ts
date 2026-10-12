@@ -51,21 +51,32 @@ describe('Read-only site histories and real-event curiosity', () => {
     const run = start('event-run');
     const s = run.getState(), siteId = s.atlas.sites[0].facts.id;
     const unknownId = s.atlas.sites[1].facts.id;
-    const first = run.getJournal().append(run.runId, 7, {
+    // No unsurveyed-site metadata may escape. Visiting is the knowledge gate
+    // before a physical-event title can become part of the user's casefile.
+    visit(run, siteId);
+    const observedTick = run.tick;
+    const first = run.getJournal().append(run.runId, observedTick, {
       type: 'site.deterioration', title: 'Observed power loss', severity: 'warning',
       description: 'Simulation detected declining infrastructure', sourceSystem: 'environment',
       sourceEntityId: siteId,
     });
-    run.getJournal().append(run.runId, 7, {
+    run.getJournal().append(run.runId, observedTick, {
       type: 'site.deterioration', title: 'Undiscovered site secret', severity: 'warning',
       description: 'Must stay sealed', sourceSystem: 'environment', sourceEntityId: unknownId,
     });
     const hash = run.getStateHash();
-    const leads = curiosityLeads(s.atlas, s.exploration, 7, run.getEvents(), run.runId);
+    const leads = curiosityLeads(s.atlas, s.exploration, observedTick, run.getEvents(), run.runId);
     expect(leads.some(l => l.eventId === first.id && l.reason.includes('Observed power loss'))).toBe(true);
     expect(JSON.stringify(leads)).not.toContain('Undiscovered site secret');
-    expect(curiosityLeads(s.atlas, s.exploration, 7, run.getEvents(), 'foreign-run').some(l => l.eventId)).toBe(false);
-    expect(curiosityLeads(s.atlas, s.exploration, 56, run.getEvents(), run.runId)).toEqual([]);
+    // A known-but-unvisited contact must not disclose a site-specific causal title.
+    const surveyed = structuredClone(s.exploration);
+    surveyed.sites[siteId].discoveryState = 'SURVEYED';
+    surveyed.sites[siteId].firstVisitedTick = null;
+    expect(JSON.stringify(curiosityLeads(s.atlas, surveyed, observedTick, run.getEvents(), run.runId)))
+      .not.toContain('Observed power loss');
+
+    expect(curiosityLeads(s.atlas, s.exploration, observedTick, run.getEvents(), 'foreign-run').some(l => l.eventId)).toBe(false);
+    expect(curiosityLeads(s.atlas, s.exploration, observedTick + 49, run.getEvents(), run.runId)).toEqual([]);
     expect(run.getStateHash()).toBe(hash);
   });
 
