@@ -43,9 +43,12 @@ test('field dossier preserves a sample while telemetry changes, rejects resupply
 test('workbench tabs support arrow keys and mobile navigation leaves room for the world',async({page},testInfo)=>{
   await page.goto('./');
   const tabs=page.getByRole('tablist',{name:'Multiverse workbench tabs'});
-  await expect(tabs.getByRole('tab')).toHaveCount(9);
+  await expect(tabs.getByRole('tab')).toHaveCount(10);
   const observatory=tabs.getByRole('tab',{name:'Active Observatory',exact:true});
   await observatory.focus();await observatory.press('Home');
+  const explore=tabs.getByRole('tab',{name:'Explore in 3D',exact:true});
+  await expect(explore).toHaveAttribute('aria-selected','true');await expect(explore).toBeFocused();
+  await explore.press('ArrowRight');
   const atlas=tabs.getByRole('tab',{name:'Living World Atlas',exact:true});
   await expect(atlas).toHaveAttribute('aria-selected','true');await expect(atlas).toBeFocused();
   await atlas.press('ArrowRight');
