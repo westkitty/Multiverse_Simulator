@@ -88,6 +88,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   liveLayout.current = layout;
   const liveActors = useRef(actors);
   liveActors.current = actors;
+  const liveExploration = useRef(exploration);
+  liveExploration.current = exploration;
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [contextGeneration, setContextGeneration] = useState(0);
@@ -136,10 +138,12 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const mainMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(profile.horizon).lerp(new THREE.Color(profile.ground), .6), roughness: .82, metalness: .12 });
     const accentMaterial = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: .48, emissive: profile.accent, emissiveIntensity: .24 });
     const unknownMaterial = new THREE.MeshStandardMaterial({ color: 0x7c8795, roughness: .78, metalness: .22 });
+    const resolvedMaterial = new THREE.MeshStandardMaterial({ color: 0xffe2a2, emissive: 0xc18b31, emissiveIntensity: .52, roughness: .38 });
     const objects = new THREE.Group();
     scene.add(objects);
     const collision: Array<{ x: number; z: number; radius: number }> = [];
     const targets: Array<{ id: string; x: number; z: number; name: string }> = [];
+    const beacons = new Map<string, THREE.Mesh>();
     for (const site of layout.points) {
       const discovered = site.discovery !== 'UNKNOWN';
       const material = discovered ? mainMaterial : unknownMaterial;
@@ -148,6 +152,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       beacon.position.set(site.x, 13.5 + site.visualSeed % 6, site.z);
       beacon.userData.siteId = site.id;
       objects.add(beacon);
+      beacons.set(site.id, beacon);
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
     const sceneryMaterials = addImmersiveScenery(scene, atlas, exploration, layout);
@@ -272,6 +277,11 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       actorMeshes.count = actorCount;
       actorMeshes.instanceMatrix.needsUpdate = true;
       if (actorMeshes.instanceColor) actorMeshes.instanceColor.needsUpdate = true;
+      for (const site of layout.points) {
+        const marker = beacons.get(site.id);
+        const progress = liveExploration.current.sites[site.id]?.discoveryState;
+        if (marker) marker.material = progress === 'RESOLVED' ? resolvedMaterial : progress && progress !== 'UNKNOWN' ? accentMaterial : unknownMaterial;
+      }
       }
       if (time - stamp > 200) {
         stamp = time;
@@ -312,7 +322,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         }
         if (node instanceof THREE.InstancedMesh) node.dispose();
       });
-      [mainMaterial, accentMaterial, unknownMaterial, actorMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
