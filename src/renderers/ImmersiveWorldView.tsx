@@ -155,7 +155,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       beacons.set(site.id, beacon);
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
-    const sceneryMaterials = addImmersiveScenery(scene, atlas, exploration, layout);
+    const scenery = addImmersiveScenery(scene, atlas, exploration, layout);
+    let routeSnapshot = exploration;
     const actorGeometry = profile.movement === 'fly' ? new THREE.OctahedronGeometry(.85, 1)
       : profile.architecture === 'machines' || profile.architecture === 'factory' ? new THREE.BoxGeometry(.85, 1.8, .85)
       : new THREE.CapsuleGeometry(.44, 1.15, 4, 8);
@@ -167,7 +168,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const actorBody = new THREE.Object3D();
     const actorTarget = new THREE.Vector3();
     const actorMemory = new Map<string, THREE.Vector3>();
-    const regionAnchors = new Map(layout.points.map(point => [point.regionId, point] as const));
+    const regionAnchors = new Map(Object.entries(layout.regionAnchors));
     const actorFingerprints = new Map<string, number>();
     const activeTint = new THREE.Color(profile.accent);
     const tiredTint = new THREE.Color(0xed956e);
@@ -256,6 +257,10 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       // presentation-only; it never feeds positions or time into the simulation.
       if (time - lastActorUpdate >= 90) {
       lastActorUpdate = time;
+      if (routeSnapshot !== liveExploration.current) {
+        scenery.refresh(liveExploration.current);
+        routeSnapshot = liveExploration.current;
+      }
       let actorCount = 0;
       const worldTransform = liveLayout.current.sourceTransform;
       for (const actor of liveActors.current) {
@@ -328,7 +333,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         }
         if (node instanceof THREE.InstancedMesh) node.dispose();
       });
-      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial, ...scenery.materials, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
