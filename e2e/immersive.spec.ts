@@ -56,6 +56,17 @@ test.describe('immersive 3D gameplay', () => {
   await dossier.getByRole('button', { name: 'Survey', exact: true }).click();
   await expect(dossier).toContainText('SURVEYED');
   await expect(dossier.getByRole('status')).toContainText('survey accepted');
+  // World-native intervention uses the actual simulation command bus and
+  // changes an authoritative scientific metric (not a cosmetic DOM counter).
+  const lab = page.getByRole('region', { name: 'World system experiment' });
+  await lab.locator('summary').click();
+  const soil = lab.getByTestId('field-gauge-meanSoilNutrients');
+  await expect(soil).toBeVisible();
+  const beforeSoil = await soil.innerText();
+  await lab.getByRole('button', { name: /Increase Soil Fertility/ }).click();
+  await expect(lab.getByRole('status')).toContainText('Validated command recorded at tick');
+  await expect(lab).toContainText('Command event');
+  await expect.poll(() => soil.innerText()).not.toBe(beforeSoil);
   await dossier.getByRole('button', { name: 'Full dossier' }).click();
   await expect(page.getByRole('tab', { name: 'Living World Atlas' })).toHaveAttribute('aria-selected', 'true');
   const fullDossier = page.getByRole('region', { name: 'Site investigation inspector' });
