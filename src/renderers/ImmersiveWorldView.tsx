@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
-import { makeImmersiveLayout, sceneHash, SceneProfile } from '../exploration/immersiveLayout';
+import { makeImmersiveLayout, SceneProfile } from '../exploration/immersiveLayout';
+import { addImmersiveScenery } from './immersiveScenery';
 
 interface Props {
   atlas: ExplorationAtlas;
@@ -135,27 +136,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       objects.add(beacon);
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
-    // Deterministic scenic dressing, restricted to bounded geometry and not saved as new POIs.
-    const decorGeometry = new THREE.ConeGeometry(1, 5, 5);
-    const decorMat = new THREE.MeshStandardMaterial({ color: profile.ground, roughness: 1 });
-    const decor = new THREE.InstancedMesh(decorGeometry, decorMat, 350);
-    const dummy = new THREE.Object3D();
-    let count = 0;
-    for (let i = 0; i < 350; i++) {
-      const h = sceneHash(atlas.worldId + ':' + i);
-      const x = ((h % 10007) / 10007 - .5) * layout.extent * 2.2;
-      const z = (((h >>> 13) % 8191) / 8191 - .5) * layout.extent * 2.2;
-      if (targets.some(t => Math.hypot(t.x - x, t.z - z) < 6)) continue;
-      dummy.position.set(x, 2.5, z);
-      dummy.rotation.y = h % 400 / 60;
-      const scale = .3 + ((h >>> 6) % 100) / 120;
-      dummy.scale.set(scale, scale, scale);
-      dummy.updateMatrix();
-      decor.setMatrixAt(count++, dummy.matrix);
-    }
-    decor.count = count;
-    decor.instanceMatrix.needsUpdate = true;
-    scene.add(decor);
+    const sceneryMaterials = addImmersiveScenery(scene, atlas, exploration, layout);
     const near = document.createElement('div');
     const pointer = renderer.domElement;
     pointer.style.touchAction = 'none';
@@ -265,7 +246,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           mesh.geometry.dispose();
         }
       });
-      [mainMaterial, accentMaterial, unknownMaterial, decorMat, ground.material as THREE.Material].forEach(m => m.dispose());
+      [mainMaterial, accentMaterial, unknownMaterial, ...sceneryMaterials, ground.material as THREE.Material].forEach(m => m.dispose());
       renderer.dispose();
       pointer.remove();
     };
