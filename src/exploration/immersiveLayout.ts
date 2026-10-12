@@ -55,6 +55,7 @@ export interface ImmersiveLayout {
   profile: SceneProfile;
   extent: number;
   sourceTransform: { centerX: number; centerZ: number; scale: number };
+  regionAnchors: Record<string, { x: number; z: number }>;
 }
 
 /** Stable geometry variation; visual-only, never consumes SimulationKernel RNG. */
@@ -107,11 +108,18 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
     };
   });
   const local = points.find(point => point.regionId === state.expedition.regionId) ?? points[0];
+  const regionAnchors: Record<string, { x: number; z: number }> = Object.fromEntries(regionPositions.map(region => [region.id, { x: (region.position[0] - centerX) * scale, z: (region.position[2] - centerZ) * scale }]));
+  for (const region of atlas.regions) {
+    if (Object.hasOwn(regionAnchors, region.id)) continue;
+    const ownSites = points.filter(point => point.regionId === region.id);
+    if (ownSites.length) regionAnchors[region.id] = { x: ownSites.reduce((total, place) => total + place.x, 0) / ownSites.length, z: ownSites.reduce((total, place) => total + place.z, 0) / ownSites.length };
+  }
   return {
     points,
     spawn: { x: (local?.x ?? 0) + 7, z: (local?.z ?? 0) + 9 },
     profile,
     sourceTransform: { centerX, centerZ, scale },
+    regionAnchors,
     extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
   };
 }
