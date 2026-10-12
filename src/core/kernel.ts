@@ -701,6 +701,13 @@ export class SimulationKernel<
       } else {
         verificationBasis = 'fork_checkpoint';
       }
+      const forkMarker = anchoredJournal.events[anchoredJournal.events.length - 1];
+      if (!forkMarker || forkMarker.type !== 'reality_branched' ||
+          forkMarker.runId !== this.runId || forkMarker.tick !== origin.tick ||
+          forkMarker.payload?.parentRunId !== this.lineage.parentRunId ||
+          forkMarker.payload?.forkCheckpointId !== this.lineage.forkCheckpointId) {
+        throw new Error('Replay unavailable: fork-origin branch event is invalid');
+      }
       if (!Number.isSafeInteger(anchoredJournal.sequenceCounter) ||
           anchoredJournal.events.some(e => e.tick > origin.tick)) {
         throw new Error('Replay unavailable: fork-origin causal journal is inconsistent');
@@ -737,7 +744,7 @@ export class SimulationKernel<
 
     const replayedHash = replayKernel.getStateHash();
     return {
-      replayedKernel,
+      replayedKernel: replayKernel,
       matchesAuthoritativeHash: replayedHash === authoritativeHash,
       replayedHash,
       authoritativeHash,
@@ -823,6 +830,7 @@ export class SimulationKernel<
     // intervention. Ordinary and historical root checkpoints keep their shape.
     const branchOrigin = forked.createCheckpoint(`Branch Origin (Tick ${sourceCheckpoint.tick})`);
     branchOrigin.replayJournal = forked.journal.serialize();
+    branchOrigin.byteSizeEstimate += JSON.stringify(branchOrigin.replayJournal).length;
     forked.checkpoints = [branchOrigin];
 
     if (options.initialCommand) {
