@@ -36,7 +36,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
   const { atlas, exploration } = state;
-  const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
+  const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => s.facts.id === store.selectedEntityId) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
   const siteId = chosen.facts.id, delta = exploration.sites[siteId];
   const dossier = siteDossier(atlas, exploration, siteId), view = dossier.view;
   const next = suggestedAction(atlas, exploration, siteId);
@@ -71,7 +71,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     try { refugePreview = planRefugeRest(state, siteId); }
     catch (error) { refugeReason = error instanceof Error ? error.message : String(error); }
   }
-  const selectSite = (id: string) => { setSelected(id); setMessage(''); setFailed(false); };
+  const selectSite = (id: string) => { setSelected(id); store.selectEntity(id); setMessage(''); setFailed(false); };
   const action = (kind: ExplorationCommand['action'], resourceId?: string, targetSiteId = siteId): string => {
     try {
       const target = atlas.sites.find(s => s.facts.id === targetSiteId);
