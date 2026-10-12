@@ -358,7 +358,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     </button>
   );
   return (
-    <section aria-label="Immersive 3D world explorer" style={{ position:'relative', minHeight:'min(75vh,760px)', height:'min(75vh,760px)', background:'#080d17', border:'1px solid #395565', overflow:'hidden', borderRadius:8 }}>
+    <section aria-label="Immersive 3D world explorer" style={{ position:'relative', minHeight:'min(82dvh,960px)', height:'min(82dvh,960px)', background:'#080d17', border:'1px solid #395565', overflow:'hidden', borderRadius:8 }}>
       <div ref={sceneHost} aria-label="Three.js playable universe" style={{ position:'absolute', inset:0 }} />
       {webglFailed && <div role="alert" style={{ position:'absolute', inset:0, display:'grid', placeContent:'center', padding:24, background:'#101a27', color:'white' }}>3D rendering is unavailable on this device. Return to the fully accessible Atlas for exploration and simulation controls.</div>}
       <div style={{ position:'absolute', left:12, top:12, right:12, display:'flex', justifyContent:'space-between', gap:8, pointerEvents:'none' }}>
