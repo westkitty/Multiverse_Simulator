@@ -1,6 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from './adversarial';
 
-test('actual 3D traversal and in-world site discovery reach the authoritative Atlas', async ({ page }) => {
+test.describe('immersive 3D gameplay', () => {
+  // Software-rasterized WebGL world rebuilds (15 universes per run) need
+  // wall-clock headroom on slow/loaded runners; assertions are unchanged.
+  test.describe.configure({ timeout: 240_000 });
+
+  test('actual 3D traversal and in-world site discovery reach the authoritative Atlas', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
   await page.goto('./');
@@ -19,10 +24,17 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   const coordinates = explorer.getByText(/^X -?\d+ \/ Z -?\d+$/);
   const initial = await coordinates.innerText();
   await canvas.focus();
+  // Hold W until movement is actually observed, then release. A fixed-time
+  // input window is a frame-rate lottery under slow software rasterization
+  // (zero rendered frames can land inside it, so the key releases before any
+  // movement integrates); poll-while-held keeps the exact assertion — W moves
+  // the player — while staying correct at any frame rate.
   await page.keyboard.down('w');
-  await page.waitForTimeout(500);
-  await page.keyboard.up('w');
-  await expect.poll(() => coordinates.innerText()).not.toBe(initial);
+  try {
+    await expect.poll(() => coordinates.innerText(), { timeout: 20_000 }).not.toBe(initial);
+  } finally {
+    await page.keyboard.up('w');
+  }
 
   // Recenter using the already-created world on the next enter. The default
   // spawn is near a real Atlas site, so inspection cannot succeed from a fake HUD.
@@ -58,10 +70,12 @@ test('all fifteen universes open real Three.js canvases without leaving explorat
     await expect(explorer).toBeVisible();
     const activeCanvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
     await expect(activeCanvas).toHaveCount(1);
-    await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(0);
+    await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(20);
     await expect(explorer.getByRole('button', { name: 'Forward' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Return to Atlas' })).toBeVisible();
   }
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+  });
 });
+
