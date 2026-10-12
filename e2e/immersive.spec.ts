@@ -12,6 +12,12 @@ test.describe('immersive 3D gameplay', () => {
   await page.getByRole('button', { name: /Enter this universe in 3D/ }).click();
   const explorer = page.getByRole('region', { name: 'Immersive 3D world explorer' });
   await expect(explorer).toBeVisible();
+  const protocol = page.getByRole('region', { name: 'World field protocol' });
+  await expect(protocol).toBeVisible();
+  await expect(protocol).toContainText('The watershed question');
+  await expect(protocol).toContainText('0/3 recorded samples');
+  await protocol.getByText('Field notebook: observations and next step').click();
+  await expect(protocol).toContainText('Unlocated contact');
   await expect(page.getByRole('region', { name: 'Three.js universe expedition' })).toBeVisible();
   await expect(page.getByRole('region', { name: 'Site investigation inspector' })).toHaveCount(0);
   const canvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
