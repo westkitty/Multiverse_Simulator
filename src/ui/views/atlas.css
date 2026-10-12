@@ -102,3 +102,30 @@
 .atlas-crew meter { grid-column:1/-1; width:100%; height:8px; accent-color:var(--atlas-accent); }
 
 .atlas-stages li { white-space:nowrap; }
+
+/* Site memory: the hierarchy separates verified events from generated setting history. */
+.atlas-chronicles { margin-bottom: 18px; }
+.atlas-chronicle-list { list-style:none; padding:0; margin:22px 0; max-height:420px; overflow:auto; scrollbar-color:#516678 #101820; }
+.atlas-chronicle-list > li { display:grid; grid-template-columns:minmax(118px, 155px) minmax(0,1fr); gap:22px; padding:16px 8px; border-top:1px solid #324150; }
+.atlas-chronicle-meta { display:flex; flex-direction:column; align-items:flex-start; gap:6px; color:#b8c9d8; font:11px/1.5 ui-monospace,monospace; }
+.atlas-chronicle-meta > span:nth-child(2) { border-left:2px solid var(--atlas-accent); padding-left:7px; }
+.atlas-chronicle-list h3 { margin:0 0 8px; font:20px/1.3 Georgia,serif; font-weight:400; color:#e6edf3; overflow-wrap:anywhere; }
+.atlas-chronicle-list p { color:#adc0cd; margin:0 0 10px; font-size:12px; }
+.atlas-chronicle-list ul { padding-left:15px; margin:8px 0; color:#b7cfdb; font:11px/1.8 ui-monospace,monospace; }
+.atlas-chronicle-list ul b { font-weight:500; color:#d3e0e9; }
+.atlas-parallel { border-top:1px solid #465a69; padding-top:22px; margin-top:25px; }
+.atlas-parallel h3 { font:24px/1.3 Georgia,serif; font-weight:400; margin:8px 0 17px; }
+.atlas-parallel label { display:grid; gap:9px; max-width:570px; font-size:12px; color:#b3c6d3; }
+.atlas-parallel select { width:100%; min-height:44px; padding:9px; background:#13212d; color:#e9f0f3; border:1px solid #5a7081; }
+.atlas-parallel-results { margin-top:16px; border-left:2px solid var(--atlas-accent); padding:12px 18px; background:#101b23; }
+.atlas-parallel-results p { font-size:12px; color:#bbccd7; }
+.atlas-parallel-results dl { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 28px; }
+.atlas-parallel-results dt { font:11px/1.8 ui-monospace,monospace; color:#92a9bb; }
+.atlas-parallel-results dd { margin:4px 0 0; overflow-wrap:anywhere; }
+.atlas-parallel-results summary { cursor:pointer; min-height:44px; padding-top:12px; }
+.atlas-parallel-results summary:focus-visible { outline:2px solid var(--atlas-accent); outline-offset:3px; }
+@media (max-width:600px) {
+ .atlas-chronicle-list > li { grid-template-columns:1fr; gap:9px; }
+ .atlas-chronicle-meta { flex-direction:row; flex-wrap:wrap; align-items:center; }
+ .atlas-parallel-results dl { grid-template-columns:1fr; }
+}

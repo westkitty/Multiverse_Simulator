@@ -38,3 +38,28 @@ it('does not offer departure when a discovered destination is already unsafe',()
  expect(screen.getByRole('button',{name:'Travel'})).toBeDisabled();
  expect(screen.getByRole('region',{name:'Departure briefing'})).toHaveTextContent('safe-access limit of 70');
 });
+
+
+it('shows verified site memory and protects unknown state in a loaded parallel run',()=>{
+ const root=new SimulationKernel({runId:'casefile-main',name:'Original timeline',plugin:CORE_WORLD_PLUGINS[0],seed:2026});
+ const counterpart=new SimulationKernel({runId:'casefile-other',name:'Parallel timeline',plugin:CORE_WORLD_PLUGINS[0],seed:2026});
+ const id=root.getState().atlas.sites[0].facts.id;
+ for(const action of ['survey','discover','travel']) {
+   root.enqueueCommand({type:'exploration.action',label:action,payload:{action,siteId:id}});
+   root.flushCurrentTickCommands();
+ }
+ while(root.getState().exploration.expedition.journey) root.step();
+ root.enqueueCommand({type:'exploration.action',label:'repair',payload:{action:'repair',siteId:id}});
+ root.flushCurrentTickCommands();
+ const hash=root.getStateHash();
+ useMultiverseStore.setState({runs:{[root.runId]:root,[counterpart.runId]:counterpart},activeRunId:root.runId,isRunning:false});
+ render(<AtlasView/>);
+ const casefile=screen.getByRole('region',{name:'Site causal casefile'});
+ expect(casefile).toHaveTextContent('This place has a history that continues');
+ expect(casefile).toHaveTextContent('repair');
+ expect(casefile).toHaveTextContent('condition');
+ fireEvent.change(screen.getByLabelText('Compare with loaded parallel run'),{target:{value:counterpart.runId}});
+ expect(screen.getByText(/This location is unsurveyed in the other run/)).toBeInTheDocument();
+ expect(casefile).not.toHaveTextContent('Compare visited site stocks');
+ expect(root.getStateHash()).toBe(hash);
+});
