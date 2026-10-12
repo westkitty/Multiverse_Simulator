@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
+import { ExplorationCommand, presentSite } from '../exploration/engine';
 import { makeImmersiveLayout, SceneProfile } from '../exploration/immersiveLayout';
 import { addImmersiveScenery } from './immersiveScenery';
 
@@ -9,6 +10,8 @@ interface Props {
   exploration: ExplorationState;
   runId: string;
   onSelectSite: (id: string) => void;
+  onSiteAction: (id: string, kind: ExplorationCommand['action']) => string;
+  onAdvanceTime: () => void;
   onReturnToAtlas: () => void;
   reducedMotion?: boolean;
 }
@@ -68,7 +71,7 @@ function landmarkShape(
 }
 
 export const ImmersiveWorldView: React.FC<Props> = ({
-  atlas, exploration, runId, onSelectSite, onReturnToAtlas, reducedMotion,
+  atlas, exploration, runId, onSelectSite, onSiteAction, onAdvanceTime, onReturnToAtlas, reducedMotion,
 }) => {
   const layout = useMemo(() => makeImmersiveLayout(atlas, exploration), [atlas, exploration]);
   const sceneHost = useRef<HTMLDivElement>(null);
@@ -77,6 +80,10 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const player = useRef({ x: layout.spawn.x, y: 2.2, z: layout.spawn.z });
   const lookPointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const [target, setTarget] = useState<string | null>(null);
+  const [inspectedSiteId, setInspectedSiteId] = useState<string | null>(null);
+  const [interactionResult, setInteractionResult] = useState('');
+  const liveLayout = useRef(layout);
+  liveLayout.current = layout;
   const [readout, setReadout] = useState('MOVE: W A S D / ARROWS · LOOK: DRAG · INTERACT: E');
   const [webglFailed, setWebglFailed] = useState(false);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
@@ -86,6 +93,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     view.current = { yaw: -.5, pitch: -.12 };
     actions.current.clear();
     setTarget(null);
+    setInspectedSiteId(null);
+    setInteractionResult('');
   }, [runId, atlas.worldId]);
 
   useEffect(() => {
@@ -137,7 +146,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       targets.push({ id: site.id, x: site.x, z: site.z, name: site.label });
     }
     const sceneryMaterials = addImmersiveScenery(scene, atlas, exploration, layout);
-    const near = document.createElement('div');
+    let nearbyId = '';
     const pointer = renderer.domElement;
     pointer.style.touchAction = 'none';
 
@@ -147,8 +156,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       const value = keyMap[event.key];
       if (value) { actions.current.add(value); event.preventDefault(); }
       if (event.key.toLowerCase() === 'e') {
-        const t = targets.find(t => t.id === near.dataset.siteId);
-        if (t) onSelectSite(t.id);
+        const t = targets.find(t => t.id === nearbyId);
+        if (t) { setInspectedSiteId(t.id); setInteractionResult(''); }
       }
     };
     const up = (event: KeyboardEvent) => {
@@ -218,10 +227,11 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           .map(t => ({ ...t, distance: Math.hypot(p.x - t.x, p.z - t.z) }))
           .sort((a,b) => a.distance - b.distance)[0];
         const inRange = nearby && nearby.distance < 12 ? nearby : null;
-        near.dataset.siteId = inRange?.id ?? '';
+        nearbyId = inRange?.id ?? '';
         setTarget(previous => previous === (inRange?.id ?? null) ? previous : (inRange?.id ?? null));
         setLocation({ x: Math.round(p.x), z: Math.round(p.z) });
-        setReadout(inRange ? (inRange.name + ' · E / INSPECT') : 'Move toward a structure to investigate');
+        const observed = liveLayout.current.points.find(site => site.id === inRange?.id);
+        setReadout(inRange ? ((observed?.label ?? 'Unidentified contact') + ' · E / INSPECT') : 'Move toward a structure to investigate');
       }
       renderer.render(scene, camera);
     };
@@ -252,6 +262,14 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     };
   }, [atlas.worldId, runId, layout.profile.architecture, reducedMotion]);
 
+  const inspected = layout.points.find(point => point.id === inspectedSiteId);
+  const observed = inspected ? presentSite(atlas, exploration, inspected.id) : null;
+  const stage = inspected ? exploration.sites[inspected.id].discoveryState : null;
+  const stageActions: Record<string, ExplorationCommand['action'] | null> = {
+    UNKNOWN: 'detect', DETECTED: 'survey', SURVEYED: 'discover', DISCOVERED: 'travel',
+    VISITED: 'investigate', INVESTIGATED: 'resolve', RESOLVED: null,
+  };
+  const nextStage = stage ? stageActions[stage] : null;
   const actionButton = (label: string, movement: Movement) => (
     <button type="button" aria-label={label} onPointerDown={event => { event.preventDefault(); actions.current.add(movement); (event.currentTarget as HTMLButtonElement).setPointerCapture(event.pointerId); }}
       onPointerUp={() => actions.current.delete(movement)} onPointerCancel={() => actions.current.delete(movement)} onLostPointerCapture={() => actions.current.delete(movement)}
@@ -278,10 +296,20 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       </div>
       <div style={{ position:'absolute', bottom:12, right:12, display:'grid', gap:6, justifyItems:'end' }}>
         {layout.profile.movement === 'fly' && <div style={{ display:'flex', gap:6 }}>{actionButton('Ascend', 'up')}{actionButton('Descend', 'down')}</div>}
-        <button type="button" disabled={!target} onClick={() => target && onSelectSite(target)} style={{ minHeight:44, padding:'9px 14px', background:target?'#b6e6e7':'#26313d', color:'#061217', border:0, borderRadius:6, fontWeight:700 }}>Inspect nearby</button>
+        <button type="button" disabled={!target} onClick={() => { if (target) { setInspectedSiteId(target); setInteractionResult(''); } }} style={{ minHeight:44, padding:'9px 14px', background:target?'#b6e6e7':'#26313d', color:'#061217', border:0, borderRadius:6, fontWeight:700 }}>Inspect nearby</button>
         <button type="button" onClick={onReturnToAtlas} style={{ minHeight:44, padding:'9px 14px', background:'#091825db', color:'white', border:'1px solid #789bab', borderRadius:6 }}>Return to Atlas</button>
       </div>
-      <div style={{ position:'absolute', left:'50%', bottom:15, transform:'translateX(-50%)', fontSize:11, color:'#d8f6ff', background:'#07111aca', padding:5, pointerEvents:'none' }}>Visual reconnaissance only · simulation travel requires Atlas commands</div>
+      {inspected && <aside aria-label="Nearby site investigation" style={{ position:'absolute', top:115, right:12, width:'min(350px,calc(100% - 24px))', maxHeight:'calc(100% - 235px)', overflowY:'auto', background:'#0b1824f2', border:'1px solid #81b6c5', padding:14, color:'#effaff', boxShadow:'0 14px 48px #0009', borderRadius:8 }}>
+        <div style={{ display:'flex', justifyContent:'space-between', gap:8, alignItems:'center' }}><strong>{observed?.label ?? 'Unidentified contact'}</strong><button type="button" aria-label="Close nearby site investigation" onClick={() => setInspectedSiteId(null)} style={{ background:'#273f52', color:'white', border:0, padding:'6px 11px' }}>×</button></div>
+        <p style={{ fontSize:12, color:'#b9d2df', margin:'7px 0' }}>Region {inspected.regionId} · {stage}</p>
+        <p style={{ fontSize:13 }}>{observed?.description ?? 'An unclassified field contact. Your instruments have not identified its origin.'}</p>
+        {observed?.condition !== null && observed?.condition !== undefined && <p style={{ fontSize:12 }}>Installation integrity: {observed.condition.toFixed(1)}%</p>}
+        {nextStage && <button type="button" disabled={target !== inspected.id || !!exploration.expedition.journey} onClick={() => setInteractionResult(onSiteAction(inspected.id, nextStage))} style={{ minHeight:44, background:'#a7ddcd', color:'#091916', border:0, padding:'8px 12px', borderRadius:5, fontWeight:700, marginRight:6 }}>{nextStage === 'travel' ? 'Begin expedition travel' : nextStage.charAt(0).toUpperCase()+nextStage.slice(1)}</button>}
+        <button type="button" onClick={() => { onSelectSite(inspected.id); onReturnToAtlas(); }} style={{ minHeight:44, background:'#253948', color:'white', border:'1px solid #647e91', padding:'8px 12px', borderRadius:5 }}>Full dossier</button>
+        {interactionResult && <p role="status" style={{ fontSize:12, color:'#d7e8cc' }}>{interactionResult}</p>}
+      </aside>}
+      {exploration.expedition.journey && <div role="status" style={{ position:'absolute', left:'50%', bottom:84, transform:'translateX(-50%)', background:'#142238ed', color:'#e3f4fa', fontSize:12, padding:7, display:'flex', alignItems:'center', gap:8 }}><span>Travel in progress · arrival T{exploration.expedition.journey.arrivalTick}</span><button type="button" onClick={onAdvanceTime} style={{ minHeight:40, background:'#a9d8e5', color:'#07131c', border:0, borderRadius:4 }}>Advance 1 tick</button></div>}
+      <div style={{ position:'absolute', left:'50%', bottom:6, transform:'translateX(-50%)', fontSize:10, color:'#d8f6ff', background:'#07111aca', padding:4, pointerEvents:'none' }}>Physical exploration · deterministic expedition actions and history</div>
     </section>
   );
 };
