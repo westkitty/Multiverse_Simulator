@@ -19,6 +19,9 @@ export function curiosityLeads(
     if (!prior || event.tick > prior.tick || (event.tick === prior.tick && event.id > prior.id))
       newest.set(event.sourceEntityId, event);
   }
+  const lastAction = new Map<string, number>();
+  for (const action of state.journal)
+    lastAction.set(action.siteId, Math.max(lastAction.get(action.siteId) ?? 0, action.tick));
   return atlas.sites.flatMap(site => {
     const delta = state.sites[site.facts.id];
     if (DISCOVERY_ORDER.indexOf(delta.discoveryState) < 2 || delta.discoveryState === 'RESOLVED') return [];
@@ -29,8 +32,7 @@ export function curiosityLeads(
       DISCOVERY_ORDER.indexOf('VISITED') ? newest.get(site.facts.id) : undefined;
     const lastObservation = Math.max(0, delta.firstVisitedTick ?? 0,
       ...delta.evidence.map(e => e.tick),
-      ...state.journal.filter(e => e.siteId === site.facts.id).map(e => e.tick),
-      event?.tick ?? 0);
+      lastAction.get(site.facts.id) ?? 0, event?.tick ?? 0);
     const expiresAt = lastObservation + 48;
     if (tick > expiresAt) return [];
     const stateReason = delta.condition < 45 ? 'degraded infrastructure'
