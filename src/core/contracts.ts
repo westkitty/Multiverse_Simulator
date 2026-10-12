@@ -359,6 +359,8 @@ export interface CheckpointSnapshot {
   commandHistoryLength: number;
   metricsAtTick: Record<string, number>;
   byteSizeEstimate: number;
+  /** Optional causal-journal state at fork origin. Existing checkpoints/archives omit it. */
+  replayJournal?: { sequenceCounter: number; events: CausalEvent[] };
 }
 
 export interface BranchLineage {

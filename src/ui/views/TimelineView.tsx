@@ -32,6 +32,12 @@ export const TimelineView: React.FC = () => {
   );
 
   if (!kernel) return null;
+  const lineage = kernel.getLineage();
+  const replayReceipt = lastReplayCheck?.runId === kernel.runId &&
+    lastReplayCheck.tick === kernel.tick &&
+    lastReplayCheck.authoritativeHash === kernel.getStateHash()
+    ? lastReplayCheck : null;
+  const replayStartingTick = lineage.parentRunId ? lineage.forkedAtTick : 0;
 
   const sameWorldRuns = Object.values(runs).filter(
     (r) => r.worldId === kernel.worldId,
@@ -108,26 +114,31 @@ export const TimelineView: React.FC = () => {
               cursor: 'pointer',
             }}
           >
-            ✓ Verify Deterministic Replay from Tick 0
+            {lineage.parentRunId ? `Verify branch replay from fork T${replayStartingTick}` : 'Verify deterministic replay from genesis T0'}
           </button>
 
-          {lastReplayCheck && lastReplayCheck.runId === kernel.runId && (
+          {replayReceipt && (
             <span
+              role="status"
+              aria-live="polite"
               style={{
                 fontSize: '11px',
                 fontFamily: 'monospace',
                 padding: '6px 10px',
                 borderRadius: '4px',
-                backgroundColor: lastReplayCheck.passed
-                  ? 'rgba(0, 230, 118, 0.14)'
-                  : 'rgba(255, 61, 87, 0.18)',
-                color: lastReplayCheck.passed ? '#00e676' : '#ff3d57',
-                border: `1px solid ${lastReplayCheck.passed ? '#00e676' : '#ff3d57'}`,
+                backgroundColor: replayReceipt.unavailableReason
+                  ? 'rgba(236, 183, 81, 0.12)'
+                  : replayReceipt.passed ? 'rgba(0, 230, 118, 0.14)' : 'rgba(255, 61, 87, 0.18)',
+                color: replayReceipt.unavailableReason
+                  ? '#f7cf83' : replayReceipt.passed ? '#00e676' : '#ff8197',
+                border: `1px solid ${replayReceipt.unavailableReason ? '#d4ac60' : replayReceipt.passed ? '#00e676' : '#ff3d57'}`,
               }}
             >
-              {lastReplayCheck.passed
-                ? `REPLAY VERIFIED @ T${lastReplayCheck.tick}: Hash ${lastReplayCheck.replayedHash.slice(0, 12)}`
-                : `REPLAY MISMATCH: ${lastReplayCheck.replayedHash}`}
+              {replayReceipt.unavailableReason
+                ? `REPLAY UNVERIFIABLE: ${replayReceipt.unavailableReason}`
+                : replayReceipt.passed
+                  ? `REPLAY VERIFIED ${replayReceipt.verificationBasis === 'genesis' ? 'FROM GENESIS' : 'FROM FORK'} T${replayReceipt.originTick ?? 0} → T${replayReceipt.tick}: ${replayReceipt.replayedHash.slice(0, 12)}`
+                  : `REPLAY MISMATCH: ${replayReceipt.replayedHash}`}
             </span>
           )}
         </div>

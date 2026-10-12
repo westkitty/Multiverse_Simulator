@@ -585,28 +585,138 @@ export class SimulationKernel<
   }
 
   /**
-   * Re-runs the simulation from Genesis (Tick 0) using the initial seed, initial config,
-   * and recorded executed commands up to `upToTick`. Verifies deterministic replay equivalence.
+   * Verifies state/RNG by replaying commands from an authoritative origin.
+   * Roots begin at Genesis. Forks begin at their immutable branch-origin
+   * checkpoint and run only commands executed AFTER that checkpoint.
+   *
+   * A historical target without a captured checkpoint is *unverifiable*,
+   * not a successful replay. Missing/corrupt fork provenance fails closed.
    */
   replayFromStart(upToTick = this._tick): {
     replayedKernel: SimulationKernel<TConfig, TState>;
     matchesAuthoritativeHash: boolean;
     replayedHash: string;
     authoritativeHash: string;
+    originTick: Tick;
+    verificationBasis: 'genesis' | 'fork_checkpoint' | 'legacy_fork_journal';
   } {
-    const relevantCommands = this.executedCommands.filter(
-      (c) => (c.executedAtTick ?? c.tick) <= upToTick,
-    );
+    if (!Number.isSafeInteger(upToTick) || upToTick < 0 || upToTick > this._tick) {
+      throw new Error('Replay target must be a recorded, nonfuture simulation tick');
+    }
+
+    const isFork = this.lineage.parentRunId !== null;
+    const origin = isFork
+      ? this.checkpoints.find(c =>
+          c.runId === this.runId &&
+          c.tick === this.lineage.forkedAtTick &&
+          c.label.startsWith('Branch Origin (Tick '))
+      : undefined;
+    if (isFork && !origin) {
+      throw new Error('Replay unavailable: the original fork checkpoint is missing');
+    }
+    if (origin && upToTick < origin.tick) {
+      throw new Error('Cannot replay a child branch before its fork-origin tick');
+    }
+
+    // Replaying to an arbitrary earlier tick cannot be called proof without
+    // an independently recorded authoritative hash at that exact tick.
+    const historicalCheckpoint = upToTick === this._tick
+      ? undefined
+      : this.checkpoints.find(c => c.tick === upToTick);
+    if (upToTick !== this._tick && !historicalCheckpoint) {
+      throw new Error('Replay unverified: no authoritative checkpoint exists at the requested historical tick');
+    }
+    const authoritativeHash = upToTick === this._tick
+      ? this.getStateHash()
+      : historicalCheckpoint!.stateHash;
 
     const replayKernel = new SimulationKernel<TConfig, TState>({
       runId: this.runId,
-      name: `${this.name} (Replay)`,
+      name: this.name + ' (Replay)',
       plugin: this.plugin,
       seed: this.seed,
-      config: JSON.parse(JSON.stringify(this.initialConfig)) as TConfig,
+      config: JSON.parse(JSON.stringify(origin?.config ?? this.initialConfig)) as TConfig,
       budget: this.budget,
     });
 
+    let originTick: Tick = 0;
+    let inheritedCommandCount = 0;
+    let verificationBasis: 'genesis' | 'fork_checkpoint' | 'legacy_fork_journal' = 'genesis';
+    if (origin) {
+      const baseHash = computeStateHash(
+        this.plugin.id, origin.tick, origin.serializedState, origin.rngState,
+      );
+      if (baseHash !== origin.stateHash) {
+        throw new Error('Replay unavailable: fork-origin checkpoint hash does not match its snapshot');
+      }
+      const validated = this.plugin.validateConfig(origin.config);
+      if (!validated.valid || !validated.config) {
+        throw new Error('Replay unavailable: fork-origin configuration is invalid');
+      }
+      originTick = origin.tick;
+      inheritedCommandCount = origin.commandHistoryLength;
+      if (!Number.isSafeInteger(inheritedCommandCount) ||
+          inheritedCommandCount < 0 || inheritedCommandCount > this.executedCommands.length) {
+        throw new Error('Replay unavailable: fork-origin command history is inconsistent');
+      }
+      replayKernel.state = this.plugin.restoreState(
+        JSON.parse(JSON.stringify(origin.serializedState)) as Record<string, unknown>,
+      );
+      replayKernel.rng.restore(JSON.parse(JSON.stringify(origin.rngState)));
+      replayKernel.currentConfig = JSON.parse(JSON.stringify(validated.config)) as TConfig;
+      replayKernel._tick = origin.tick;
+      replayKernel.commandSequence = origin.commandSequence;
+      replayKernel.executedCommands = JSON.parse(
+        JSON.stringify(this.executedCommands.slice(0, inheritedCommandCount)),
+      ) as SimulationCommand[];
+      replayKernel.metricHistory = JSON.parse(
+        JSON.stringify(this.metricHistory.filter(m => m.tick <= origin.tick)),
+      ) as MetricPoint[];
+      replayKernel.checkpoints = [JSON.parse(JSON.stringify(origin)) as CheckpointSnapshot];
+
+      // New branches carry the exact causal journal at their origin. For old
+      // archives without this optional field, recover only if the original
+      // branch-creation event is still present in the bounded current journal.
+      let anchoredJournal = origin.replayJournal;
+      if (!anchoredJournal) {
+        const history = this.journal.serialize().events;
+        const boundary = history.findIndex(e =>
+          e.runId === this.runId &&
+          e.tick === origin.tick &&
+          e.type === 'reality_branched' &&
+          e.payload?.parentRunId === this.lineage.parentRunId &&
+          e.payload?.forkCheckpointId === this.lineage.forkCheckpointId
+        );
+        if (boundary < 0) {
+          throw new Error('Replay unavailable: legacy fork-origin event history has expired');
+        }
+        const events = history.slice(0, boundary + 1);
+        const lastId = events[events.length - 1].id;
+        const sequence = Number(lastId.match(/-(\d+)$/)?.[1]);
+        if (!Number.isSafeInteger(sequence)) {
+          throw new Error('Replay unavailable: legacy fork event sequence is invalid');
+        }
+        anchoredJournal = { sequenceCounter: sequence + 1, events };
+        verificationBasis = 'legacy_fork_journal';
+      } else {
+        verificationBasis = 'fork_checkpoint';
+      }
+      const forkMarker = anchoredJournal.events[anchoredJournal.events.length - 1];
+      if (!forkMarker || forkMarker.type !== 'reality_branched' ||
+          forkMarker.runId !== this.runId || forkMarker.tick !== origin.tick ||
+          forkMarker.payload?.parentRunId !== this.lineage.parentRunId ||
+          forkMarker.payload?.forkCheckpointId !== this.lineage.forkCheckpointId) {
+        throw new Error('Replay unavailable: fork-origin branch event is invalid');
+      }
+      if (!Number.isSafeInteger(anchoredJournal.sequenceCounter) ||
+          anchoredJournal.events.some(e => e.tick > origin.tick)) {
+        throw new Error('Replay unavailable: fork-origin causal journal is inconsistent');
+      }
+      replayKernel.journal.restore(anchoredJournal);
+    }
+
+    const relevantCommands = this.executedCommands.slice(inheritedCommandCount)
+      .filter(c => (c.executedAtTick ?? c.tick) <= upToTick);
     const enqueueForPhase = (targetTick: Tick, phase: 'pre_systems' | 'post_systems') => {
       for (const c of relevantCommands) {
         const execTick = c.executedAtTick ?? c.tick;
@@ -629,22 +739,17 @@ export class SimulationKernel<
       enqueueForPhase(currentT + 1, 'pre_systems');
       replayKernel.step();
     }
-
-    // Also flush any post_systems commands that were executed after reaching upToTick
     enqueueForPhase(upToTick, 'post_systems');
     replayKernel.flushCurrentTickCommands('post_systems');
 
     const replayedHash = replayKernel.getStateHash();
-    const authoritativeHash =
-      upToTick === this._tick
-        ? this.getStateHash()
-        : this.checkpoints.find((c) => c.tick === upToTick)?.stateHash ?? replayedHash;
-
     return {
       replayedKernel: replayKernel,
       matchesAuthoritativeHash: replayedHash === authoritativeHash,
       replayedHash,
       authoritativeHash,
+      originTick,
+      verificationBasis,
     };
   }
 
@@ -721,9 +826,12 @@ export class SimulationKernel<
       },
     });
 
-    forked.checkpoints = [
-      forked.createCheckpoint(`Branch Origin (Tick ${sourceCheckpoint.tick})`),
-    ];
+    // Store the causal journal at the exact fork boundary, before its first
+    // intervention. Ordinary and historical root checkpoints keep their shape.
+    const branchOrigin = forked.createCheckpoint(`Branch Origin (Tick ${sourceCheckpoint.tick})`);
+    branchOrigin.replayJournal = forked.journal.serialize();
+    branchOrigin.byteSizeEstimate += JSON.stringify(branchOrigin.replayJournal).length;
+    forked.checkpoints = [branchOrigin];
 
     if (options.initialCommand) {
       forked.enqueueCommand({

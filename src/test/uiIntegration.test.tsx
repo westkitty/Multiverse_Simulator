@@ -96,10 +96,10 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     fireEvent.click(screen.getByRole('tab', { name: /Timeline & Branches/i }));
     fireEvent.click(
       screen.getByRole('button', {
-        name: /Verify Deterministic Replay from Tick 0/i,
+        name: /Verify deterministic replay from genesis T0/i,
       }),
     );
-    expect(screen.getByText(/REPLAY VERIFIED/i)).toBeInTheDocument();
+    expect(screen.getByText(/REPLAY VERIFIED FROM GENESIS T0/i)).toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole('button', {

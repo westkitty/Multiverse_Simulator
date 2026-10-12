@@ -104,3 +104,7 @@ Departure briefings distinguish present access from future safety; optional near
 ### Archive verification on the remote patch branch
 
 The supplied text-only patch does not contain the original historical ZIP files. CI regenerates the nine original-world archives with pinned Git source `cb6bc9b` and checks their state/continuation oracles against the preserved manifest. The pre-refuge Atlas source commit `7e7f933` was never pushed; CI may generate **state-equivalent** Atlas archives using current-source legacy commands *only when all 15 saved historical state/continuation oracle values match*. These are not byte-identical original pre-refuge archives. ZIP byte hashes change when `exportedAtIso` changes. The original supplied byte hashes remain in the tracked manifest, and any regenerated fixture manifest retains them separately. This is a narrower check than an independently supplied old ZIP restoration; that remains unverified until the original source or files become available.
+
+### Counterfactual replay evidence
+
+History & Branches replay verification now distinguishes roots (Genesis T0) from forks (their actual origin tick). A missing historical checkpoint or expired legacy fork history is **unverifiable**, not an automatic PASS. Portable branch archives carry an optional origin-journal proof without changing legacy archive versions. Verification reports the current state/RNG hash, not an independent scientific validation of the model.
