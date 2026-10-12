@@ -1,6 +1,6 @@
 # OMNIVERSE II — deterministic world laboratory
 
-**Local development build: 15 worlds. Final release acceptance is incomplete; public deployment is BLOCKED.**
+**The verified fifteen-world baseline is publicly deployed. PR #6 adds immersive Three.js traversal as an unmerged candidate; content-depth and physical-device acceptance remain incomplete.**
 
 The nine original scientific plugins remain intact behind a versioned Atlas adapter. Six additional PDK worlds simulate wilderness ecology, subterranean hydrology, archaeological exposure, terraforming, machine infrastructure, and signal propagation. All use the existing fixed-step kernel, named RNG streams, checkpoints, command journal, branches, experiments, workers and portable archives.
 
@@ -68,20 +68,22 @@ Saves are local IndexedDB data or exported `.omniverse.zip` files—not cloud sa
 
 The engine/archive/IndexedDB versions remain 1.0.0/1/1. Original wrapped plugin versions are 3.0.0; frontier plugins are 1.0.0. Static generated history is labeled separately from timestamped observed evidence.
 
-## Publication status — do not confuse baseline merge with live release
+## Public release and in-progress Three.js exploration
 
-The nine-world baseline was independently verified and merged in [PR #1](https://github.com/westkitty/Multiverse_Simulator/pull/1). Its main workflow passed validation and artifact creation, but [deployment run 38129717092](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38129717092) failed `configure-pages` with HTTP 404. Pages activation had returned HTTP 403.
+The earlier nine-world Pages activation failures in runs 38129717092 and 38189010957 are historical. The repository's current `main` at `c070beb6ceffa649ae2370b9e42225b9e36eb001` has a successful Pages deployment and a separate public-site desktop/mobile Chromium smoke job: [main workflow 38192688920](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38192688920). Production URL: https://westkitty.github.io/Multiverse_Simulator/. All 16 public smoke tests passed. This does not prove physical-device FPS or other browsers.
 
-This coding session was closed after that merge and cannot push or change GitHub. The fifteen-world work is local, not promoted to main. Continue publication in a new coding session. An authorized administrator must set **Repository → Settings → Pages → Build and deployment → Source → GitHub Actions**, then run the main deployment and verify the actual release in a browser.
+**PR #6** ([feature branch](https://github.com/westkitty/Multiverse_Simulator/pull/6)) is a separate, unmerged Three.js exploration implementation. It gives each of the 15 worlds an enterable, full-width first-person scene with keyboard/touch input, data-derived environments, native route corridors, simulated actors and nearby site interactions. The real simulation remains authoritative for discovery, expedition travel, timing, resource costs, histories and saves. A 3D camera's location is presentation state, not a teleport or a second source of simulation truth.
 
-Target: https://westkitty.github.io/Multiverse_Simulator/ — **not verified live**. No claim is made that a build, artifact, workflow file or HTTP 200 establishes a functioning deployed simulator.
+To use the candidate after checking out PR #6 locally, run `npm ci`, `npm run dev`, then open **Explore in 3D** or **Enter this universe in 3D**. Use W/A/S/D or arrows, drag to look, E or **Inspect nearby** for site actions. Switch worlds with the existing header selector; use **Full dossier** for investigative detail. This is not yet the publicly deployed Pages build.
+
+**Important boundary:** the fifteen-world scene inventory and spatial expansion do not certify the separate 3× meaningful content-depth request. Artistic polish, long-term economic behavior, physical touch-device performance, and legacy missing historical bytes remain open.
 
 ## Remaining acceptance work
 
 - Complete semantic variety/content-tripling audit against intake; generalized facility roles are not fifteen separately designed sets of twelve mechanics.
 - Long-duration/default-resource exploration balance, disruptive in-flight hazards, large branch/archive stress, and real-device FPS/memory acceptance.
 - Independent archived historical fixtures and full live-HTTPS persistence/navigation verification.
-- Authorized publication and verification of the exact deployed commit.
+- Merge/deploy and publicly smoke-test the Three.js exploration candidate only after exact-head CI and runtime acceptance; the earlier baseline deployment is already verified.
 
 [Architecture](ARCHITECTURE.md) · [PDK extension guide](EXTENDING.md) · [exploration contracts](docs/EXPLORATION_CONTRACTS.md) · [historical baseline documentation](docs/historical/README.md)
 
