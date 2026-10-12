@@ -112,3 +112,40 @@ export function makeImmersiveLayout(atlas: ExplorationAtlas, state: ExplorationS
     extent: Math.max(130, ...points.map(p => Math.max(Math.abs(p.x), Math.abs(p.z)) + 22)),
   };
 }
+
+
+export interface ImmersiveActorMarker {
+  id: string;
+  regionId: string;
+  role: number;
+  energy: number;
+  task: string;
+}
+
+/**
+ * Reflect only simulated actors, never invent populations from decorative geometry.
+ * The nine native Atlas worlds store atlasActors.regionId; frontier worlds store
+ * actors.region as an index into their owned regions array.
+ */
+export function projectImmersiveActors(raw: unknown): ImmersiveActorMarker[] {
+  if (!raw || typeof raw !== 'object') return [];
+  const state = raw as Record<string, unknown>;
+  const regions = Array.isArray(state.regions) ? state.regions : [];
+  const roster = Array.isArray(state.atlasActors) ? state.atlasActors
+    : Array.isArray(state.actors) ? state.actors : [];
+  const result: ImmersiveActorMarker[] = [];
+  for (const candidate of roster) {
+    if (!candidate || typeof candidate !== 'object') continue;
+    const actor = candidate as Record<string, unknown>;
+    const regionIndex = typeof actor.region === 'number' ? actor.region : -1;
+    const region = regions[regionIndex] as { id?: unknown } | undefined;
+    const regionId = typeof actor.regionId === 'string' ? actor.regionId
+      : typeof region?.id === 'string' ? region.id : null;
+    if (!regionId || typeof actor.id !== 'string') continue;
+    const role = typeof actor.role === 'number' && Number.isFinite(actor.role) ? actor.role : 0;
+    const energy = typeof actor.energy === 'number' && Number.isFinite(actor.energy) ? actor.energy : 0;
+    result.push({ id: actor.id, regionId, role, energy, task: typeof actor.task === 'string' ? actor.task : 'field-work' });
+    if (result.length >= 180) break;
+  }
+  return result;
+}
