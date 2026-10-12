@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 test('all fifteen worlds expose usable, persistent site exploration', async ({ page }) => {
+  // All 15 modules each execute a complete exploration journey under software Chromium.
+  test.setTimeout(180_000);
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('./');
   for(const letter of 'ABCDEFGHIJKLMNO') {

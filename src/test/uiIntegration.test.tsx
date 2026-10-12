@@ -79,7 +79,7 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     // 1. World Library: launch a new seeded world run
     fireEvent.click(screen.getByRole('tab', { name: /World Library/i }));
     expect(
-      screen.getByText(/Create a world. Change its conditions/i),
+      screen.getByText(/Fifteen modeled realities. No shared physics by default/i),
     ).toBeInTheDocument();
 
     const runsBefore = Object.keys(useMultiverseStore.getState().runs).length;

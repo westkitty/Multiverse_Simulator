@@ -1,4 +1,5 @@
 import './ui/navigation.css';
+import './ui/shell.css';
 import { defaultCrossWorldRegistry } from './core/crossWorldContract';
 import { AtlasView } from './ui/views/AtlasView';
 import React, { useEffect } from 'react';
@@ -115,6 +116,7 @@ export const App: React.FC = () => {
 
   return (
     <div
+      className="multiverse-shell"
       style={{
         minHeight: '100vh',
         backgroundColor: preferences.highContrast ? '#000000' : '#07090e',
@@ -125,6 +127,7 @@ export const App: React.FC = () => {
     >
       {/* Top Observatory Command Header */}
       <header
+        className="multiverse-header"
         style={{
           backgroundColor: '#0b0f17',
           borderBottom: '1px solid #1e293b',
@@ -214,6 +217,31 @@ export const App: React.FC = () => {
             })}
           </div>
         </div>
+
+        <section
+          className="reality-register"
+          aria-label="Active simulation state"
+          data-running={isRunning}
+          style={{ '--reality-accent': activeKernel?.plugin.accentColor ?? '#9ca9ad' } as React.CSSProperties}
+        >
+          <div className="reality-register__reading">
+            <span className="reality-register__mark" aria-hidden="true" />
+            <div className="reality-register__identity">
+              <span className="reality-register__eyebrow">{isRunning ? 'SIMULATION ADVANCING' : 'SIMULATION AT REST'}</span>
+              <strong>{activeKernel?.plugin.name ?? 'No active reality selected'}</strong>
+            </div>
+            {activeKernel && (
+              <div className="reality-register__coordinates">
+                <span>RUN <b>{activeKernel.runId}</b></span>
+                <span>TICK <b>{activeKernel.tick.toLocaleString('en-US')}</b></span>
+                <span>SEED <b>{activeKernel.seed}</b></span>
+              </div>
+            )}
+          </div>
+          <button type="button" onClick={() => setActiveTab('atlas')}>
+            Enter the field atlas <span aria-hidden="true">↗</span>
+          </button>
+        </section>
 
         {/* Primary Workbench Navigation */}
         <nav aria-label="Multiverse Workbenches">
@@ -315,6 +343,7 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main
+        className="multiverse-main"
         style={{
           flex: 1,
           padding: '16px 18px',

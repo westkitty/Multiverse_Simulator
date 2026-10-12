@@ -1,7 +1,16 @@
 import { frameBounds } from './frameBounds';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { RenderFrameData } from '../core/contracts';
+import type { RenderConnectionVisual, RenderEntityVisual, RenderFrameData } from '../core/contracts';
+
+const RENDER_INSTANCE_CHUNK = 1024;
+type EntityShape = 'cone' | 'sphere' | 'cylinder';
+
+function shapeForEntity(kind: string): EntityShape {
+  if (kind === 'predator' || kind === 'volcano_cone' || kind === 'storm_vortex') return 'cone';
+  if (kind === 'herbivore' || kind === 'star' || kind === 'planet' || kind === 'moon') return 'sphere';
+  return 'cylinder';
+}
 
 export interface ThreeWorldViewportProps {
   frame: RenderFrameData;
@@ -205,179 +214,314 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     zoneInstances.count = 0;
     zoneGroup.add(zoneInstances);
     const zoneTransform = new THREE.Object3D();
+    const hazardTransform = new THREE.Object3D();
+    const connectionTransform = new THREE.Object3D();
+    const entityTransform = new THREE.Object3D();
     const instanceColor = new THREE.Color();
     const linkDirection = new THREE.Vector3();
     const linkAxis = new THREE.Vector3(0, 0, 1);
-    const hitIdentity = (hit: THREE.Intersection) => hit.object === zoneInstances && hit.instanceId !== undefined
-      ? frameRef.current.zones[hit.instanceId] : { id: String(hit.object.userData.entityId ?? ''), label: String(hit.object.userData.label ?? '') };
-    const entityMeshes = new Map<string, THREE.Mesh>();
-    const connectionMeshes = new Map<string, THREE.Mesh>();
+    const boundPoint = new THREE.Vector3();
+    const hazardGeometry = new THREE.RingGeometry(0.94, 1, 28);
+    hazardGeometry.rotateX(-Math.PI / 2);
+    const hazardMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.78,
+      depthWrite: false,
+      toneMapped: false,
+    });
+    const hazardInstances = new THREE.InstancedMesh(hazardGeometry, hazardMaterial, 2048);
+    hazardInstances.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+    hazardInstances.count = 0;
+    zoneGroup.add(hazardInstances);
+
+    const entityMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.35,
+      metalness: 0.25,
+    });
+    const connectionMaterial = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.4,
+      metalness: 0.3,
+    });
+    const entityGeometry: Record<EntityShape, THREE.BufferGeometry> = {
+      cone: coneGeo,
+      sphere: sphereGeo,
+      cylinder: cylGeo,
+    };
+    const entityBatches = new Map<EntityShape, THREE.InstancedMesh[]>([
+      ['cone', []], ['sphere', []], ['cylinder', []],
+    ]);
+    const entityItemsByShape = new Map<EntityShape, RenderEntityVisual[]>([
+      ['cone', []], ['sphere', []], ['cylinder', []],
+    ]);
+    const entityBatchItems = new Map<THREE.InstancedMesh, RenderEntityVisual[]>();
+    const entityBatchBounds = new Map<THREE.InstancedMesh, { box: THREE.Box3; sphere: THREE.Sphere }>();
+    const connectionBatches: THREE.InstancedMesh[] = [];
+    const connectionBatchItems = new Map<THREE.InstancedMesh, RenderConnectionVisual[]>();
+    const entityById = new Map<string, RenderEntityVisual>();
+    const connectionById = new Map<string, RenderConnectionVisual>();
+    const zoneById = new Map<string, RenderFrameData['zones'][number]>();
     const pickableObjects: THREE.Object3D[] = [];
+    const addEntityBatch = (shape: EntityShape) => {
+      const mesh = new THREE.InstancedMesh(entityGeometry[shape], entityMaterial, RENDER_INSTANCE_CHUNK);
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      mesh.count = 0;
+      mesh.userData.renderLayer = 'entity';
+      entityGroup.add(mesh);
+      entityBatches.get(shape)!.push(mesh);
+      entityBatchItems.set(mesh, []);
+      entityBatchBounds.set(mesh, { box: new THREE.Box3(), sphere: new THREE.Sphere() });
+    };
 
-    const syncSceneObjects = (currentFrame: RenderFrameData, alpha: number) => {
-      pickableObjects.length = 0;
-      zoneGroup.visible = layersRef.current.showZones;
-      entityGroup.visible = layersRef.current.showEntities;
-      connectionGroup.visible = layersRef.current.showConnections;
+    const addConnectionBatch = () => {
+      const mesh = new THREE.InstancedMesh(boxGeo, connectionMaterial, RENDER_INSTANCE_CHUNK);
+      mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      mesh.count = 0;
+      mesh.userData.renderLayer = 'connection';
+      connectionGroup.add(mesh);
+      connectionBatches.push(mesh);
+      connectionBatchItems.set(mesh, []);
+    };
 
-      const isTranslucentWorld =
-        currentFrame.worldId === 'station' ||
-        currentFrame.worldId === 'ocean' ||
-        currentFrame.worldId === 'celestial';
+    const hitIdentity = (hit: THREE.Intersection) => {
+      if (hit.object === zoneInstances && hit.instanceId !== undefined) {
+        return frameRef.current.zones[hit.instanceId];
+      }
+      if (hit.instanceId !== undefined) {
+        const mesh = hit.object as THREE.InstancedMesh;
+        const identity = entityBatchItems.get(mesh)?.[hit.instanceId] ??
+          connectionBatchItems.get(mesh)?.[hit.instanceId];
+        if (identity) return identity;
+      }
+      return { id: String(hit.object.userData.entityId ?? ''), label: String(hit.object.userData.label ?? '') };
+    };
 
-      // One draw call for all habitat/climate/compartment boxes instead of one per zone.
-      zoneInstances.count = Math.min(2048, currentFrame.zones.length);
-      zoneInstances.userData.entityId = null;
-      zoneMaterial.transparent = isTranslucentWorld;
-      zoneMaterial.opacity = isTranslucentWorld ? .42 : 1;
-      currentFrame.zones.slice(0,2048).forEach((z,index) => {
-        const height = currentFrame.worldId === 'ecosystem' ? Math.max(.3,z.size[1]+z.value*1.1) : z.size[1];
-        zoneTransform.scale.set(z.size[0],height,z.size[2]);
-        zoneTransform.position.set(z.position[0],currentFrame.worldId === 'station'?z.size[1]*.5:z.position[1],z.position[2]);
+    const syncStaticWorld = (currentFrame: RenderFrameData) => {
+      zoneById.clear();
+      const zoneCount = Math.min(2048, currentFrame.zones.length);
+      zoneInstances.count = zoneCount;
+      zoneMaterial.transparent = currentFrame.worldId === 'station' || currentFrame.worldId === 'ocean' || currentFrame.worldId === 'celestial';
+      zoneMaterial.opacity = zoneMaterial.transparent ? 0.42 : 1;
+      let hazardCount = 0;
+      for (let index = 0; index < currentFrame.zones.length; index += 1) {
+        const zone = currentFrame.zones[index];
+        zoneById.set(zone.id, zone);
+        if (index >= zoneCount) continue;
+        const height = currentFrame.worldId === 'ecosystem'
+          ? Math.max(0.3, zone.size[1] + zone.value * 1.1)
+          : zone.size[1];
+        zoneTransform.scale.set(zone.size[0], height, zone.size[2]);
+        zoneTransform.position.set(
+          zone.position[0],
+          currentFrame.worldId === 'station' ? zone.size[1] * 0.5 : zone.position[1],
+          zone.position[2],
+        );
         zoneTransform.updateMatrix();
-        zoneInstances.setMatrixAt(index,zoneTransform.matrix);
-        zoneInstances.setColorAt(index,instanceColor.set(z.color));
-      });
+        zoneInstances.setMatrixAt(index, zoneTransform.matrix);
+        zoneInstances.setColorAt(index, instanceColor.set(zone.color));
+
+        // Alert rings encode the simulation's own status field; they are not decorative VFX.
+        if (zone.status !== 'nominal' && hazardCount < 2048) {
+          hazardTransform.scale.set(Math.max(0.5, zone.size[0] * 0.58), Math.max(0.5, zone.size[2] * 0.58), 1);
+          const surfaceY = currentFrame.worldId === 'station'
+            ? zone.size[1]
+            : zone.position[1] + height * 0.5;
+          hazardTransform.position.set(zone.position[0], surfaceY + 0.045, zone.position[2]);
+          hazardTransform.updateMatrix();
+          hazardInstances.setMatrixAt(hazardCount, hazardTransform.matrix);
+          hazardInstances.setColorAt(hazardCount, instanceColor.set(zone.status === 'critical' ? '#ff756d' : '#e5bd72'));
+          hazardCount += 1;
+        }
+      }
+      hazardInstances.count = hazardCount;
       zoneInstances.instanceMatrix.needsUpdate = true;
-      if(zoneInstances.instanceColor)zoneInstances.instanceColor.needsUpdate = true;
+      if (zoneInstances.instanceColor) zoneInstances.instanceColor.needsUpdate = true;
+      hazardInstances.instanceMatrix.needsUpdate = true;
+      if (hazardInstances.instanceColor) hazardInstances.instanceColor.needsUpdate = true;
       zoneInstances.computeBoundingSphere();
-      if(layersRef.current.showZones)pickableObjects.push(zoneInstances);
-      const bounds=frameBounds(currentFrame);
-      (scene.fog as THREE.FogExp2).density=1/(bounds.span*8);
-      gridHelper.scale.setScalar(Math.max(1,bounds.span/108));
-      gridHelper.position.set(bounds.center[0],bounds.min[1]-.1,bounds.center[2]);
+      hazardInstances.computeBoundingSphere();
 
-      const activeConnIds = new Set<string>();
-      for (const conn of currentFrame.connections) {
-        activeConnIds.add(conn.id);
-        let mesh = connectionMeshes.get(conn.id);
-        if (!mesh) {
-          const mat = new THREE.MeshStandardMaterial({
-            color: 0x00e5ff,
-            roughness: 0.4,
-            metalness: 0.3,
-          });
-          mesh = new THREE.Mesh(boxGeo, mat);
-          mesh.userData = { entityId: conn.id, label: conn.label };
-          connectionGroup.add(mesh);
-          connectionMeshes.set(conn.id, mesh);
-        }
-        mesh.userData.entityId = conn.id;
-        mesh.userData.label = conn.label;
-
-        const dx = conn.to[0] - conn.from[0];
-        const dz = conn.to[2] - conn.from[2];
-        const dy = conn.to[1] - conn.from[1];
-        const dist = Math.max(0.5, Math.hypot(dx, dy, dz));
-        const midX = (conn.from[0] + conn.to[0]) * 0.5;
-        const midZ = (conn.from[2] + conn.to[2]) * 0.5;
-
-        mesh.position.set(midX, (conn.from[1] + conn.to[1]) * .5, midZ);
-        mesh.scale.set(
-          conn.status === 'active' ? 1.05 : 0.65,
-          conn.status === 'closed' ? 1.5 : 0.4,
-          dist * 0.82,
+      connectionById.clear();
+      const neededConnectionBatches = Math.ceil(currentFrame.connections.length / RENDER_INSTANCE_CHUNK);
+      while (connectionBatches.length < neededConnectionBatches) addConnectionBatch();
+      for (const mesh of connectionBatches) connectionBatchItems.get(mesh)!.length = 0;
+      for (let index = 0; index < currentFrame.connections.length; index += 1) {
+        const connection = currentFrame.connections[index];
+        connectionById.set(connection.id, connection);
+        const batchIndex = Math.floor(index / RENDER_INSTANCE_CHUNK);
+        const localIndex = index % RENDER_INSTANCE_CHUNK;
+        const mesh = connectionBatches[batchIndex];
+        connectionBatchItems.get(mesh)!.push(connection);
+        const dx = connection.to[0] - connection.from[0];
+        const dy = connection.to[1] - connection.from[1];
+        const dz = connection.to[2] - connection.from[2];
+        const distance = Math.max(0.5, Math.hypot(dx, dy, dz));
+        connectionTransform.position.set(
+          (connection.from[0] + connection.to[0]) * 0.5,
+          (connection.from[1] + connection.to[1]) * 0.5,
+          (connection.from[2] + connection.to[2]) * 0.5,
         );
-        mesh.quaternion.setFromUnitVectors(linkAxis, linkDirection.set(dx, dy, dz).normalize());
-
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.color.set(
-          conn.status === 'closed'
-            ? '#ff3d57'
-            : conn.status === 'active'
-              ? '#ffb300'
-              : '#00e676',
+        connectionTransform.scale.set(
+          connection.status === 'active' ? 1.05 : 0.65,
+          connection.status === 'closed' ? 1.5 : 0.4,
+          distance * 0.82,
         );
-        if (layersRef.current.showConnections) {
-          pickableObjects.push(mesh);
+        connectionTransform.quaternion.setFromUnitVectors(linkAxis, linkDirection.set(dx, dy, dz).normalize());
+        connectionTransform.updateMatrix();
+        mesh.setMatrixAt(localIndex, connectionTransform.matrix);
+        mesh.setColorAt(localIndex, instanceColor.set(
+          connection.status === 'closed' ? '#ff3d57' :
+            connection.status === 'active' ? '#ffb300' : '#00e676',
+        ));
+      }
+      for (const mesh of connectionBatches) {
+        const items = connectionBatchItems.get(mesh)!;
+        mesh.count = items.length;
+        if (items.length > 0) {
+          mesh.instanceMatrix.needsUpdate = true;
+          if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+          mesh.computeBoundingSphere();
         }
       }
 
-      for (const [id, mesh] of connectionMeshes.entries()) {
-        if (!activeConnIds.has(id)) {
-          connectionGroup.remove(mesh);
-          (mesh.material as THREE.Material).dispose();
-          connectionMeshes.delete(id);
-        }
+      const bounds = frameBounds(currentFrame);
+      (scene.fog as THREE.FogExp2).density = 1 / (bounds.span * 8);
+      (scene.fog as THREE.FogExp2).color.set(
+        currentFrame.ambientStatus === 'critical' ? '#1a1014' :
+          currentFrame.ambientStatus === 'warning' ? '#15140f' : '#070a0f',
+      );
+      gridHelper.scale.setScalar(Math.max(1, bounds.span / 108));
+      gridHelper.position.set(bounds.center[0], bounds.min[1] - 0.1, bounds.center[2]);
+    };
+
+    const prepareEntityFrame = (currentFrame: RenderFrameData) => {
+      entityById.clear();
+      for (const items of entityItemsByShape.values()) items.length = 0;
+      for (const entity of currentFrame.entities) {
+        entityById.set(entity.id, entity);
+        entityItemsByShape.get(shapeForEntity(entity.kind))!.push(entity);
       }
 
-      const activeEntIds = new Set<string>();
-      for (const ent of currentFrame.entities) {
-        activeEntIds.add(ent.id);
-        let mesh = entityMeshes.get(ent.id);
-        if (!mesh) {
-          const geo =
-            ent.kind === 'predator' || ent.kind === 'volcano_cone' || ent.kind === 'storm_vortex'
-              ? coneGeo
-              : ent.kind === 'herbivore' || ent.kind === 'star' || ent.kind === 'planet' || ent.kind === 'moon'
-                ? sphereGeo
-                : cylGeo;
-          const mat = new THREE.MeshStandardMaterial({
-            color: ent.color,
-            roughness: 0.35,
-            metalness: 0.25,
-          });
-          mesh = new THREE.Mesh(geo, mat);
-          mesh.userData = { entityId: ent.id, label: ent.label };
-          entityGroup.add(mesh);
-          entityMeshes.set(ent.id, mesh);
+      for (const shape of ['cone', 'sphere', 'cylinder'] as const) {
+        const items = entityItemsByShape.get(shape)!;
+        const batches = entityBatches.get(shape)!;
+        const needed = Math.ceil(items.length / RENDER_INSTANCE_CHUNK);
+        while (batches.length < needed) addEntityBatch(shape);
+        for (const mesh of batches) entityBatchItems.get(mesh)!.length = 0;
+        for (let index = 0; index < items.length; index += 1) {
+          const batchIndex = Math.floor(index / RENDER_INSTANCE_CHUNK);
+          const localIndex = index % RENDER_INSTANCE_CHUNK;
+          const mesh = batches[batchIndex];
+          const entity = items[index];
+          entityBatchItems.get(mesh)!.push(entity);
+          mesh.setColorAt(localIndex, instanceColor.set(entity.color));
         }
-
-        mesh.userData.entityId = ent.id;
-        mesh.userData.label = ent.label;
-
-        const interpX =
-          !reducedMotion && ent.prevPosition
-            ? ent.prevPosition[0] + (ent.position[0] - ent.prevPosition[0]) * alpha
-            : ent.position[0];
-        const interpZ =
-          !reducedMotion && ent.prevPosition
-            ? ent.prevPosition[2] + (ent.position[2] - ent.prevPosition[2]) * alpha
-            : ent.position[2];
-
-        mesh.position.set(interpX, ent.position[1], interpZ);
-        mesh.scale.set(ent.scale[0], ent.scale[1], ent.scale[2]);
-        if (ent.rotationY !== undefined) {
-          mesh.rotation.y = ent.rotationY;
-        }
-
-        const mat = mesh.material as THREE.MeshStandardMaterial;
-        mat.color.set(ent.color);
-        if (layersRef.current.showEntities) {
-          pickableObjects.push(mesh);
+        for (const mesh of batches) {
+          const batchItems = entityBatchItems.get(mesh)!;
+          mesh.count = batchItems.length;
+          if (batchItems.length === 0) continue;
+          if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+          const bounds = entityBatchBounds.get(mesh)!;
+          bounds.box.makeEmpty();
+          for (const entity of batchItems) {
+            const previous = entity.prevPosition ?? entity.position;
+            const extent = Math.max(Math.abs(entity.scale[0]), Math.abs(entity.scale[1]), Math.abs(entity.scale[2])) * 0.72;
+            bounds.box.expandByPoint(boundPoint.set(
+              Math.min(previous[0], entity.position[0]) - extent,
+              Math.min(previous[1], entity.position[1]) - extent,
+              Math.min(previous[2], entity.position[2]) - extent,
+            ));
+            bounds.box.expandByPoint(boundPoint.set(
+              Math.max(previous[0], entity.position[0]) + extent,
+              Math.max(previous[1], entity.position[1]) + extent,
+              Math.max(previous[2], entity.position[2]) + extent,
+            ));
+          }
+          mesh.boundingSphere = bounds.box.getBoundingSphere(bounds.sphere);
         }
       }
+    };
 
-      for (const [id, mesh] of entityMeshes.entries()) {
-        if (!activeEntIds.has(id)) {
-          entityGroup.remove(mesh);
-          (mesh.material as THREE.Material).dispose();
-          entityMeshes.delete(id);
+    const syncEntityTransforms = (alpha: number) => {
+      for (const shape of ['cone', 'sphere', 'cylinder'] as const) {
+        for (const mesh of entityBatches.get(shape)!) {
+          const items = entityBatchItems.get(mesh)!;
+          for (let index = 0; index < items.length; index += 1) {
+            const entity = items[index];
+            const interpolate = !reducedMotion && entity.prevPosition;
+            const x = interpolate
+              ? entity.prevPosition![0] + (entity.position[0] - entity.prevPosition![0]) * alpha
+              : entity.position[0];
+            const z = interpolate
+              ? entity.prevPosition![2] + (entity.position[2] - entity.prevPosition![2]) * alpha
+              : entity.position[2];
+            entityTransform.position.set(x, entity.position[1], z);
+            entityTransform.scale.set(entity.scale[0], entity.scale[1], entity.scale[2]);
+            entityTransform.rotation.set(0, entity.rotationY ?? 0, 0);
+            entityTransform.updateMatrix();
+            mesh.setMatrixAt(index, entityTransform.matrix);
+          }
+          if (items.length > 0) mesh.instanceMatrix.needsUpdate = true;
         }
       }
+    };
 
-      const selId = selectedIdRef.current;
-      const targetMesh =
-        (selId && entityMeshes.get(selId)) ||
-
-        (selId && connectionMeshes.get(selId));
-
-      if (targetMesh) {
+    const syncSelectionRing = (currentFrame: RenderFrameData, alpha: number) => {
+      const id = selectedIdRef.current;
+      const entity = id ? entityById.get(id) : undefined;
+      const connection = id ? connectionById.get(id) : undefined;
+      const zone = id ? zoneById.get(id) : undefined;
+      if (entity) {
+        const interpolate = !reducedMotion && entity.prevPosition;
+        const x = interpolate
+          ? entity.prevPosition![0] + (entity.position[0] - entity.prevPosition![0]) * alpha
+          : entity.position[0];
+        const z = interpolate
+          ? entity.prevPosition![2] + (entity.position[2] - entity.prevPosition![2]) * alpha
+          : entity.position[2];
+        const radius = Math.max(1.4, Math.max(entity.scale[0], entity.scale[2]) * 0.7);
+        selectionRing.visible = true;
+        selectionRing.position.set(x, entity.position[1] - Math.abs(entity.scale[1]) * 0.5 + 0.12, z);
+        selectionRing.scale.set(radius, radius, 1);
+      } else if (connection) {
+        const dx = connection.to[0] - connection.from[0];
+        const dz = connection.to[2] - connection.from[2];
+        const radius = Math.max(1.4, Math.hypot(dx, dz) * 0.035);
         selectionRing.visible = true;
         selectionRing.position.set(
-          targetMesh.position.x,
-          0.18,
-          targetMesh.position.z,
+          (connection.from[0] + connection.to[0]) * 0.5,
+          (connection.from[1] + connection.to[1]) * 0.5 + 0.12,
+          (connection.from[2] + connection.to[2]) * 0.5,
         );
-        const radiusScale = Math.max(
-          1.4,
-          Math.max(targetMesh.scale.x, targetMesh.scale.z) * 0.65,
-        );
-        selectionRing.scale.set(radiusScale, radiusScale, 1);
+        selectionRing.scale.set(radius, radius, 1);
+      } else if (zone) {
+        const height = currentFrame.worldId === 'ecosystem'
+          ? Math.max(0.3, zone.size[1] + zone.value * 1.1)
+          : zone.size[1];
+        const y = currentFrame.worldId === 'station'
+          ? zone.size[1]
+          : zone.position[1] + height * 0.5;
+        selectionRing.visible = true;
+        selectionRing.position.set(zone.position[0], y + 0.12, zone.position[2]);
+        selectionRing.scale.set(Math.max(zone.size[0], zone.size[2]) * 0.56, Math.max(zone.size[0], zone.size[2]) * 0.56, 1);
       } else {
-        const zone=currentFrame.zones.find(z=>z.id===selId);
-        selectionRing.visible=!!zone;
-        if(zone){selectionRing.position.set(zone.position[0],zone.position[1]+.2,zone.position[2]);selectionRing.scale.setScalar(Math.max(zone.size[0],zone.size[2])*.6);}
+        selectionRing.visible = false;
+      }
+    };
+
+    const syncPickableObjects = () => {
+      pickableObjects.length = 0;
+      if (layersRef.current.showZones && zoneInstances.count > 0) pickableObjects.push(zoneInstances);
+      if (layersRef.current.showConnections) {
+        for (const mesh of connectionBatches) if (mesh.count > 0) pickableObjects.push(mesh);
+      }
+      if (layersRef.current.showEntities) {
+        for (const batches of entityBatches.values()) {
+          for (const mesh of batches) if (mesh.count > 0) pickableObjects.push(mesh);
+        }
       }
     };
 
@@ -492,9 +636,13 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     let lastFpsSampleWall = performance.now();
 
     let syncedFrame: RenderFrameData | null = null;
-    let syncedLayers = '';
     let syncedSelection: string | null = null;
     let syncedAlpha = -1;
+    let previousShowZones = layersRef.current.showZones;
+    let previousShowEntities = layersRef.current.showEntities;
+    let previousShowConnections = layersRef.current.showConnections;
+    let topologySyncs = 0;
+    let entitySyncs = 0;
     const animate = (now: number) => {
       animFrameId = requestAnimationFrame(animate);
       frameCount += 1;
@@ -508,15 +656,44 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
         lastFpsSampleWall = now;
       }
 
+      const currentFrame = frameRef.current;
       const alpha = Math.min(
         1,
         Math.max(0, (now - tickTransitionStartRef.current) / 180),
       );
-      const layerKey = JSON.stringify(layersRef.current);
-      if(syncedFrame !== frameRef.current || syncedLayers !== layerKey || syncedSelection !== selectedIdRef.current || (!reducedMotion && alpha !== syncedAlpha)) {
-        syncSceneObjects(frameRef.current, alpha);
-        syncedFrame=frameRef.current; syncedLayers=layerKey; syncedSelection=selectedIdRef.current; syncedAlpha=alpha;
+      const frameChanged = syncedFrame !== currentFrame;
+      const layers = layersRef.current;
+      const layerChanged = previousShowZones !== layers.showZones ||
+        previousShowEntities !== layers.showEntities ||
+        previousShowConnections !== layers.showConnections;
+      const selectionChanged = syncedSelection !== selectedIdRef.current;
+
+      if (frameChanged) {
+        syncStaticWorld(currentFrame);
+        prepareEntityFrame(currentFrame);
+        syncedFrame = currentFrame;
+        topologySyncs += 1;
       }
+
+      zoneGroup.visible = layers.showZones;
+      entityGroup.visible = layers.showEntities;
+      connectionGroup.visible = layers.showConnections;
+
+      const entityTransformsChanged = frameChanged || (!reducedMotion && alpha !== syncedAlpha);
+      if (entityTransformsChanged) {
+        syncEntityTransforms(alpha);
+        syncSelectionRing(currentFrame, alpha);
+        syncedAlpha = alpha;
+        entitySyncs += 1;
+      } else if (selectionChanged) {
+        syncSelectionRing(currentFrame, alpha);
+      }
+      if (frameChanged || layerChanged) syncPickableObjects();
+
+      syncedSelection = selectedIdRef.current;
+      previousShowZones = layers.showZones;
+      previousShowEntities = layers.showEntities;
+      previousShowConnections = layers.showConnections;
 
       const cam = cameraStateRef.current;
       const sinPhi = Math.sin(cam.phi);
@@ -528,8 +705,10 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
       camera.lookAt(cam.targetX, cam.targetY, cam.targetZ);
 
       renderer.render(scene, camera);
-      domEl.dataset.drawCalls=String(renderer.info.render.calls);
-      domEl.dataset.visualInstances=String(frameRef.current.zones.length+frameRef.current.entities.length+frameRef.current.connections.length);
+      domEl.dataset.drawCalls = String(renderer.info.render.calls);
+      domEl.dataset.visualInstances = String(currentFrame.zones.length + currentFrame.entities.length + currentFrame.connections.length);
+      domEl.dataset.topologySyncs = String(topologySyncs);
+      domEl.dataset.entitySyncs = String(entitySyncs);
     };
 
     animFrameId = requestAnimationFrame(animate);
@@ -547,20 +726,23 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
 
       zoneMaterial.dispose();
       zoneInstances.dispose();
+      hazardInstances.dispose();
+      hazardMaterial.dispose();
+      entityMaterial.dispose();
+      connectionMaterial.dispose();
+      for (const batches of entityBatches.values()) {
+        for (const mesh of batches) mesh.dispose();
+      }
+      for (const mesh of connectionBatches) mesh.dispose();
       gridHelper.geometry.dispose();
-      for(const material of Array.isArray(gridHelper.material)?gridHelper.material:[gridHelper.material])material.dispose();
-      for (const mesh of entityMeshes.values()) {
-        (mesh.material as THREE.Material).dispose();
-      }
-      for (const mesh of connectionMeshes.values()) {
-        (mesh.material as THREE.Material).dispose();
-      }
+      for (const material of Array.isArray(gridHelper.material) ? gridHelper.material : [gridHelper.material]) material.dispose();
       selectionRingMat.dispose();
       boxGeo.dispose();
       cylGeo.dispose();
       coneGeo.dispose();
       sphereGeo.dispose();
       ringGeo.dispose();
+      hazardGeometry.dispose();
       renderer.dispose();
     };
   }, [simplifiedMode, reducedMotion, highContrast]);

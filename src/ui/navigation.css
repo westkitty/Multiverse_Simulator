@@ -1,5 +1,8 @@
 /* Preserve every existing world/workbench control without consuming the whole phone viewport. */
 @media (max-width:680px) {
-  .multiverse-worlds,.multiverse-tabs { flex-wrap:nowrap!important; overflow-x:auto; max-width:100%; padding-bottom:9px; scrollbar-width:thin; scrollbar-color:#526777 #0b1119; }
+  .multiverse-header { gap:7px!important; padding:6px 12px!important; }
+  .multiverse-header > div:first-child { gap:6px!important; }
+  .multiverse-worlds,.multiverse-tabs { flex-wrap:nowrap!important; overflow-x:auto; max-width:100%; padding-bottom:3px; scrollbar-width:thin; scrollbar-color:#526777 #0b1119; }
+  .multiverse-tabs { padding-top:5px!important; }
   .multiverse-worlds button,.multiverse-tabs button { flex:0 0 auto; white-space:nowrap; min-height:44px!important; }
 }
