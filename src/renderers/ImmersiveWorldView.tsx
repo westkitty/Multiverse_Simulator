@@ -336,6 +336,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     VISITED: 'investigate', INVESTIGATED: 'resolve', RESOLVED: null,
   };
   const nextStage = stage ? stageActions[stage] : null;
+  const isLocal = !!inspected && exploration.expedition.regionId === inspected.regionId && exploration.sites[inspected.id].firstVisitedTick !== null;
+  const records = isLocal && inspected ? exploration.journal.filter(event => event.siteId === inspected.id).slice(-3) : [];
   const actionButton = (label: string, movement: Movement) => (
     <button type="button" aria-label={label} onPointerDown={event => { event.preventDefault(); actions.current.add(movement); (event.currentTarget as HTMLButtonElement).setPointerCapture(event.pointerId); }}
       onPointerUp={() => actions.current.delete(movement)} onPointerCancel={() => actions.current.delete(movement)} onLostPointerCapture={() => actions.current.delete(movement)}
@@ -372,6 +374,12 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         <p style={{ fontSize:13 }}>{observed?.description ?? 'An unclassified field contact. Your instruments have not identified its origin.'}</p>
         {observed?.condition !== null && observed?.condition !== undefined && <p style={{ fontSize:12 }}>Installation integrity: {observed.condition.toFixed(1)}%</p>}
         {nextStage && <button type="button" disabled={target !== inspected.id || !!exploration.expedition.journey} onClick={() => setInteractionResult(onSiteAction(inspected.id, nextStage))} style={{ minHeight:44, background:'#a7ddcd', color:'#091916', border:0, padding:'8px 12px', borderRadius:5, fontWeight:700, marginRight:6 }}>{nextStage === 'travel' ? 'Begin expedition travel' : nextStage.charAt(0).toUpperCase()+nextStage.slice(1)}</button>}
+        {isLocal && <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginTop:8, marginBottom:8 }}>
+          <button type="button" disabled={target !== inspected.id} onClick={() => setInteractionResult(onSiteAction(inspected.id, 'repair'))} style={{ minHeight:42, padding:'8px 12px', background:'#263c43', border:'1px solid #88b5ac', borderRadius:5, color:'#effaff' }}>Repair installation</button>
+          <button type="button" disabled={target !== inspected.id} onClick={() => setInteractionResult(onSiteAction(inspected.id, 'operate'))} style={{ minHeight:42, padding:'8px 12px', background:'#263c43', border:'1px solid #88b5ac', borderRadius:5, color:'#effaff' }}>Operate facility</button>
+        </div>}
+        {observed?.history && <details style={{ fontSize:12, margin:'8px 0' }}><summary>Recovered background record</summary><p>{observed.history.origin}</p><small>Generated historical context, not eyewitness proof · {observed.history.formationEpoch}</small></details>}
+        {records.length > 0 && <div style={{ margin:'8px 0', borderTop:'1px solid #526779', paddingTop:8 }}><strong style={{ fontSize:11 }}>RECORDED FIELD ACTIONS</strong><ol style={{ fontSize:11, margin:'5px 0', paddingLeft:20 }}>{records.map(record => <li key={record.id}>T{record.tick} · {record.action}</li>)}</ol></div>}
         <button type="button" onClick={() => { onSelectSite(inspected.id); onReturnToAtlas(); }} style={{ minHeight:44, background:'#253948', color:'white', border:'1px solid #647e91', padding:'8px 12px', borderRadius:5 }}>Full dossier</button>
         {interactionResult && <p role="status" style={{ fontSize:12, color:'#d7e8cc' }}>{interactionResult}</p>}
       </aside>}
