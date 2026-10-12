@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CORE_WORLD_PLUGINS } from '../worlds';
 import { SimulationKernel } from '../core/kernel';
+import { isFrontierState } from '../worlds/frontiers/frontierPlugin';
 import { FIELD_PROTOCOLS, fieldProtocolStatus } from '../exploration/fieldProtocols';
 
 describe('authored field protocols', () => {
@@ -11,8 +12,10 @@ describe('authored field protocols', () => {
     expect(new Set(Object.values(FIELD_PROTOCOLS).map(protocol => protocol.question)).size).toBe(15);
     expect(new Set(Object.values(FIELD_PROTOCOLS).map(protocol => protocol.proof)).size).toBeGreaterThanOrEqual(6);
     for (const plugin of CORE_WORLD_PLUGINS) {
-      const kernel = new SimulationKernel({ runId: 'field-protocol', name: 'read-only projection', plugin, seed: 424242 });
+      const kernel = new SimulationKernel({ runId: 'field-protocol', name: 'read-only projection', plugin, seed: plugin.scenarios[0].seed, config: plugin.scenarios[0].config });
       const state = kernel.getState();
+      expect(isFrontierState(state)).toBe(true);
+      if (!isFrontierState(state)) return;
       const before = kernel.getStateHash();
       const status = fieldProtocolStatus(state.atlas, state.exploration);
       expect(status?.evidenceCount, plugin.id).toBe(0);
@@ -25,8 +28,10 @@ describe('authored field protocols', () => {
 
   it('does not leak unknown destination identity and requires actual evidence plus action proof', () => {
     const plugin = CORE_WORLD_PLUGINS.find(candidate => candidate.id === 'station')!;
-    const kernel = new SimulationKernel({ runId:'sealed', name:'secrecy', plugin, seed:424242 });
+    const kernel = new SimulationKernel({ runId:'sealed', name:'secrecy', plugin, seed:plugin.scenarios[0].seed, config:plugin.scenarios[0].config });
     const state = kernel.getState();
+      expect(isFrontierState(state)).toBe(true);
+      if (!isFrontierState(state)) return;
     const status = fieldProtocolStatus(state.atlas, state.exploration)!;
     expect(status.nextKnown).toBe(true);
     expect(status.stages[1].label).toBe('Unlocated contact');
@@ -41,8 +46,10 @@ describe('authored field protocols', () => {
 
   it('reports actual completed observations without overwriting simulation state', () => {
     const plugin = CORE_WORLD_PLUGINS.find(candidate => candidate.id === 'atmosphere')!;
-    const kernel = new SimulationKernel({ runId:'sampled', name:'sampled', plugin, seed:424242 });
+    const kernel = new SimulationKernel({ runId:'sampled', name:'sampled', plugin, seed:plugin.scenarios[0].seed, config:plugin.scenarios[0].config });
     const state = kernel.getState();
+      expect(isFrontierState(state)).toBe(true);
+      if (!isFrontierState(state)) return;
     const copy = structuredClone(state.exploration);
     const protocol = fieldProtocolStatus(state.atlas, copy)!;
     const siteId = protocol.stages[0].siteId;
