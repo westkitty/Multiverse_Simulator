@@ -179,7 +179,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
           </button>)}
         </div>
         {experimentBaseline && <p style={{ fontSize: 12, margin: '8px 0' }}>Command event {experimentBaseline.eventId} · {experimentBaseline.label} · T{experimentBaseline.tick}</p>}
-        {experimentMessage && <p role="status" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
+        {experimentMessage && <p role="status" data-testid="native-intervention-feedback" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
       </details>
     </section>
     <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
