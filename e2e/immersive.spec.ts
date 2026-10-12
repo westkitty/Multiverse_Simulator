@@ -7,6 +7,8 @@ test('actual 3D traversal and in-world site discovery reach the authoritative At
   await page.getByRole('button', { name: /Enter this universe in 3D/ }).click();
   const explorer = page.getByRole('region', { name: 'Immersive 3D world explorer' });
   await expect(explorer).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Three.js universe expedition' })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Site investigation inspector' })).toHaveCount(0);
   const canvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
   await expect(canvas).toBeVisible();
   await expect.poll(() => canvas.evaluate(el => (el as HTMLCanvasElement).width)).toBeGreaterThan(10);
