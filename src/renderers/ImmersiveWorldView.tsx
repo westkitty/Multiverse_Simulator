@@ -228,7 +228,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const observer = new ResizeObserver(resize);
     observer.observe(host);
     resize();
-    let lastTime = performance.now(), stamp = 0, lastActorUpdate = 0, frameId = 0;
+    let lastTime = performance.now(), stamp = 0, lastActorUpdate = 0, lastDiagnostics = 0, frameId = 0;
     const animate = (time: number) => {
       frameId = requestAnimationFrame(animate);
       const dt = Math.min(.045, Math.max(0, (time - lastTime) / 1000));
@@ -308,6 +308,13 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         setReadout(inRange ? ((observed?.label ?? 'Unidentified contact') + ' · E / INSPECT') : 'Move toward a structure to investigate');
       }
       renderer.render(scene, camera);
+      // Actual WebGL submission counters, sampled slowly for automated browser proof.
+      if (time - lastDiagnostics >= 1000) {
+        lastDiagnostics = time;
+        pointer.dataset.drawCalls = String(renderer.info.render.calls);
+        pointer.dataset.worldSites = String(layout.points.length);
+        pointer.dataset.simulatedActors = String(actorMeshes.count);
+      }
     };
     frameId = requestAnimationFrame(animate);
     const onLost = (event: Event) => { event.preventDefault(); setWebglFailed(true); cancelAnimationFrame(frameId); };
