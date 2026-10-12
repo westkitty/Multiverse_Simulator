@@ -178,7 +178,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     pointer.tabIndex = 0;
     pointer.setAttribute('aria-label', 'Focus to control the three-dimensional environment');
     pointer.style.touchAction = 'none';
-    pointer.focus({ preventScroll: true });
+    // Do not steal focus from keyboard-operated navigation. Mouse/touch entry
+    // explicitly focuses the canvas; keyboard users can tab into it.
 
     const down = (event: KeyboardEvent) => {
       const explorer = host.closest('[aria-label="Immersive 3D world explorer"]');
