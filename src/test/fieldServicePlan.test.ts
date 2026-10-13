@@ -44,6 +44,9 @@ describe('native expedition service order',()=>{
       const plan=planFieldService(source.atlas,source.exploration);
       expect(plan.action,plugin.id).toBe('none');
       expect(plan.visitedDamagedSites,plugin.id).toBe(0);
+      expect(plan.unsafeDamagedSites,plugin.id).toBe(0);
+      expect(plan.fuelLimitedDamagedSites,plugin.id).toBe(0);
+      expect(plan.routeBlockedDamagedSites,plugin.id).toBe(0);
       expect(plan.target,plugin.id).toBeNull();
       expect(k.getStateHash(),plugin.id).toBe(hash);
     }
@@ -108,6 +111,8 @@ describe('native expedition service order',()=>{
     result=planFieldService(source.atlas,copy);
     expect(result.action).toBe('blocked');
     expect(result.blockedDamagedSites).toBe(1);
+    expect(result.unsafeDamagedSites).toBe(1);
+    expect(result.fuelLimitedDamagedSites).toBe(0);
 
     copy.expedition.journey={siteId:id,routeIds:[],arrivalTick:k.tick+3};
     result=planFieldService(source.atlas,copy);
@@ -147,6 +152,8 @@ describe('native expedition service order',()=>{
     const dry=planFieldService(source.atlas,copy);
     expect(dry.action).toBe('resupply');
     expect(dry.safelyReachableDamagedSites).toBe(0);
+    expect(dry.fuelLimitedDamagedSites).toBe(1);
+    expect(dry.routeBlockedDamagedSites).toBe(0);
     expect(dry.target).toBeNull();
     expect(dry.instruction).toContain('Transfer up to 10 fuel');
     // This is a projection only: it must NEVER credit fuel or bypass the route.
@@ -255,6 +262,14 @@ describe('native expedition service order',()=>{
     expect(blocked.action).toBe('blocked');
     expect(blocked.target).toBeNull();
     expect(blocked.safelyReachableDamagedSites).toBe(0);
+    expect(blocked.unsafeDamagedSites).toBe(1);
+    copy.sites[remote.facts.id].hazard=20;
+    copy.regionHazards[remote.facts.regionId]=99;
+    const unsafeCorridor=planFieldService(original.atlas,copy);
+    expect(unsafeCorridor.action).toBe('blocked');
+    expect(unsafeCorridor.unsafeDamagedSites).toBe(0);
+    expect(unsafeCorridor.routeBlockedDamagedSites).toBe(1);
+    expect(unsafeCorridor.fuelLimitedDamagedSites).toBe(0);
   });
 
 });
