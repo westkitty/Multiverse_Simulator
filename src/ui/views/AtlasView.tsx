@@ -13,6 +13,7 @@ import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
 import { projectImmersiveActors } from '../../exploration/immersiveLayout';
 import { fieldProtocolStatus } from '../../exploration/fieldProtocols';
 import { fieldAccessStatus, fieldEmergencyRecovery, fieldInterventions, fieldTelemetry } from '../../exploration/nativeFieldExperiments';
+import { planFieldService } from '../../exploration/fieldServicePlan';
 import type { QuickInterventionDescriptor } from '../../core/contracts';
 import './atlas.css';
 
@@ -37,6 +38,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
   const [compareRunId, setCompareRunId] = useState('');
   const [experimentBaseline, setExperimentBaseline] = useState<{ before: Record<string, number>; label: string; tick: number; eventId: string } | null>(null);
   const [experimentMessage, setExperimentMessage] = useState('');
+  const [serviceFeedback, setServiceFeedback] = useState('');
   // Selection and filters don't change the world. Keep its frame stable on those renders.
   const frame = useMemo(() => kernel?.extractRenderFrame(), [kernel, kernel?.tick, store.uiRevision]);
   // Compute the real route graph only at simulation/UI revisions, not on 3D
@@ -46,6 +48,11 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     return kernel && isFrontierState(live) &&
       fieldEmergencyRecovery(kernel.plugin.id, kernel.plugin.quickInterventions)
       ? fieldAccessStatus(live.atlas, live.exploration) : null;
+  }, [kernel, kernel?.tick, store.uiRevision]);
+  const servicePlan = useMemo(() => {
+    const live = kernel?.getState();
+    return kernel && isFrontierState(live)
+      ? planFieldService(live.atlas, live.exploration) : null;
   }, [kernel, kernel?.tick, store.uiRevision]);
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
@@ -109,13 +116,19 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
       return confirmation;
     } catch (error) { const reason = error instanceof Error ? error.message : String(error); setFailed(true); setMessage(reason); return reason; }
   };
-  const resupply = () => {
+  const resupply = (): string => {
     try {
       const reason = resupplyAvailability(atlas, exploration);
       if (reason) throw new Error(reason);
       store.dispatchCommand('expedition.resupply', 'Resupply expedition', {});
-      setFailed(false); setMessage(`Resupply accepted at tick ${kernel.tick}. Stocks transferred from the first visited site in the expedition’s current region.`);
-    } catch (error) { setFailed(true); setMessage(error instanceof Error ? error.message : String(error)); }
+      const confirmation = `Resupply accepted at tick ${kernel.tick}. Stocks transferred from the first visited site in the expedition’s current region.`;
+      setFailed(false); setMessage(confirmation);
+      return confirmation;
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      setFailed(true); setMessage(reason);
+      return reason;
+    }
   };
   const local = dossier.visited && expedition.regionId === chosen.facts.regionId;
   const unavailable = (kind: string) => {
@@ -129,6 +142,17 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
     if (kind === 'investigate') return ![4,5].includes(rank);
     if (kind === 'resolve') return rank !== 5;
     return false;
+  };
+  const dispatchServiceOrder = () => {
+    if (!servicePlan) return;
+    if (servicePlan.action === 'resupply') {
+      setServiceFeedback(resupply());
+      return;
+    }
+    if (!servicePlan.target || !['repair','travel'].includes(servicePlan.action)) return;
+    const id = servicePlan.target.siteId;
+    selectSite(id);
+    setServiceFeedback(action(servicePlan.action as 'repair'|'travel', undefined, id));
   };
   const runNativeFieldIntervention = (item: QuickInterventionDescriptor) => {
     const existingEvents = new Set(kernel.getEvents().map(event => event.id));
@@ -199,6 +223,23 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
             {emergencyRecovery.label}
           </button>
           <p className="native-emergency-note">No separate expedition-supply debit is defined for this existing native command. Advance simulation time to measure its consequences; reopening routes does not restore damaged sites or prove long-run sustainability.</p>
+        </div>}
+        {servicePlan && <div role="group" aria-label="Expedition maintenance planning" className="native-service-deck">
+          <div className="native-service-heading">
+            <h3>Expedition service order</h3>
+            <span>REAL STOCKS · REAL ROUTES</span>
+          </div>
+          <p>Previously visited installations below 75% integrity: <output data-testid="service-damaged-count">{servicePlan.visitedDamagedSites}</output> · currently reachable: <output data-testid="service-reachable-count">{servicePlan.safelyReachableDamagedSites}</output> · blocked: {servicePlan.blockedDamagedSites}</p>
+          {servicePlan.target && <p className="native-service-target" data-testid="field-service-target">
+            <strong>{presentSite(atlas,exploration,servicePlan.target.siteId)?.label ?? 'Previously visited installation'}</strong>
+            <span>Integrity {format(servicePlan.target.condition)}% · hazard {format(servicePlan.target.hazard)} · {servicePlan.target.local ? 'Here in this region' : `${servicePlan.target.fuelCost} fuel · ${servicePlan.target.travelTicks} travel tick(s)`}</span>
+          </p>}
+          <p data-testid="field-service-guidance" aria-live="polite">{servicePlan.instruction}</p>
+          <p className="native-service-stocks">Expedition fuel <strong>{format(expedition.fuel)}</strong> · supplies <strong>{format(expedition.supplies)}</strong>. Repairs charge 2 supplies and restore up to 25 condition points. Global recovery commands do not repair installations.</p>
+          {['repair','travel','resupply'].includes(servicePlan.action) && <button type="button" className="native-service-action" onClick={dispatchServiceOrder} data-testid="field-service-action">
+            {servicePlan.action==='repair' ? 'Repair visited installation — 2 supplies' : servicePlan.action==='travel' ? `Travel to service target — ${servicePlan.target?.fuelCost} fuel` : 'Resupply from visited local site'}
+          </button>}
+          {serviceFeedback && <p role="status" data-testid="field-service-feedback" className="native-service-receipt">{serviceFeedback}</p>}
         </div>}
         {experimentBaseline && <p style={{ fontSize: 12, margin: '8px 0' }}>Command event {experimentBaseline.eventId} · {experimentBaseline.label} · T{experimentBaseline.tick}</p>}
         {experimentMessage && <p role="status" data-testid="native-intervention-feedback" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
