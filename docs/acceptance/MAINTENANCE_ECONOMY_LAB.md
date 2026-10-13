@@ -27,7 +27,7 @@ Read the actual per-seed treatment/control traces and collapsed-site counts. If 
 
 ## Verified PR-head test evidence
 
-Authoritative run: [38325861812](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38325861812), tested head \`62e4f1ec9bf8bbc334abe3c187473d82a60f36df\`; full validation and **20/20 browser tests passed**. After this documentation-only change, a new exact-head check is required.
+Authoritative run: [38325861812](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38325861812), tested head `62e4f1ec9bf8bbc334abe3c187473d82a60f36df`; full validation and **20/20 browser tests passed**. After this documentation-only change, a new exact-head check is required.
 
 | World | Seed | Control mean | Maintained mean | Condition gain | Repairs | Service trips | Sites <25: managed/control |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -44,6 +44,6 @@ Authoritative run: [38325861812](https://github.com/westkitty/Multiverse_Simulat
 | Geology | 2026 | 7.622 | 11.631 | +4.009 | 16 | 8 | 28/31 |
 | Geology | 424242 | 10.191 | 17.838 | +7.646 | 25 | 23 | 26/32 |
 
-Each row comes from a \`ECONOMY_LAB\` receipt in the actual CI job log. All **12 maintained treatments used zero resupplies**. The last column is the count of sites under 25% condition in maintained/control (36 total sites). This is not a recovered/sustainable-world success: the high collapse counts remain product defects. No new persistent report artifact is claimed beyond the reproducible generator and CI log.
+Each row comes from a `ECONOMY_LAB` receipt in the actual CI job log. All **12 maintained treatments used zero resupplies**. The last column is the count of sites under 25% condition in maintained/control (36 total sites). This is not a recovered/sustainable-world success: the high collapse counts remain product defects. No new persistent report artifact is claimed beyond the reproducible generator and CI log.
 
 **Next discriminating experiment:** compare native scientific interventions and physical-route accessibility from the same endangered checkpoint, accounting for command resources and simulation response. Do not automatically loosen access gates or change native decay constants. 
