@@ -30,10 +30,12 @@ The user requested repeated bug sweeping, meaningful uplift and repair—not an 
 - Improvement: show separate categories for previously visited damaged sites with hazardous destinations, fuel-limited real routes, and hazardous/closed/disconnected routes; show the finite refill alternative when possible. Counts are computed read-only and must sum exactly to total blocked.
 - Regression: case-specific route/hazard/fuel tests; dedicated accessible text in the existing 3D service deck. No new persistent state.
 
-### BS-004 — Published PR #16 public smoke cancelled despite green validation/deploy
-- Severity: MEDIUM release-evidence gap, **not a demonstrated production-code bug**.
-- Evidence: [main Actions run 38391679266](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38391679266), initial attempt validate/deploy SUCCESS, public-smoke CANCELLED. Production release was not end-to-end certified by its first attempt.
-- Action: requested a re-run of the same cancelled public-smoke job with no application mutations; inspect its final status and browser count before claiming release verified.
+### BS-004 — GitHub Pages smoke job times out before full 3D browser coverage
+- Severity: HIGH release-validation reliability defect. Status: **PATCHED; post-merge validation pending**. Not a demonstrated gameplay defect.
+- Evidence: [main Actions run 38391679266](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38391679266) validate and deployment SUCCESS but **both** public-smoke attempts were CANCELLED. The second Playwright log completed **17 browser tests** before GitHub cancelled the running test and terminated Chromium. Workflow `.github/workflows/deploy.yml` set the **entire public-smoke job** to `timeout-minutes: 10`, including `npm ci`, Chromium installation and the 20-test slow-software-WebGL browser suite.
+- Root cause supported by evidence: the fixed 10-minute total job budget is too short for at least one observed loaded-runner schedule; cancellation did not originate in a failed gameplay assertion.
+- Repair: expand only that public-smoke job's execution budget to 20 minutes. Keep all tests, assertions, production URL and exact deployed commit verification. Main PR/CI validate timeout, deploy timeout and performance benchmarks are unchanged.
+- Acceptance: exact-merge-sha main `validate → deploy → public-smoke` must pass with **all 20/20 tests** within the 20-minute job budget; record GitHub Actions run/job IDs and no invented claim of completed proof before observing it.
 
 ## Verified constraints / rejected false positives
 
