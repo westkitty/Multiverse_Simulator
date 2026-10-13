@@ -14,7 +14,8 @@ import { stationPlugin as legacyStationPlugin } from './station/stationPlugin';
 
 const ecosystemPlugin = withNativeAtlas(legacyEcosystemPlugin);
 const stationPlugin = withNativeAtlas(legacyStationPlugin);
-const civilizationPlugin = withNativeAtlas(legacyCivilizationPlugin);
+// New Civilization worlds use corrected full-housing stability; archived Atlas v1 remains replayable.
+const civilizationPlugin = withNativeAtlas(legacyCivilizationPlugin,{defaultAtlasVersion:2});
 const atmospherePlugin = withNativeAtlas(legacyAtmospherePlugin);
 const oceanPlugin = withNativeAtlas(legacyOceanPlugin);
 const celestialPlugin = withNativeAtlas(legacyCelestialPlugin);
