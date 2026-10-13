@@ -174,7 +174,7 @@ describe('native expedition service order',()=>{
     const copy=structuredClone(original.exploration);
     const baseHash=k.getStateHash();
     copy.sites[localId].condition=100;
-    const remote=original.atlas.sites.find(site=>{
+    const remote=original.atlas.sites.find((site:any)=>{
       if(site.facts.regionId===copy.expedition.regionId)return false;
       if(copy.sites[site.facts.id].hazard>70)return false;
       try {
@@ -214,7 +214,7 @@ describe('native expedition service order',()=>{
     const original=k.getState();
     const copy=structuredClone(original.exploration);
     copy.sites[local].condition=100;
-    const remote=original.atlas.sites.find(site=>{
+    const remote=original.atlas.sites.find((site:any)=>{
       if(site.facts.regionId===copy.expedition.regionId) return false;
       try {
         return planRoute(original.atlas,copy.expedition.regionId,
@@ -252,7 +252,7 @@ describe('native expedition service order',()=>{
     const original=k.getState();
     const copy=structuredClone(original.exploration);
     copy.sites[localId].condition=100;
-    const remote=original.atlas.sites.find(site=>site.facts.regionId!==copy.expedition.regionId)!;
+    const remote=original.atlas.sites.find((site:any)=>site.facts.regionId!==copy.expedition.regionId)!;
     copy.sites[remote.facts.id].firstVisitedTick=1;
     copy.sites[remote.facts.id].discoveryState='VISITED';
     copy.sites[remote.facts.id].condition=10;
