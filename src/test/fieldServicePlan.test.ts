@@ -44,6 +44,9 @@ describe('native expedition service order',()=>{
       const plan=planFieldService(source.atlas,source.exploration);
       expect(plan.action,plugin.id).toBe('none');
       expect(plan.visitedDamagedSites,plugin.id).toBe(0);
+      expect(plan.unsafeDamagedSites,plugin.id).toBe(0);
+      expect(plan.fuelLimitedDamagedSites,plugin.id).toBe(0);
+      expect(plan.routeBlockedDamagedSites,plugin.id).toBe(0);
       expect(plan.target,plugin.id).toBeNull();
       expect(k.getStateHash(),plugin.id).toBe(hash);
     }
@@ -108,6 +111,8 @@ describe('native expedition service order',()=>{
     result=planFieldService(source.atlas,copy);
     expect(result.action).toBe('blocked');
     expect(result.blockedDamagedSites).toBe(1);
+    expect(result.unsafeDamagedSites).toBe(1);
+    expect(result.fuelLimitedDamagedSites).toBe(0);
 
     copy.expedition.journey={siteId:id,routeIds:[],arrivalTick:k.tick+3};
     result=planFieldService(source.atlas,copy);
@@ -141,10 +146,132 @@ describe('native expedition service order',()=>{
     expect(ready.target?.siteId).toBe(remote);
     expect(ready.target?.fuelCost).toBeGreaterThan(0);
     expect(ready.visitedDamagedSites).toBe(1);
+    // A finite local fuel stock can repair a fuel-only route blockade.
+    copy.sites[id].resources.fuel=Math.max(20,ready.target!.fuelCost+1);
     copy.expedition.fuel=0;
     const dry=planFieldService(source.atlas,copy);
-    expect(dry.action).toBe('blocked');
+    expect(dry.action).toBe('resupply');
+    expect(dry.safelyReachableDamagedSites).toBe(0);
+    expect(dry.fuelLimitedDamagedSites).toBe(1);
+    expect(dry.routeBlockedDamagedSites).toBe(0);
+    expect(dry.unsafeDamagedSites+dry.fuelLimitedDamagedSites+
+      dry.routeBlockedDamagedSites).toBe(dry.blockedDamagedSites);
     expect(dry.target).toBeNull();
+    expect(dry.instruction).toContain('Transfer up to 10 fuel');
+    // This is a projection only: it must NEVER credit fuel or bypass the route.
+    expect(copy.expedition.fuel).toBe(0);
+    copy.sites[id].resources.fuel=0;
+    const unsupported=planFieldService(source.atlas,copy);
+    expect(unsupported.action).toBe('blocked');
+    expect(unsupported.target).toBeNull();
     expect(k.getState().exploration.sites[remote].firstVisitedTick).toBeNull();
   });
+
+  it('allows safe paid travel to an already visited destination that can resupply repair materials after arrival',()=>{
+    const k=fresh(1904);
+    const localId=visitStartingSite(k);
+    const original=k.getState();
+    const copy=structuredClone(original.exploration);
+    const baseHash=k.getStateHash();
+    copy.sites[localId].condition=100;
+    const remote=original.atlas.sites.find((site:any)=>{
+      if(site.facts.regionId===copy.expedition.regionId)return false;
+      if(copy.sites[site.facts.id].hazard>70)return false;
+      try {
+        return planRoute(original.atlas,copy.expedition.regionId,
+          site.facts.regionId,70,copy.expedition.fuel,copy).fuel>0;
+      }catch{return false;}
+    })!;
+    expect(remote).toBeDefined();
+    const id=remote.facts.id;
+    copy.sites[id].firstVisitedTick=1;
+    copy.sites[id].discoveryState='VISITED';
+    copy.sites[id].condition=20;
+    // First visited source at home has NO supplies. The previously visited
+    // destination carries finite supplies; travel needs only route fuel.
+    copy.sites[localId].resources.supplies=0;
+    copy.sites[id].resources.supplies=7;
+    copy.expedition.supplies=1;
+    const departure=planFieldService(original.atlas,copy);
+    expect(departure.action).toBe('travel');
+    expect(departure.target?.siteId).toBe(id);
+    expect(departure.instruction).toContain('resupply there before paying');
+    const nativeCost=planRoute(original.atlas,copy.expedition.regionId,
+      remote.facts.regionId,70,copy.expedition.fuel,copy).fuel;
+    expect(departure.target?.fuelCost).toBe(nativeCost);
+    // Hypothetical arrival is only in the cloned planning fixture.
+    copy.expedition.regionId=remote.facts.regionId;
+    copy.expedition.fuel-=nativeCost;
+    expect(planFieldService(original.atlas,copy).action).toBe('resupply');
+    copy.expedition.supplies=3;
+    expect(planFieldService(original.atlas,copy).action).toBe('repair');
+    expect(k.getStateHash()).toBe(baseHash);
+  });
+
+  it('allows finite origin-plus-destination supplies to cover one real repair without teleporting stock',()=>{
+    const k=fresh(1907);
+    const local=visitStartingSite(k);
+    const original=k.getState();
+    const copy=structuredClone(original.exploration);
+    copy.sites[local].condition=100;
+    const remote=original.atlas.sites.find((site:any)=>{
+      if(site.facts.regionId===copy.expedition.regionId) return false;
+      try {
+        return planRoute(original.atlas,copy.expedition.regionId,
+          site.facts.regionId,70,copy.expedition.fuel,copy).fuel>0;
+      }catch{return false;}
+    })!;
+    expect(remote).toBeDefined();
+    const id=remote.facts.id;
+    copy.sites[id].firstVisitedTick=1;
+    copy.sites[id].discoveryState='VISITED';
+    copy.sites[id].condition=10;
+    copy.sites[local].resources.supplies=1;
+    copy.sites[id].resources.supplies=1;
+    copy.expedition.supplies=0;
+    const first=planFieldService(original.atlas,copy);
+    expect(first.action).toBe('resupply');
+    expect(first.instruction).toContain('collect the remaining supplies');
+    expect(copy.expedition.supplies).toBe(0);
+    // The hypothetical stock transfers mirror native 10-supply maximums,
+    // but only cloned fixture state is edited; the real run is unchanged.
+    copy.sites[local].resources.supplies=0;
+    copy.expedition.supplies=1;
+    const second=planFieldService(original.atlas,copy);
+    expect(second.action).toBe('travel');
+    expect(second.target?.siteId).toBe(id);
+    copy.expedition.regionId=remote.facts.regionId;
+    expect(planFieldService(original.atlas,copy).action).toBe('resupply');
+    copy.expedition.supplies=2;
+    expect(planFieldService(original.atlas,copy).action).toBe('repair');
+  });
+
+  it('never confuses remote dangerous routes with refuelable routes',()=>{
+    const k=fresh(904);
+    const localId=visitStartingSite(k);
+    const original=k.getState();
+    const copy=structuredClone(original.exploration);
+    copy.sites[localId].condition=100;
+    const remote=original.atlas.sites.find((site:any)=>site.facts.regionId!==copy.expedition.regionId)!;
+    copy.sites[remote.facts.id].firstVisitedTick=1;
+    copy.sites[remote.facts.id].discoveryState='VISITED';
+    copy.sites[remote.facts.id].condition=10;
+    copy.sites[localId].resources.fuel=100;
+    copy.expedition.fuel=0;
+    // Even infinite fuel cannot turn an unsafe destination into a safe order.
+    copy.sites[remote.facts.id].hazard=100;
+    const blocked=planFieldService(original.atlas,copy);
+    expect(blocked.action).toBe('blocked');
+    expect(blocked.target).toBeNull();
+    expect(blocked.safelyReachableDamagedSites).toBe(0);
+    expect(blocked.unsafeDamagedSites).toBe(1);
+    copy.sites[remote.facts.id].hazard=20;
+    copy.regionHazards[remote.facts.regionId]=99;
+    const unsafeCorridor=planFieldService(original.atlas,copy);
+    expect(unsafeCorridor.action).toBe('blocked');
+    expect(unsafeCorridor.unsafeDamagedSites).toBe(0);
+    expect(unsafeCorridor.routeBlockedDamagedSites).toBe(1);
+    expect(unsafeCorridor.fuelLimitedDamagedSites).toBe(0);
+  });
+
 });
