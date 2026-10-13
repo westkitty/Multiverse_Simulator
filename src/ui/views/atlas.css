@@ -180,3 +180,20 @@
 .native-emergency-action:focus-visible { outline: 3px solid #a9e6d4; outline-offset: 3px; }
 .native-emergency-deck .native-emergency-note { margin: 10px 0 0; font-size: 11px; color: #b5c9d2; }
 @media (max-width: 560px) { .native-emergency-stats { grid-template-columns: 1fr; gap: 7px; } }
+
+
+/* Read-only route triage becomes an explicit, costed player action only on click. */
+.native-service-deck { margin-top:16px; padding:14px 16px; border:1px solid #678e92; border-left:3px solid #98cabb; background:linear-gradient(115deg,#142a31,#0c1c27); border-radius:5px; color:#dceced; }
+.native-service-heading { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:8px 16px; }
+.native-service-heading h3 { margin:0; font-size:15px; color:#e6f5f0; letter-spacing:.015em; }
+.native-service-heading span { font:10px/1.5 ui-monospace,monospace; letter-spacing:.08em; color:#aacbc4; }
+.native-service-deck p { font-size:12px; line-height:1.6; margin:9px 0; color:#bdd1d4; }
+.native-service-deck output { font-weight:700; color:#f3f9f8; font-variant-numeric:tabular-nums; }
+.native-service-target { display:flex; flex-wrap:wrap; justify-content:space-between; gap:3px 12px; padding:10px 12px; border:1px solid #476b73; background:#11262e; }
+.native-service-target strong { font-size:13px; color:#e8f9f6; }
+.native-service-target span { font:11px/1.5 ui-monospace,monospace; color:#bad5d5; }
+.native-service-stocks strong { color:#f5f9ed; }
+.native-service-deck .native-service-action { width:auto; max-width:100%; min-height:44px; padding:10px 16px; border:1px solid #b6e5d5; background:#b6e5d5; color:#0b2624; border-radius:5px; font:700 13px/1.35 system-ui,sans-serif; cursor:pointer; white-space:normal; text-align:left; }
+.native-service-deck .native-service-action:focus-visible { outline:3px solid #f7edb7; outline-offset:3px; }
+.native-service-deck .native-service-receipt { margin-top:12px; border-left:2px solid #9bbbc5; padding-left:10px; color:#e7f2ef; }
+@media(max-width:640px){ .native-service-deck { padding:12px; } .native-service-deck .native-service-action { width:100%; } }
