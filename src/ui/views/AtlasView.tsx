@@ -12,7 +12,7 @@ import { ThreeWorldViewport } from '../../renderers/ThreeWorldViewport';
 import { ImmersiveWorldView } from '../../renderers/ImmersiveWorldView';
 import { projectImmersiveActors } from '../../exploration/immersiveLayout';
 import { fieldProtocolStatus } from '../../exploration/fieldProtocols';
-import { fieldInterventions, fieldTelemetry } from '../../exploration/nativeFieldExperiments';
+import { fieldAccessStatus, fieldEmergencyRecovery, fieldInterventions, fieldTelemetry } from '../../exploration/nativeFieldExperiments';
 import type { QuickInterventionDescriptor } from '../../core/contracts';
 import './atlas.css';
 
@@ -39,11 +39,20 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
   const [experimentMessage, setExperimentMessage] = useState('');
   // Selection and filters don't change the world. Keep its frame stable on those renders.
   const frame = useMemo(() => kernel?.extractRenderFrame(), [kernel, kernel?.tick, store.uiRevision]);
+  // Compute the real route graph only at simulation/UI revisions, not on 3D
+  // animation frames. Never infer access from a cosmetic hazard-only counter.
+  const emergencyStatus = useMemo(() => {
+    const live = kernel?.getState();
+    return kernel && isFrontierState(live) &&
+      fieldEmergencyRecovery(kernel.plugin.id, kernel.plugin.quickInterventions)
+      ? fieldAccessStatus(live.atlas, live.exploration) : null;
+  }, [kernel, kernel?.tick, store.uiRevision]);
   const state = kernel?.getState();
   if (!kernel || !isFrontierState(state) || !frame) return <section className="atlas-workbench"><div className="atlas-panel"><h1>World Atlas</h1><p>This saved run predates the Atlas. Its original simulation remains available in the Observatory. Create a new run to use expanded territory, sites and expedition history.</p><button onClick={() => store.setActiveTab('library')}>Open World Library</button></div></section>;
   const { atlas, exploration } = state;
   const protocol = fieldProtocolStatus(atlas, exploration);
   const fieldControls = fieldInterventions(kernel.plugin.id, kernel.plugin.quickInterventions);
+  const emergencyRecovery = fieldEmergencyRecovery(kernel.plugin.id, kernel.plugin.quickInterventions);
   const fieldGauges = fieldTelemetry(kernel.plugin.id, kernel.plugin.metricDefinitions, kernel.getLatestMetrics(), experimentBaseline?.before ?? null);
   const chosen = atlas.sites.find(s => s.facts.id === selected) ?? atlas.sites.find(s => s.facts.id === store.selectedEntityId) ?? atlas.sites.find(s => exploration.sites[s.facts.id].discoveryState !== 'UNKNOWN') ?? atlas.sites[0];
   const siteId = chosen.facts.id, delta = exploration.sites[siteId];
@@ -178,6 +187,19 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
             {item.label}
           </button>)}
         </div>
+        {emergencyRecovery && emergencyStatus && <div role="group" aria-label="Emergency recovery controls" className="native-emergency-deck">
+          <h3>Emergency world stabilization</h3>
+          <p>This is a real <strong>global scientific restoration</strong> command, not a teleport or local site repair. Route access is measured with the existing 70-hazard limit, current fuel, and actual blocked passages.</p>
+          <dl className="native-emergency-stats">
+            <div><dt>Safely reachable sites</dt><dd><output data-testid="native-safe-reachable">{emergencyStatus.safelyReachableSites} / {emergencyStatus.totalSites}</output></dd></div>
+            <div><dt>Unsafe destinations</dt><dd><output data-testid="native-unsafe-destinations">{emergencyStatus.unsafeDestinations}</output></dd></div>
+            <div><dt>Route or fuel barriers</dt><dd><output data-testid="native-route-blocked">{emergencyStatus.routeOrFuelBarriers}</output></dd></div>
+          </dl>
+          <button type="button" className="native-emergency-action" title={emergencyRecovery.description} onClick={() => runNativeFieldIntervention(emergencyRecovery)}>
+            {emergencyRecovery.label}
+          </button>
+          <p className="native-emergency-note">No separate expedition-supply debit is defined for this existing native command. Advance simulation time to measure its consequences; reopening routes does not restore damaged sites or prove long-run sustainability.</p>
+        </div>}
         {experimentBaseline && <p style={{ fontSize: 12, margin: '8px 0' }}>Command event {experimentBaseline.eventId} · {experimentBaseline.label} · T{experimentBaseline.tick}</p>}
         {experimentMessage && <p role="status" data-testid="native-intervention-feedback" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
       </details>
