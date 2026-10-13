@@ -4,6 +4,7 @@ import {SimulationKernel} from '../core/kernel';
 import {CORE_WORLD_PLUGINS} from '../worlds';
 import {applyExplorationCommand,planRoute,surveyCoverage} from '../exploration/engine';
 import {resupplyAvailability} from '../exploration/dossier';
+import {probeScientificAccessRecovery} from './nativeScientificAccessLab';
 
 
 const ECONOMY_AUDIT_WORLDS = new Set(['civilization', 'industrial', 'megacity', 'geology']);
@@ -101,6 +102,7 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
  it('completes investigations with default stocks and retains finite, restorable state through 2000 ticks',()=>{
   const results=[];
   const maintenanceResults=[];
+  const scientificRecoveryResults=[];
   const policy=process.env.BALANCE_POLICY??'nearest-first';
   const selectedWorlds=process.env.BALANCE_WORLDS?.split(',');
   for(const plugin of CORE_WORLD_PLUGINS.filter(p=>!selectedWorlds||selectedWorlds.includes(p.id)))for(const seed of [1,2026,424242]){
@@ -171,6 +173,11 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
    const state=k.getState();
    results.push({world:plugin.id,seed,startingStocks,resolved,expeditionTick,resupplies,expeditionFailure,stabilityFailure,finalTick:k.tick,remainingStocks:{fuel:state.exploration.expedition.fuel,supplies:state.exploration.expedition.supplies},meanCondition:Object.values(state.exploration.sites).reduce((n:number,x:any)=>n+x.condition,0)/36});
    if (maintenanceStart && unattendedAt2000 && !stabilityFailure) {
+     const recovery=probeScientificAccessRecovery(k);
+     scientificRecoveryResults.push(recovery);
+     console.info(`SCIENTIFIC_RECOVERY ${plugin.id} seed=${seed} idleSafe=${recovery.sustainedControl.safelyReachableSites}/36 restoredSafe=${recovery.sustainedTreatment.safelyReachableSites}/36 accessGain=${recovery.sustainedAccessGain} hazardDrop2=${recovery.immediateHazardReduction.toFixed(3)} hazardDrop30=${recovery.sustainedHazardReduction.toFixed(3)} unsafeTargets=${recovery.sustainedTreatment.unsafeSiteTargets}/36 routeHazardBarriers=${recovery.sustainedTreatment.routeHazardBarriers} fuelBarriers=${recovery.sustainedTreatment.fuelBarriers} disconnected=${recovery.sustainedTreatment.disconnectedOrClosedSites}`);
+     expect(recovery.appliedCommands).toBe(2);
+     expect(recovery.immediateHazardReduction).toBeGreaterThan(0);
      const managed=SimulationKernel.fromRunRecord(maintenanceStart,plugin);
      expect(managed.getStateHash()).toBe(maintenanceStartHash);
      const treatment=exerciseMaintenancePolicy(managed,2000);
@@ -195,6 +202,14 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
       method:'Branch the identical post-investigation native state. Control: no more player commands. Treatment: at most one valid repair, travel or resupply command per two ticks; normal journey ticks, stock spending and safety gates. Compare site condition and unsafe access at tick 2000; verify treatment save/restore continuation five further ticks. Neither outcome certifies indefinite or unattended sustainability.',
       results:maintenanceResults,
     },null,2)+'\n');
+  writeFileSync(process.env.SCIENTIFIC_RECOVERY_REPORT??'docs/acceptance/scientific-recovery-access.json',
+    JSON.stringify({
+      schemaVersion:1,
+      protocol:'paired-native-recovery-access-v1',
+      method:'Identical authenticated exhausted default-stock run at tick 2005. Two existing, plugin-authored restoration commands on consecutive ticks in treatment only. Same native world steps in control. Observe scientific regional hazards and actual Atlas route safety classifications after two and thirty ticks. No direct state modifications, artificial stocks or hazard-limit changes. This measures short-term feasibility, not command opportunity cost, sustained economic repair or unattended equilibrium.',
+      results:scientificRecoveryResults,
+    },null,2)+'\n');
+  expect(scientificRecoveryResults.length).toBe(maintenanceResults.length);
   expect(maintenanceResults.length).toBe(
     results.filter(r=>ECONOMY_AUDIT_WORLDS.has(r.world)&&r.resolved===36&&!r.expeditionFailure&&!r.stabilityFailure).length);
   expect(results.filter(r=>r.expeditionFailure||r.stabilityFailure)).toEqual([]);
