@@ -8,7 +8,10 @@ import {createPortableArchiveZip} from '../persistence/archive';
 it('preserves the pre-refuge Atlas command contract',()=>{
  const output=process.env.HISTORICAL_FIXTURE_OUTPUT!;
  const fixtures=CORE_WORLD_PLUGINS.map(plugin=>{
-  const k=new SimulationKernel({runId:`atlas-old-${plugin.id}`,name:'Pre-refuge Atlas',plugin,seed:2026});
+  // This oracle describes the pre-refuge/Atlas-v1 source; pin the v1
+  // Civilization config even when newer playable runs opt into v2 mechanics.
+  const oldConfig=plugin.id==='civilization'?{...plugin.defaultConfig,atlasVersion:1}:plugin.defaultConfig;
+  const k=new SimulationKernel({runId:`atlas-old-${plugin.id}`,name:'Pre-refuge Atlas',plugin,seed:2026,config:oldConfig});
   const atlas=k.getState().atlas,target=atlas.sites[3],siteId=target.facts.id;
   const visit=(id:string)=>{
    const stage=k.getState().exploration.sites[id].discoveryState;

@@ -5,6 +5,7 @@ import {CORE_WORLD_PLUGINS} from '../worlds';
 import {applyExplorationCommand,planRoute,surveyCoverage} from '../exploration/engine';
 import {resupplyAvailability} from '../exploration/dossier';
 import {probeScientificAccessRecovery} from './nativeScientificAccessLab';
+import {probeCivilizationShortageRecovery} from './civilizationShortageRecoveryLab';
 
 
 const ECONOMY_AUDIT_WORLDS = new Set(['civilization', 'industrial', 'megacity', 'geology']);
@@ -103,6 +104,7 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
   const results=[];
   const maintenanceResults=[];
   const scientificRecoveryResults=[];
+  const civilizationRecoveryResults=[];
   const policy=process.env.BALANCE_POLICY??'nearest-first';
   const selectedWorlds=process.env.BALANCE_WORLDS?.split(',');
   for(const plugin of CORE_WORLD_PLUGINS.filter(p=>!selectedWorlds||selectedWorlds.includes(p.id)))for(const seed of [1,2026,424242]){
@@ -173,11 +175,36 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
    const state=k.getState();
    results.push({world:plugin.id,seed,startingStocks,resolved,expeditionTick,resupplies,expeditionFailure,stabilityFailure,finalTick:k.tick,remainingStocks:{fuel:state.exploration.expedition.fuel,supplies:state.exploration.expedition.supplies},meanCondition:Object.values(state.exploration.sites).reduce((n:number,x:any)=>n+x.condition,0)/36});
    if (maintenanceStart && unattendedAt2000 && !stabilityFailure) {
+     if(plugin.id==='civilization'){
+       // Preserve the original Atlas-v1 failure experiment even though NEW
+       // Civilization runs select v2. Rebuild real native v1 state rather than
+       // mutating a v2 checkpoint or editing authoritative save fields.
+       const oldCivilization=new SimulationKernel({
+         runId:`civilization-atlas-v1-${seed}`,name:'Legacy capacity-pressure oracle',
+         plugin,seed,config:{...plugin.defaultConfig,atlasVersion:1},
+       });
+       while(oldCivilization.tick<2005)oldCivilization.step();
+       const shortageTrial=probeCivilizationShortageRecovery(oldCivilization);
+       civilizationRecoveryResults.push(shortageTrial);
+       for(const row of shortageTrial.policies){
+         console.info(`CIVILIZATION_SHORTAGE_RECOVERY seed=${seed} policy=${row.policy} commands=${row.commandsAccepted} access6=${row.at6.treatment.safeSites}/36 access30=${row.at30.treatment.safeSites}/36 access120=${row.at120.treatment.safeSites}/36 control120=${row.at120.control.safeSites}/36 stable120=${row.at120.treatment.meanStability.toFixed(2)} shortage120=${row.at120.treatment.settlementShortages} food120=${row.at120.treatment.totalFood.toFixed(2)} water120=${row.at120.treatment.totalWater.toFixed(2)} budgetMaterial=${row.at120.treatment.totalMaterials.toFixed(2)}`);
+         expect(row.commandsAccepted).toBe(row.plannedCommands);
+         expect(row.sourceHashIdentical).toBe(true);
+         expect(row.restoreContinuationPass).toBe(true);
+       }
+     }
      const recovery=probeScientificAccessRecovery(k);
      scientificRecoveryResults.push(recovery);
      console.info(`SCIENTIFIC_RECOVERY ${plugin.id} seed=${seed} idleSafe=${recovery.sustainedControl.safelyReachableSites}/36 restoredSafe=${recovery.sustainedTreatment.safelyReachableSites}/36 accessGain=${recovery.sustainedAccessGain} hazardDrop2=${recovery.immediateHazardReduction.toFixed(3)} hazardDrop30=${recovery.sustainedHazardReduction.toFixed(3)} unsafeTargets=${recovery.sustainedTreatment.unsafeSiteTargets}/36 routeHazardBarriers=${recovery.sustainedTreatment.routeHazardBarriers} fuelBarriers=${recovery.sustainedTreatment.fuelBarriers} disconnected=${recovery.sustainedTreatment.disconnectedOrClosedSites}`);
      expect(recovery.appliedCommands).toBe(2);
-     expect(recovery.immediateHazardReduction).toBeGreaterThan(0);
+     if(plugin.id==='civilization'){
+       // In v2, healthy full-capacity settlement populations should not
+       // collapse merely because every home is occupied. A nonzero crisis
+       // reduction is NOT required when the untreated world is already safe.
+       expect(recovery.initial.safelyReachableSites).toBeGreaterThanOrEqual(30);
+       expect(recovery.sustainedControl.safelyReachableSites).toBeGreaterThanOrEqual(30);
+       expect(recovery.sustainedTreatment.safelyReachableSites).toBeGreaterThanOrEqual(30);
+     }else expect(recovery.immediateHazardReduction).toBeGreaterThan(0);
      const managed=SimulationKernel.fromRunRecord(maintenanceStart,plugin);
      expect(managed.getStateHash()).toBe(maintenanceStartHash);
      const treatment=exerciseMaintenancePolicy(managed,2000);
@@ -209,6 +236,14 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
       method:'Identical authenticated exhausted default-stock run at tick 2005. Two existing, plugin-authored restoration commands on consecutive ticks in treatment only. Same native world steps in control. Observe scientific regional hazards and actual Atlas route safety classifications after two and thirty ticks. No direct state modifications, artificial stocks or hazard-limit changes. This measures short-term feasibility, not command opportunity cost, sustained economic repair or unattended equilibrium.',
       results:scientificRecoveryResults,
     },null,2)+'\n');
+  writeFileSync(process.env.CIVILIZATION_RECOVERY_REPORT??'docs/acceptance/civilization-shortage-recovery.json',
+    JSON.stringify({
+      schemaVersion:1,protocol:'post-collapse-native-resource-bridge-v1',
+      method:'Five exact native-intervention recovery policies from reproducible legacy Atlas-v1 Civilization with identical default native starting stock and 2005 unattended full native ticks for three fixed seeds. Paired untreated controls at +6, +30, +120 with exact restore continuation. These pinned v1 cases preserve the historic crowding failure independently of the v2 new-run repair; free food/water aid remains NON-ECONOMIC.',
+      results:civilizationRecoveryResults,
+    },null,2)+'\n');
+  expect(civilizationRecoveryResults.length).toBe(
+    results.filter(r=>r.world==='civilization'&&r.resolved===36&&!r.expeditionFailure&&!r.stabilityFailure).length);
   expect(scientificRecoveryResults.length).toBe(maintenanceResults.length);
   expect(maintenanceResults.length).toBe(
     results.filter(r=>ECONOMY_AUDIT_WORLDS.has(r.world)&&r.resolved===36&&!r.expeditionFailure&&!r.stabilityFailure).length);

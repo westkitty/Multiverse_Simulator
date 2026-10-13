@@ -1332,8 +1332,13 @@ export const civilizationPlugin = defineWorldPlugin<
               stl.population += growth;
             }
 
-            const crowdingPenalty =
-              stl.population >= stl.housingCapacity ? -1.5 : 1.8;
+            // Atlas v2: a completely occupied but adequately housed city has
+            // no spare capacity for further growth, yet is NOT overcrowded.
+            // Preserve the exact v1/legacy policy for old archives and replay.
+            const atCapacity = stl.population === stl.housingCapacity;
+            const atlasHousingRevision = 'atlasVersion' in config && config.atlasVersion === 2;
+            const crowdingPenalty = atlasHousingRevision && atCapacity
+              ? 0 : stl.population >= stl.housingCapacity ? -1.5 : 1.8;
             stl.stabilityIndex = roundDet(
               clampDet(stl.stabilityIndex + crowdingPenalty, 10, 100),
               1,

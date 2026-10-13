@@ -66,7 +66,8 @@ const emitEvents=(events:ReturnType<typeof advanceExploration>['events'],emit:(i
 };
 /** Opt-in config flag is persisted. Old archives without it retain native state and replay geometry.
  * This adapter does not replace the scientific plugin or its ordered native systems. */
-export function withNativeAtlas<C extends Record<string,unknown>,S extends object>(plugin:WorldPlugin<C,S>):WorldPlugin<C,S & Partial<NativeAtlasState>> {
+export function withNativeAtlas<C extends Record<string,unknown>,S extends object>(plugin:WorldPlugin<C,S>, options: {defaultAtlasVersion?: 1 | 2} = {}):WorldPlugin<C,S & Partial<NativeAtlasState>> {
+  const defaultAtlasVersion=options.defaultAtlasVersion??1;
   const profile=PROFILES[plugin.id];
   const active=(s:S & Partial<NativeAtlasState>):s is S & NativeAtlasState => !!s.atlas && !!s.exploration;
   return {
@@ -80,10 +81,10 @@ export function withNativeAtlas<C extends Record<string,unknown>,S extends objec
       expandedPlayableArea:plugin.scaleMetadata.expandedPlayableArea*3,
       baselineTerritoryScalar:plugin.scaleMetadata.expandedTerritoryScalar,
       expandedTerritoryScalar:plugin.scaleMetadata.expandedTerritoryScalar*3} : undefined,
-    defaultConfig:{...plugin.defaultConfig,atlasVersion:1} as C,
-    scenarios:plugin.scenarios.map(s=>({...s,config:{...s.config,atlasVersion:1} as C})),
-    validateConfig(raw){const parsed=plugin.validateConfig(raw);if(parsed.valid && parsed.config && raw && typeof raw==='object' && 'atlasVersion' in raw){if((raw as Record<string,unknown>).atlasVersion!==1)return {valid:false,errors:['Unsupported atlas config version']};return {...parsed,config:{...parsed.config,atlasVersion:1} as C};}return parsed;},
-    initializeWorld(config,rng){const native=plugin.initializeWorld(config,rng);if(config.atlasVersion===1){expandNativeWorld(plugin,native,config,rng);return Object.assign(native,build(plugin,native,rng));}return native;},
+    defaultConfig:{...plugin.defaultConfig,atlasVersion:defaultAtlasVersion} as C,
+    scenarios:plugin.scenarios.map(s=>({...s,config:{...s.config,atlasVersion:defaultAtlasVersion} as C})),
+    validateConfig(raw){const parsed=plugin.validateConfig(raw);if(parsed.valid && parsed.config && raw && typeof raw==='object' && 'atlasVersion' in raw){const requested=(raw as Record<string,unknown>).atlasVersion;if(requested!==1 && requested!==defaultAtlasVersion)return {valid:false,errors:['Unsupported atlas config version']};return {...parsed,config:{...parsed.config,atlasVersion:requested} as C};}return parsed;},
+    initializeWorld(config,rng){const native=plugin.initializeWorld(config,rng);if(config.atlasVersion===1||config.atlasVersion===2){expandNativeWorld(plugin,native,config,rng);return Object.assign(native,build(plugin,native,rng));}return native;},
     getSystems(){return [...plugin.getSystems(),{id:'native-atlas',name:'Sites and instrument teams',order:100,step(ctx){
       const s=ctx.state;if(!active(s))return;
       const objects=nativeObjects(s,profile);
