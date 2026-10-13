@@ -5,6 +5,7 @@ import {CORE_WORLD_PLUGINS} from '../worlds';
 import {applyExplorationCommand,planRoute,surveyCoverage} from '../exploration/engine';
 import {resupplyAvailability} from '../exploration/dossier';
 import {probeScientificAccessRecovery} from './nativeScientificAccessLab';
+import {probeClosedLoopSustainment} from './closedLoopSustainmentLab';
 import {probeCivilizationShortageRecovery} from './civilizationShortageRecoveryLab';
 
 
@@ -104,6 +105,7 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
   const results=[];
   const maintenanceResults=[];
   const scientificRecoveryResults=[];
+  const closedLoopResults=[];
   const civilizationRecoveryResults=[];
   const policy=process.env.BALANCE_POLICY??'nearest-first';
   const selectedWorlds=process.env.BALANCE_WORLDS?.split(',');
@@ -205,6 +207,20 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
        expect(recovery.sustainedControl.safelyReachableSites).toBeGreaterThanOrEqual(30);
        expect(recovery.sustainedTreatment.safelyReachableSites).toBeGreaterThanOrEqual(30);
      }else expect(recovery.immediateHazardReduction).toBeGreaterThan(0);
+     const loop=probeClosedLoopSustainment(k);
+     closedLoopResults.push(loop);
+     const at180=loop.checkpoints['180'] as {
+       untreated:{safeReachableSites:number;meanSiteCondition:number;sitesBelow25:number},
+       science:{safeReachableSites:number;meanSiteCondition:number;sitesBelow25:number},
+       paidService:{safeReachableSites:number;meanSiteCondition:number;sitesBelow25:number}
+     };
+     console.info(`CLOSED_LOOP_SUSTAINMENT ${plugin.id} seed=${seed} untreatedSafe=${at180.untreated.safeReachableSites}/36 scienceSafe=${at180.science.safeReachableSites}/36 servicedSafe=${at180.paidService.safeReachableSites}/36 scienceMean=${at180.science.meanSiteCondition.toFixed(3)} servicedMean=${at180.paidService.meanSiteCondition.toFixed(3)} meanGain=${loop.siteConditionGainFromPaidService.toFixed(3)} collapsedScience=${at180.science.sitesBelow25} collapsedService=${at180.paidService.sitesBelow25} repairs=${loop.commandCounts.repair} trips=${loop.commandCounts.travel} resupplies=${loop.commandCounts.resupply} paidSupplies=${loop.commandCounts.costedRepairSupplies} paidFuel=${loop.commandCounts.paidTravelFuel.toFixed(2)} blockedTicks=${loop.commandCounts.blockedTicks}`);
+     expect(loop.identicalStartingHash).toBe(true);
+     expect(loop.scienceArmsMatchedAtServiceStart).toBe(true);
+     expect(loop.restoreContinuationPass).toBe(true);
+     expect(loop.commandCounts.costedRepairSupplies).toBe(2*loop.commandCounts.repair);
+     // Long-run improvement and absolute economy viability are measured first;
+     // do not turn an unknown result into a cosmetic passing threshold.
      const managed=SimulationKernel.fromRunRecord(maintenanceStart,plugin);
      expect(managed.getStateHash()).toBe(maintenanceStartHash);
      const treatment=exerciseMaintenancePolicy(managed,2000);
@@ -242,6 +258,14 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
       method:'Five exact native-intervention recovery policies from reproducible legacy Atlas-v1 Civilization with identical default native starting stock and 2005 unattended full native ticks for three fixed seeds. Paired untreated controls at +6, +30, +120 with exact restore continuation. These pinned v1 cases preserve the historic crowding failure independently of the v2 new-run repair; free food/water aid remains NON-ECONOMIC.',
       results:civilizationRecoveryResults,
     },null,2)+'\n');
+  writeFileSync(process.env.CLOSED_LOOP_REPORT??'docs/acceptance/closed-loop-sustainment.json',
+    JSON.stringify({
+      schemaVersion:1,protocol:'paired-science-paid-service-v1',
+      method:'Post-collapse native tick 2005 of a complete default-stock 36-site expedition, for Civilization v2, Industrial, Megacity and Geology across 3 seeds. Each source clones an idle control, two-pulse native science-only comparator, and science+paid planner-treatment with all genuine route, travel, stock and repair debits. Compare 30/90/180 ticks, test command receipts, preserve exact save/restore 5-tick continuation. Only measures finite active service; indefinite economic viability remains unverified.',
+      results:closedLoopResults,
+    },null,2)+'\n');
+  expect(closedLoopResults.length).toBe(
+    results.filter(r=>ECONOMY_AUDIT_WORLDS.has(r.world)&&r.resolved===36&&!r.expeditionFailure&&!r.stabilityFailure).length);
   expect(civilizationRecoveryResults.length).toBe(
     results.filter(r=>r.world==='civilization'&&r.resolved===36&&!r.expeditionFailure&&!r.stabilityFailure).length);
   expect(scientificRecoveryResults.length).toBe(maintenanceResults.length);
