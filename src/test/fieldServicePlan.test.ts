@@ -199,6 +199,44 @@ describe('native expedition service order',()=>{
     expect(k.getStateHash()).toBe(baseHash);
   });
 
+  it('allows finite origin-plus-destination supplies to cover one real repair without teleporting stock',()=>{
+    const k=fresh(1907);
+    const local=visitStartingSite(k);
+    const original=k.getState();
+    const copy=structuredClone(original.exploration);
+    copy.sites[local].condition=100;
+    const remote=original.atlas.sites.find(site=>{
+      if(site.facts.regionId===copy.expedition.regionId) return false;
+      try {
+        return planRoute(original.atlas,copy.expedition.regionId,
+          site.facts.regionId,70,copy.expedition.fuel,copy).fuel>0;
+      }catch{return false;}
+    })!;
+    expect(remote).toBeDefined();
+    const id=remote.facts.id;
+    copy.sites[id].firstVisitedTick=1;
+    copy.sites[id].discoveryState='VISITED';
+    copy.sites[id].condition=10;
+    copy.sites[local].resources.supplies=1;
+    copy.sites[id].resources.supplies=1;
+    copy.expedition.supplies=0;
+    const first=planFieldService(original.atlas,copy);
+    expect(first.action).toBe('resupply');
+    expect(first.instruction).toContain('collect the remaining supplies');
+    expect(copy.expedition.supplies).toBe(0);
+    // The hypothetical stock transfers mirror native 10-supply maximums,
+    // but only cloned fixture state is edited; the real run is unchanged.
+    copy.sites[local].resources.supplies=0;
+    copy.expedition.supplies=1;
+    const second=planFieldService(original.atlas,copy);
+    expect(second.action).toBe('travel');
+    expect(second.target?.siteId).toBe(id);
+    copy.expedition.regionId=remote.facts.regionId;
+    expect(planFieldService(original.atlas,copy).action).toBe('resupply');
+    copy.expedition.supplies=2;
+    expect(planFieldService(original.atlas,copy).action).toBe('repair');
+  });
+
   it('never confuses remote dangerous routes with refuelable routes',()=>{
     const k=fresh(904);
     const localId=visitStartingSite(k);
