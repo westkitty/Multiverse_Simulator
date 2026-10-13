@@ -2,7 +2,6 @@ import { SimulationKernel } from '../core/kernel';
 import { planFieldService } from '../exploration/fieldServicePlan';
 import { inspectNativeRecoveryAccess, SCIENTIFIC_RECOVERY_COMMANDS } from './nativeScientificAccessLab';
 
-type CommandName = 'repair' | 'travel' | 'resupply';
 interface ServiceCounts {
   repair: number;
   travel: number;
