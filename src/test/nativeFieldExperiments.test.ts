@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CORE_WORLD_PLUGINS } from '../worlds';
-import { fieldInterventions, fieldTelemetry, NATIVE_FIELD_PLANS } from '../exploration/nativeFieldExperiments';
+import { SimulationKernel } from '../core/kernel';
+import { fieldAccessStatus, fieldEmergencyRecovery, fieldInterventions, fieldTelemetry, FIELD_EMERGENCY_RECOVERY_IDS, NATIVE_FIELD_PLANS } from '../exploration/nativeFieldExperiments';
 
 describe('native world field experiment projection', () => {
   it('selects two real command descriptors and three real numeric gauges for each world', () => {
@@ -20,6 +21,42 @@ describe('native world field experiment projection', () => {
       const compared = fieldTelemetry(plugin.id, plugin.metricDefinitions, fakeNumbers,
         Object.fromEntries(planned.map(id => [id, 1])));
       expect(compared.map(gauge => gauge.delta), plugin.id).toEqual([4, 5, 6]);
+    }
+  });
+
+  it('offers only the three evidenced emergency native restoration commands, never substitutes an unknown action', () => {
+    const exact = {
+      industrial: 'ind-repair-all-facilities',
+      megacity: 'cty-infrastructure-overhaul',
+      geology: 'geo-emergency-reconstruction',
+    };
+    expect(FIELD_EMERGENCY_RECOVERY_IDS).toEqual(exact);
+    for (const plugin of CORE_WORLD_PLUGINS) {
+      const selected = fieldEmergencyRecovery(plugin.id, plugin.quickInterventions);
+      if (Object.hasOwn(exact, plugin.id)) {
+        expect(selected?.id, plugin.id).toBe(exact[plugin.id as keyof typeof exact]);
+        expect(selected?.category).toBe('restoration');
+        expect(selected?.commandType).toBeTruthy();
+        expect(fieldEmergencyRecovery(plugin.id, [])).toBeNull();
+        expect(fieldInterventions(plugin.id, plugin.quickInterventions)).toHaveLength(2);
+      } else {
+        expect(selected, plugin.id).toBeNull();
+      }
+    }
+  });
+
+  it('measures immutable fuel-bounded field route status against real Atlas state', () => {
+    for (const worldId of Object.keys(FIELD_EMERGENCY_RECOVERY_IDS)) {
+      const plugin = CORE_WORLD_PLUGINS.find(item => item.id === worldId)!;
+      const kernel = new SimulationKernel({ runId:'field-emergency-'+worldId, name:'Route status', plugin, seed:1 });
+      const state = kernel.getState();
+      const hash = kernel.getStateHash();
+      const status = fieldAccessStatus(state.atlas, state.exploration);
+      expect(status.totalSites).toBe(36);
+      expect(status.safelyReachableSites + status.unsafeDestinations + status.routeOrFuelBarriers).toBe(36);
+      expect(status.safelyReachableSites).toBeGreaterThanOrEqual(0);
+      expect(fieldAccessStatus(state.atlas, state.exploration)).toEqual(status);
+      expect(kernel.getStateHash()).toBe(hash);
     }
   });
 
