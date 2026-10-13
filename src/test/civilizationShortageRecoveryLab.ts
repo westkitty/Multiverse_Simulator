@@ -97,13 +97,13 @@ export function probeCivilizationShortageRecovery(exhaustedKernel: SimulationKer
         if(item.tick!==offset)continue;
         const action=plugin.quickInterventions.find(d=>d.id===item.id);
         if(!action)throw new Error('Missing plugin-authored control '+item.id);
-        const before = treatment.getEvents().length;
+        const eventsBefore=new Set(treatment.getEvents().map(event=>event.id));
         const cmd=treatment.enqueueCommand({
           type:action.commandType,label:action.label,payload:action.defaultPayload,
         });
         const applied=treatment.flushCurrentTickCommands();
         if(!applied.some(c=>c.id===cmd.id) ||
-          !treatment.getEvents().slice(before).some(e=>e.type==='command:'+action.commandType)){
+          !treatment.getEvents().some(e=>!eventsBefore.has(e.id) && e.type==='command:'+action.commandType)){
           throw new Error('Unconfirmed native command '+item.id);
         }
         commandsAccepted++;
