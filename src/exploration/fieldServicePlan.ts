@@ -126,6 +126,17 @@ export function planFieldService(atlas: ExplorationAtlas, exploration: Explorati
         ...base, action:'resupply' as const,
         instruction:`Repair requires 2 supplies; only ${expedition.supplies} available. Transfer the missing supplies from the first visited site in this region before dispatch.`,
       };
+    // One stock transfer at each end can legitimately share the repair bill.
+    // Consume origin stock first, then actually travel, then transfer the
+    // remainder at a previously visited destination. Never grant stock here.
+    const twoStopBridge = feasible.find(candidate =>
+      !candidate.local && expedition.supplies + localSupplyTransfer +
+        Math.min(10, firstVisitedStock(candidate.regionId)?.supplies ?? 0) >= 2);
+    if (canResupplyHere && localSupplyTransfer > 0 && twoStopBridge)
+      return {
+        ...base, target:twoStopBridge, action:'resupply' as const,
+        instruction:`Repair costs 2 supplies. Transfer ${localSupplyTransfer} from the first visited site here, travel the real fuel-bounded route, then collect the remaining supplies at the visited destination before repair.`,
+      };
     // Travelling costs fuel, not supplies. A visited destination can itself
     // contain the finite native resupply stock required for subsequent repair.
     // Refusing such a trip strands valid service orders on the wrong side of
