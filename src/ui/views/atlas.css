@@ -143,3 +143,40 @@
 .immersive-game-actions button:focus-visible { outline:2px solid #f0e6bc; outline-offset:2px; }
 .immersive-game-disclaimer { font:11px/1.5 ui-monospace,monospace; color:#9cb2c2; margin:0 2px; }
 @media (max-width:650px) { .immersive-game-heading { padding:10px; } .immersive-game-actions { width:100%; } .immersive-game-actions button { flex:1 1 100px; } }
+
+/* In-world scientific disaster response: same native simulation/route gates as the Atlas. */
+.native-emergency-deck {
+  margin-top: 17px;
+  padding: 14px 16px;
+  background: #11252b;
+  border: 1px solid #647e80;
+  border-left: 3px solid #d4ae79;
+  border-radius: 5px;
+}
+.native-emergency-deck h3 { margin: 0 0 7px; color: #f7e5c8; font-size: 16px; }
+.native-emergency-deck p { margin: 6px 0 12px; line-height: 1.55; color: #d0dde0; }
+.native-emergency-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 13px 0;
+}
+.native-emergency-stats > div { min-width: 0; padding: 9px 10px; background: #192f34; border: 1px solid #415e65; }
+.native-emergency-stats dt { color: #b9d2d8; font-size: 11px; }
+.native-emergency-stats dd { margin: 5px 0 0; color: #faf4e4; font: 700 16px ui-monospace, monospace; }
+.native-emergency-action {
+  min-height: 44px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e6c08b;
+  border-radius: 5px;
+  background: #4f3729;
+  color: #fff1d9;
+  cursor: pointer;
+  font: 700 13px system-ui, sans-serif;
+  text-align: left;
+}
+.native-emergency-action:hover { background: #654530; }
+.native-emergency-action:focus-visible { outline: 3px solid #a9e6d4; outline-offset: 3px; }
+.native-emergency-deck .native-emergency-note { margin: 10px 0 0; font-size: 11px; color: #b5c9d2; }
+@media (max-width: 560px) { .native-emergency-stats { grid-template-columns: 1fr; gap: 7px; } }
