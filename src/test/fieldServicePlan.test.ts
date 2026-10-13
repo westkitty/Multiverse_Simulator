@@ -89,11 +89,20 @@ describe('native expedition service order',()=>{
     for(const site of source.atlas.sites) {
       if(site.facts.regionId===copy.expedition.regionId && copy.sites[site.facts.id].firstVisitedTick!==null){
         copy.sites[site.facts.id].resources.supplies=0;
-        copy.sites[site.facts.id].resources.fuel=0;
+        // The native stock transfer would still send fuel; that cannot pay
+        // the two-supply repair bill.
+        expect(copy.sites[site.facts.id].resources.fuel).toBeGreaterThan(0);
       }
     }
     result=planFieldService(source.atlas,copy);
     expect(result.action).toBe('need-supplies');
+    expect(result.instruction).toContain('fuel-only transfers');
+    for(const site of source.atlas.sites) {
+      if(site.facts.regionId===copy.expedition.regionId && copy.sites[site.facts.id].firstVisitedTick!==null){
+        copy.sites[site.facts.id].resources.fuel=0;
+      }
+    }
+    expect(planFieldService(source.atlas,copy).action).toBe('need-supplies');
     copy.expedition.supplies=10;
     copy.sites[id].hazard=96;
     result=planFieldService(source.atlas,copy);
