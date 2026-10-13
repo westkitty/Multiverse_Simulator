@@ -75,6 +75,44 @@ test.describe('immersive 3D gameplay', () => {
   expect(errors).toEqual([]);
 });
 
+test('player can visit a real installation and pay its repair bill from the 3D service order', async ({page}) => {
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.goto('./');
+  await page.getByRole('button',{name:/Enter this universe in 3D/}).click();
+  const explorer=page.getByRole('region',{name:'Immersive 3D world explorer'});
+  const lab=page.getByRole('region',{name:'World system experiment'});
+  await lab.locator('summary').click();
+  const order=lab.getByRole('group',{name:'Expedition maintenance planning'});
+  await expect(order).toBeVisible();
+  await expect(order.getByTestId('service-damaged-count')).toHaveText('0');
+  await expect(order.getByTestId('field-service-guidance')).toContainText('Discover and physically visit');
+  await expect(order.getByTestId('field-service-action')).toHaveCount(0);
+
+  // The actual nearby world landmark must be surveyed, discovered and visited
+  // before the paid repair order can exist. No synthetic site seeding.
+  await explorer.getByRole('button',{name:'Inspect nearby'}).click();
+  const dossier=explorer.getByRole('complementary',{name:'Nearby site investigation'});
+  await expect(dossier).toContainText('DETECTED');
+  await dossier.getByRole('button',{name:'Survey',exact:true}).click();
+  await expect(dossier).toContainText('SURVEYED');
+  await dossier.getByRole('button',{name:'Discover',exact:true}).click();
+  await expect(dossier).toContainText('DISCOVERED');
+  await dossier.getByRole('button',{name:'Begin expedition travel'}).click();
+  for(let tick=0;tick<12;tick++){
+    if(await dossier.getByText('VISITED', {exact:true}).count())break;
+    await page.getByRole('button',{name:'Step one tick'}).click();
+  }
+  await expect(dossier).toContainText('VISITED');
+  const repair=order.getByRole('button',{name:/Repair visited installation/});
+  await expect(repair).toBeVisible();
+  await expect(order.getByTestId('service-damaged-count')).toHaveText('1');
+  await repair.click();
+  await expect(order.getByTestId('field-service-feedback')).toContainText('repair accepted at tick');
+  await expect(order).toContainText('Repairs charge 2 supplies');
+  expect(errors).toEqual([]);
+});
+
 test('three endangered worlds expose real emergency science commands inside playable 3D', async ({page}) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
