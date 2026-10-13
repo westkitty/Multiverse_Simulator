@@ -35,3 +35,9 @@ Compare identical untreated control/treatment arms at offsets +6, +30 and +120 n
 Historical ZIP fixtures, 15 worlds, scientific plugins, simulation kernel, RNG, worker, fixed-step determinism, default starting resources, native navigation gates, published 3D gameplay, storage and branching, browser/mobile controls, environment configuration, dependency lockfiles, GitHub Pages and performance gates.
 
 **Current status:** candidate instrumentation only. Exact PR-head CI, observed treatment results, merge and deployment pending.
+
+
+## Evidence correction and versioning addendum
+- Initial PR #14 exact-head test run [38338127190](https://github.com/westkitty/Multiverse_Simulator/actions/runs/38338127190) verified all 15 recovery arms, plus 20/20 candidate browser tests. Every arm reached 0/36 safe sites at +120, with mean stability exactly 10/100, **zero** active shortage streaks, enormous food/water stockpiles. Food-relief and infrastructure treatments did not correct the defect. Civic stability alone briefly reopened 36/36 at +6 before the penalty exhausted its benefit.
+- The cause was **not persistent famine**; it was full housing incorrectly counted as overcrowding. In the amended PR #14, new Civilization defaults are Atlas v2; this test now constructs an **explicit legacy v1, default-stock, 2005-tick unattended world**, preserving the original source failure independent of the versioned fix. The prior complete expedition supplied the initial test context; this variant isolates the native Civil demographics without repeating expedition commands. Do not conflate the two starting policies.
+- The definitive v2 semantics, historical preservation, acceptance and release gates are in `docs/acceptance/CIVILIZATION_CAPACITY_FIX.md`. Initial verified results apply to Atlas v1; new code is **pending** exact-head CI verification and release.
