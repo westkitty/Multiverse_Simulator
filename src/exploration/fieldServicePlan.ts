@@ -82,10 +82,18 @@ export function planFieldService(atlas: ExplorationAtlas, exploration: Explorati
     instruction:`${damaged.length} visited damaged installation(s), but none is safe to reach using the present hazard limit, open routes and fuel. Restore world science or replenish fuel before travel.`,
   };
   if (expedition.supplies < 2) {
+    // The native resupply command transfers up to ten supplies AND up to ten
+    // fuel from the FIRST previously visited site in the current region.
+    // A fuel-only stock transfer must not be advertised as supplying a repair.
+    const local = atlas.sites.find(site =>
+      site.facts.regionId === expedition.regionId &&
+      exploration.sites[site.facts.id].firstVisitedTick !== null);
+    const transferable = local
+      ? Math.min(10, exploration.sites[local.facts.id].resources.supplies ?? 0) : 0;
     const reason = resupplyAvailability(atlas, exploration);
-    return reason ? {
+    return reason || expedition.supplies + transferable < 2 ? {
       ...base, action:'need-supplies' as const,
-      instruction:`Repair costs 2 expedition supplies; only ${expedition.supplies} available. Cannot resupply here: ${reason}.`,
+      instruction:`Repair costs 2 expedition supplies; only ${expedition.supplies} available. ${reason ? 'Cannot resupply here: '+reason : 'This local stock transfer cannot supply the remaining repair cost; fuel-only transfers are not a substitute for supplies.'}`,
     } : {
       ...base, action:'resupply' as const,
       instruction:`Repair costs 2 expedition supplies; only ${expedition.supplies} available. Transfer finite stocks from the visited local site before dispatch.`,
