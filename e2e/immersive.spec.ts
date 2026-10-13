@@ -75,6 +75,35 @@ test.describe('immersive 3D gameplay', () => {
   expect(errors).toEqual([]);
 });
 
+test('three endangered worlds expose real emergency science commands inside playable 3D', async ({page}) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(error.message));
+  await page.goto('./#/explore');
+  const worlds = [
+    {letter:'G', command:/Dispatch Citywide Infrastructure Repair Brigades/},
+    {letter:'H', command:/Dispatch Robotic Overhaul Teams/},
+    {letter:'I', command:/Mobilize Post-Disaster Geotechnical Reconstruction/},
+  ];
+  const switcher = page.getByRole('group', {name:'Quick World Switcher'});
+  for (const target of worlds) {
+    await switcher.getByRole('button', {name:new RegExp('World '+target.letter+':')}).click();
+    const lab = page.getByRole('region', {name:'World system experiment'});
+    await expect(lab).toBeVisible();
+    await lab.locator('summary').click();
+    const emergency = lab.getByRole('group', {name:'Emergency recovery controls'});
+    await expect(emergency).toBeVisible();
+    await expect(emergency.getByTestId('native-safe-reachable')).toContainText('/ 36');
+    await expect(emergency.getByTestId('native-unsafe-destinations')).toBeVisible();
+    await expect(emergency.getByTestId('native-route-blocked')).toBeVisible();
+    await emergency.getByRole('button', {name:target.command}).click();
+    await expect(lab.getByTestId('native-intervention-feedback')).toContainText('Validated command recorded at tick');
+    await expect(lab).toContainText('Command event');
+    await page.getByRole('button', {name:'Step one tick'}).click();
+    await expect(emergency.getByTestId('native-safe-reachable')).toContainText('/ 36');
+  }
+  expect(errors).toEqual([]);
+});
+
 test('all fifteen universes open real Three.js canvases without leaving exploration mode', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', error => errors.push(error.message));
