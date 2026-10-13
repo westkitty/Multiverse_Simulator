@@ -81,6 +81,10 @@ function exerciseMaintenancePolicy(kernel: SimulationKernel<any, any>, untilTick
   const meanCondition = deltas.reduce((sum, site) => sum + site.condition, 0) / deltas.length;
   const collapsedSites = deltas.filter(site => site.condition < 25).length;
   const unsafeAccessSites = deltas.filter(site => site.hazard > 70).length;
+  const finalStocks = {
+    fuel: nextState.exploration.expedition.fuel,
+    supplies: nextState.exploration.expedition.supplies,
+  };
   const restored = SimulationKernel.fromRunRecord(kernel.exportRunRecord(), kernel.plugin);
   expect(restored.getStateHash()).toBe(kernel.getStateHash());
   for (let tick = 0; tick < 5; tick++) {
@@ -89,10 +93,7 @@ function exerciseMaintenancePolicy(kernel: SimulationKernel<any, any>, untilTick
   }
   expect(restored.getStateHash()).toBe(kernel.getStateHash());
   return {repairs, journeys, resupplies, idleChecks, meanCondition, collapsedSites,
-    unsafeAccessSites, finalStocks: {
-      fuel: nextState.exploration.expedition.fuel,
-      supplies: nextState.exploration.expedition.supplies,
-    }};
+    unsafeAccessSites, finalStocks};
 }
 
 /** Acceptance workload, not a fixture: default configs/stocks, real commands and full native ticks. */
@@ -150,6 +151,7 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
    if(resolved!==36&&!expeditionFailure)expeditionFailure='Navigation budget exhausted';
    const maintenanceStart = ECONOMY_AUDIT_WORLDS.has(plugin.id) && resolved===36
      && !expeditionFailure ? k.exportRunRecord() : null;
+   const maintenanceStartHash = maintenanceStart ? k.getStateHash() : null;
    let unattendedAt2000: {meanCondition:number; collapsedSites:number; unsafeAccessSites:number}|null=null;
    try{
     while(k.tick<2000)k.step();
@@ -170,14 +172,14 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
    results.push({world:plugin.id,seed,startingStocks,resolved,expeditionTick,resupplies,expeditionFailure,stabilityFailure,finalTick:k.tick,remainingStocks:{fuel:state.exploration.expedition.fuel,supplies:state.exploration.expedition.supplies},meanCondition:Object.values(state.exploration.sites).reduce((n:number,x:any)=>n+x.condition,0)/36});
    if (maintenanceStart && unattendedAt2000 && !stabilityFailure) {
      const managed=SimulationKernel.fromRunRecord(maintenanceStart,plugin);
-     expect(managed.getStateHash()).toBe(
-       SimulationKernel.fromRunRecord(maintenanceStart,plugin).getStateHash());
+     expect(managed.getStateHash()).toBe(maintenanceStartHash);
      const treatment=exerciseMaintenancePolicy(managed,2000);
      const delta=treatment.meanCondition-unattendedAt2000.meanCondition;
      maintenanceResults.push({
        world:plugin.id,seed,startTick:maintenanceStart.tick,endTick:2000,
        unattended:unattendedAt2000,maintained:treatment,meanConditionGain:delta,
      });
+     console.info(`ECONOMY_LAB ${plugin.id} seed=${seed} idle=${unattendedAt2000.meanCondition.toFixed(3)} managed=${treatment.meanCondition.toFixed(3)} gain=${delta.toFixed(3)} repairs=${treatment.repairs} trips=${treatment.journeys} resupplies=${treatment.resupplies} collapsed=${treatment.collapsedSites}/${unattendedAt2000.collapsedSites}`);
      expect(treatment.repairs).toBeGreaterThan(0);
      // A repair must produce a measured improvement over an otherwise identical
      // full-native, unattended control; it is not an indefinite-sustainability claim.
