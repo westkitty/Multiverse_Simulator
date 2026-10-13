@@ -25,6 +25,9 @@ export interface FieldServicePlan {
   visitedDamagedSites: number;
   safelyReachableDamagedSites: number;
   blockedDamagedSites: number;
+  unsafeDamagedSites: number;
+  fuelLimitedDamagedSites: number;
+  routeBlockedDamagedSites: number;
   repairSuppliesCost: 2;
   target: FieldServiceTarget | null;
 }
@@ -37,11 +40,17 @@ export function planFieldService(atlas: ExplorationAtlas, exploration: Explorati
       site.availableInteractions.includes('repair');
   });
   const feasible: FieldServiceTarget[] = [];
+  let unsafeDamagedSites = 0;
+  let fuelLimitedDamagedSites = 0;
+  let routeBlockedDamagedSites = 0;
   for (const site of damaged) {
     const delta = exploration.sites[site.facts.id];
     // A once-visited site can become dangerous. Old visit permission must not
     // be misrepresented as safe present-time access.
-    if (delta.hazard > 70) continue;
+    if (delta.hazard > 70) {
+      unsafeDamagedSites++;
+      continue;
+    }
     try {
       const route = planRoute(
         atlas, expedition.regionId, site.facts.regionId, 70, expedition.fuel, exploration,
@@ -53,7 +62,15 @@ export function planFieldService(atlas: ExplorationAtlas, exploration: Explorati
         fuelCost:route.fuel, travelTicks:Math.max(1,route.ticks),
       });
     } catch {
-      // Existing route, blocked passage, hazard and fuel limits are authority.
+      // Diagnose a route without changing or executing it. The ordinary
+      // result above is always the authority for currently safe departures.
+      try {
+        planRoute(atlas, expedition.regionId, site.facts.regionId,
+          70, Infinity, exploration);
+        fuelLimitedDamagedSites++;
+      } catch {
+        routeBlockedDamagedSites++;
+      }
     }
   }
   feasible.sort((left,right) =>
@@ -82,6 +99,9 @@ export function planFieldService(atlas: ExplorationAtlas, exploration: Explorati
     visitedDamagedSites:damaged.length,
     safelyReachableDamagedSites:feasible.length,
     blockedDamagedSites:damaged.length-feasible.length,
+    unsafeDamagedSites,
+    fuelLimitedDamagedSites,
+    routeBlockedDamagedSites,
     repairSuppliesCost:2 as const,
     target,
   };
