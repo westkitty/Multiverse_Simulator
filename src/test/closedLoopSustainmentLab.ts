@@ -123,8 +123,20 @@ function serviceOnce(kernel:SimulationKernel<any,any>,counts:ServiceCounts) {
     send(kernel,'exploration.action','Actual paid service repair',{action:'repair',siteId});
     const after=kernel.getState().exploration;
     const gained=after.sites[siteId].condition-prior;
-    if(after.expedition.supplies!==supplyBefore-2 || gained<=0 || gained>25)
-      throw new Error('Native repair failed two-supply debit or condition restoration');
+    const expectedGain=Math.min(25,100-prior);
+    const suppliesSpent=supplyBefore-after.expedition.supplies;
+    // Native fractional conditions may carry IEEE-754 rounding at ±25.
+    // Compare against the exact engine contract within a narrow 1e-6 bound,
+    // never waive the positive gain or the real two-supply debit.
+    if(!Number.isFinite(gained) || !Number.isFinite(suppliesSpent) ||
+      expectedGain<=0 || Math.abs(suppliesSpent-2)>1e-6 ||
+      Math.abs(gained-expectedGain)>1e-6)
+      throw new Error(
+        'Native repair failed verified ledger: world='+kernel.plugin.id+
+        ' site='+siteId+' prior='+prior+' after='+after.sites[siteId].condition+
+        ' gained='+gained+' expectedGain='+expectedGain+
+        ' debit='+suppliesSpent+' expectedDebit=2',
+      );
     counts.repair++;
     counts.costedRepairSupplies+=2;
     return;
