@@ -1,4 +1,6 @@
 import type { MetricDefinition, QuickInterventionDescriptor } from '../core/contracts';
+import type { ExplorationAtlas, ExplorationState } from './contracts';
+import { planRoute } from './engine';
 
 /**
  * Hand-curated pointers to existing authoritative simulation controls. This
@@ -82,6 +84,68 @@ export function fieldInterventions(
     const intervention = available.find(item => item.id === id);
     return intervention ? [intervention] : [];
   });
+}
+
+/**
+ * Exact existing restorative actions proven in the 30-tick native-access lab.
+ * These are not new effects, currencies, access overrides or instant POI repairs.
+ * Civilization v2 has a separate versioned housing fix; its old Jubilee command
+ * cannot provide durable emergency access in legacy v1.
+ */
+export const FIELD_EMERGENCY_RECOVERY_IDS: Readonly<Record<string,string>> = {
+  industrial: 'ind-repair-all-facilities',
+  megacity: 'cty-infrastructure-overhaul',
+  geology: 'geo-emergency-reconstruction',
+};
+
+export function fieldEmergencyRecovery(
+  worldId: string,
+  available: readonly QuickInterventionDescriptor[],
+): QuickInterventionDescriptor | null {
+  const id = FIELD_EMERGENCY_RECOVERY_IDS[worldId];
+  if (!id) return null;
+  // Fail closed if a native plugin no longer advertises this specific command.
+  const found = available.find(item => item.id === id && item.category === 'restoration');
+  return found ?? null;
+}
+
+export interface FieldAccessStatus {
+  totalSites: number;
+  safelyReachableSites: number;
+  unsafeDestinations: number;
+  routeOrFuelBarriers: number;
+}
+
+/**
+ * Read-only current reality. Count only truly fuel-bounded native Atlas routes,
+ * excluding hazardous targets; no routing rules, safety gates or world state
+ * are modified by this diagnostic.
+ */
+export function fieldAccessStatus(
+  atlas: ExplorationAtlas,
+  exploration: ExplorationState,
+): FieldAccessStatus {
+  let safelyReachableSites = 0, unsafeDestinations = 0, routeOrFuelBarriers = 0;
+  for (const site of atlas.sites) {
+    const delta = exploration.sites[site.facts.id];
+    if (!delta || delta.hazard > 70) {
+      unsafeDestinations++;
+      continue;
+    }
+    try {
+      planRoute(atlas, exploration.expedition.regionId, site.facts.regionId,
+        70, exploration.expedition.fuel, exploration);
+      safelyReachableSites++;
+    } catch {
+      routeOrFuelBarriers++;
+    }
+  }
+  return {
+    totalSites: atlas.sites.length,
+    safelyReachableSites,
+    unsafeDestinations,
+    routeOrFuelBarriers,
+  };
 }
 
 export interface NativeFieldGauge {
