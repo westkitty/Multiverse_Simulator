@@ -154,6 +154,8 @@ describe('native expedition service order',()=>{
     expect(dry.safelyReachableDamagedSites).toBe(0);
     expect(dry.fuelLimitedDamagedSites).toBe(1);
     expect(dry.routeBlockedDamagedSites).toBe(0);
+    expect(dry.unsafeDamagedSites+dry.fuelLimitedDamagedSites+
+      dry.routeBlockedDamagedSites).toBe(dry.blockedDamagedSites);
     expect(dry.target).toBeNull();
     expect(dry.instruction).toContain('Transfer up to 10 fuel');
     // This is a projection only: it must NEVER credit fuel or bypass the route.
