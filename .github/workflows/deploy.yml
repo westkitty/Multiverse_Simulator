@@ -75,7 +75,11 @@ jobs:
   public-smoke:
     needs: deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # This job installs Chromium then runs the same complete 3D browser suite
+    # against Pages. The former 10-minute total budget cancelled valid runs
+    # after 17/20 checks despite successful validate + deploy. Retain ALL
+    # assertions and tests; budget actual runner setup and software rasterization.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
