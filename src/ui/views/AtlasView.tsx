@@ -232,7 +232,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
           <p>Previously visited installations below 75% integrity: <output data-testid="service-damaged-count">{servicePlan.visitedDamagedSites}</output> · currently reachable: <output data-testid="service-reachable-count">{servicePlan.safelyReachableDamagedSites}</output> · blocked: {servicePlan.blockedDamagedSites}</p>
           {servicePlan.blockedDamagedSites > 0 && <p className="native-service-barriers" data-testid="service-barrier-breakdown">
             Present-time access barriers: <strong>{servicePlan.unsafeDamagedSites}</strong> unsafe destination(s) · <strong>{servicePlan.fuelLimitedDamagedSites}</strong> fuel-limited route(s) · <strong>{servicePlan.routeBlockedDamagedSites}</strong> hazardous or closed route(s). Only previously visited damaged sites are counted.
-          </p>
+          </p>}
           {servicePlan.target && <p className="native-service-target" data-testid="field-service-target">
             <strong>{presentSite(atlas,exploration,servicePlan.target.siteId)?.label ?? 'Previously visited installation'}</strong>
             <span>Integrity {format(servicePlan.target.condition)}% · hazard {format(servicePlan.target.hazard)} · {servicePlan.target.local ? 'Here in this region' : `${servicePlan.target.fuelCost} fuel · ${servicePlan.target.travelTicks} travel tick(s)`}</span>
