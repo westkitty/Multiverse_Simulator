@@ -14,7 +14,11 @@ describe('Civilization full-housing stability revision and legacy Atlas replay',
     expect(accepted(2).valid).toBe(true);
     expect(accepted(3).valid).toBe(false);
     for(const world of CORE_WORLD_PLUGINS.filter(world=>world.id!=='civilization')){
-      expect((world.defaultConfig as any).atlasVersion,world.id).toBe(1);
+      const version=(world.defaultConfig as Record<string,unknown>).atlasVersion;
+      // Eight other native Atlas worlds are v1; the six independent frontier
+      // plugins have no Atlas-version key and must not acquire one.
+      if(version===undefined)continue;
+      expect(version,world.id).toBe(1);
       expect(world.validateConfig({...world.defaultConfig,atlasVersion:2}).valid,world.id).toBe(false);
     }
   });
