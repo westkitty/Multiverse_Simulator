@@ -1,5 +1,6 @@
 import { SimulationKernel } from '../core/kernel';
 import { planFieldService } from '../exploration/fieldServicePlan';
+import { planRoute } from '../exploration/engine';
 import { inspectNativeRecoveryAccess, SCIENTIFIC_RECOVERY_COMMANDS } from './nativeScientificAccessLab';
 
 interface ServiceCounts {
@@ -200,6 +201,19 @@ export function probeClosedLoopSustainment(kernel:SimulationKernel<any,any>) {
   };
   if(counts.costedRepairSupplies!==2*counts.repair)
     throw new Error('Recorded repair costs are inconsistent');
+  // The public-facing "safely reachable" statistic is measured from each
+  // arm's moving expedition and remaining fuel. That is a valid player view,
+  // but it is not a matched-world route-safety comparison after paid travel.
+  // Freeze the original origin and fuel for an apples-to-apples comparison.
+  const referenceExpedition=kernel.getState().exploration.expedition;
+  const routeAccounting={
+    comparisonTick:serviced.tick,
+    referenceOrigin:referenceExpedition.regionId,
+    referenceFuel:referenceExpedition.fuel,
+    science:routeAccessLens(science,referenceExpedition.regionId,referenceExpedition.fuel),
+    paidService:routeAccessLens(serviced,referenceExpedition.regionId,referenceExpedition.fuel),
+    nativeSafetyDelta:compareNativeRouteSafety(science,serviced),
+  };
   const restored=SimulationKernel.fromRunRecord(serviced.exportRunRecord(),kernel.plugin);
   if(restored.getStateHash()!==serviced.getStateHash())
     throw new Error('Saved service treatment differs from authoritative hash');
@@ -209,6 +223,7 @@ export function probeClosedLoopSustainment(kernel:SimulationKernel<any,any>) {
   return {
     world:kernel.plugin.id,seed:kernel.seed,startTick:kernel.tick,initial,
     afterScience,commandCounts:counts,checkpoints,
+    routeAccounting,
     siteConditionGainFromPaidService:end.paidService.meanSiteCondition-end.science.meanSiteCondition,
     siteCollapseReductionFromPaidService:end.science.sitesBelow25-end.paidService.sitesBelow25,
     safeSiteGainFromScience:end.science.safeReachableSites-end.untreated.safeReachableSites,
@@ -216,5 +231,109 @@ export function probeClosedLoopSustainment(kernel:SimulationKernel<any,any>) {
     identicalStartingHash:true,scienceArmsMatchedAtServiceStart:true,
     restoreContinuationPass:true,
     evidenceLimit:'Finite 180-tick active treatment following real native science; not a 2000-tick costed global-science equilibrium, autonomous NPC upkeep or indefinite sustainability proof.',
+  };
+}
+
+
+/** Honest route accounting: site hazard and original route rules are
+ * authoritative. No simulation state is changed by these projections.
+ * Site IDs appear only in acceptance output, never undiscovered player UI. */
+function reachableSiteIds(kernel:SimulationKernel<any,any>,origin:string,fuel:number) {
+  const {atlas,exploration}=kernel.getState();
+  const ids:string[]=[];
+  for(const site of atlas.sites){
+    const delta=exploration.sites[site.facts.id];
+    if(delta.hazard>70)continue;
+    try{
+      planRoute(atlas,origin,site.facts.regionId,70,fuel,exploration);
+      ids.push(site.facts.id);
+    }catch{/* Native route is closed, dangerous or too expensive. */}
+  }
+  return ids;
+}
+function routeAccessLens(kernel:SimulationKernel<any,any>,sourceOrigin:string,sourceFuel:number) {
+  const {regionId,fuel}=kernel.getState().exploration.expedition;
+  const lens=(from:string,budget:number)=>{
+    const siteIds=reachableSiteIds(kernel,from,budget);
+    return {count:siteIds.length,siteIds};
+  };
+  return {
+    actualFromCurrentExpedition:lens(regionId,fuel),
+    sourceOriginWithCurrentFuel:lens(sourceOrigin,fuel),
+    currentOriginWithSourceFuel:lens(regionId,sourceFuel),
+    normalizedSourceOriginAndFuel:lens(sourceOrigin,sourceFuel),
+    physicalAccessFromSourceOrigin:lens(sourceOrigin,Infinity),
+    currentRegion:regionId,currentFuel:fuel,
+  };
+}
+/** Identify actual hazard/closure differences independently of vehicle
+ * location, fuel and the site's repaired CONDITION (not its HAZARD). */
+function compareNativeRouteSafety(science:SimulationKernel<any,any>,paid:SimulationKernel<any,any>) {
+  const a=science.getState().exploration,b=paid.getState().exploration;
+  return {
+    changedRegionHazards:Object.keys(a.regionHazards).filter(id=>a.regionHazards[id]!==b.regionHazards[id]),
+    changedBlockedRoutes:Object.keys(a.blockedRoutes).filter(id=>a.blockedRoutes[id]!==b.blockedRoutes[id]),
+    changedSiteHazards:Object.keys(a.sites).filter(id=>a.sites[id].hazard!==b.sites[id].hazard),
+  };
+}
+
+/** Extended real-stock stress after the same two native rescue commands.
+ * A single fixed Megacity seed keeps the already-expensive 45-world
+ * acceptance bounded. Results may be negative; never force resupply to pass.
+ * The source stock, repairs, travel, transfer and ticks remain untouched.
+ */
+export function probeExtendedFiniteService(kernel:SimulationKernel<any,any>) {
+  if(kernel.plugin.id!=='megacity'||kernel.seed!==2026||kernel.tick<2000)
+    throw new Error('Finite-service stress requires exhausted Megacity seed 2026');
+  const source=kernel.exportRunRecord(),startingHash=kernel.getStateHash();
+  const science=SimulationKernel.fromRunRecord(source,kernel.plugin);
+  const paid=SimulationKernel.fromRunRecord(source,kernel.plugin);
+  if(science.getStateHash()!==startingHash||paid.getStateHash()!==startingHash)
+    throw new Error('Extended arms are not identical to native source');
+  for(let i=0;i<2;i++){
+    applyWorldRecovery(science);
+    applyWorldRecovery(paid);
+    science.step();
+    paid.step();
+  }
+  if(science.getStateHash()!==paid.getStateHash())
+    throw new Error('Extended science arms diverged before paid servicing');
+  const counts=emptyCounts();
+  const checkpoints:Record<string,unknown>={};
+  for(let offset=1;offset<=720;offset++){
+    if(offset%2===1&&!paid.getState().exploration.expedition.journey)
+      serviceOnce(paid,counts);
+    else if(paid.getState().exploration.expedition.journey)
+      counts.waitingInTransitTicks++;
+    science.step();
+    paid.step();
+    if(offset===180||offset===360||offset===540||offset===720)
+      checkpoints[String(offset)]={
+        science:snapshot(science),paidService:snapshot(paid),nativeCounts:{...counts},
+      };
+  }
+  if(counts.costedRepairSupplies!==2*counts.repair)
+    throw new Error('Extended native repair supply cost mismatch');
+  const referenceExpedition=kernel.getState().exploration.expedition;
+  const routeAccounting={
+    referenceOrigin:referenceExpedition.regionId,
+    referenceFuel:referenceExpedition.fuel,
+    science:routeAccessLens(science,referenceExpedition.regionId,referenceExpedition.fuel),
+    paidService:routeAccessLens(paid,referenceExpedition.regionId,referenceExpedition.fuel),
+    nativeSafetyDelta:compareNativeRouteSafety(science,paid),
+  };
+  const restored=SimulationKernel.fromRunRecord(paid.exportRunRecord(),kernel.plugin);
+  if(restored.getStateHash()!==paid.getStateHash())
+    throw new Error('Extended finite-service save/restore hash mismatch');
+  for(let i=0;i<5;i++){paid.step();restored.step();}
+  if(restored.getStateHash()!==paid.getStateHash())
+    throw new Error('Extended finite-service continuation diverged');
+  return {
+    world:kernel.plugin.id,seed:kernel.seed,sourceTick:kernel.tick,
+    durationTicks:720,initialSourceHashMatched:true,
+    scienceArmsMatchedAtServiceStart:true,restoreContinuationPass:true,
+    commandCounts:counts,checkpoints,routeAccounting,
+    localResupplyWasActuallyUsed:counts.resupply>0,
+    evidenceLimit:'Single default-stock native Megacity seed, two global science commands not economically costed, 720 paid ticks; no claim of indefinite equilibrium or artificial stock top-ups.',
   };
 }
