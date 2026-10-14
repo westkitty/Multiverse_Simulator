@@ -5,7 +5,7 @@ import {CORE_WORLD_PLUGINS} from '../worlds';
 import {applyExplorationCommand,planRoute,surveyCoverage} from '../exploration/engine';
 import {resupplyAvailability} from '../exploration/dossier';
 import {probeScientificAccessRecovery} from './nativeScientificAccessLab';
-import {probeClosedLoopSustainment} from './closedLoopSustainmentLab';
+import {probeClosedLoopSustainment,probeExtendedFiniteService} from './closedLoopSustainmentLab';
 import {probeCivilizationShortageRecovery} from './civilizationShortageRecoveryLab';
 
 
@@ -219,6 +219,18 @@ describe.runIf(process.env.RUN_ACCEPTANCE==='1')('Default-resource active-world 
      expect(loop.scienceArmsMatchedAtServiceStart).toBe(true);
      expect(loop.restoreContinuationPass).toBe(true);
      expect(loop.commandCounts.costedRepairSupplies).toBe(2*loop.commandCounts.repair);
+     if(plugin.id==='megacity'&&seed===2026){
+       const comparison=loop.routeAccounting;
+       console.info('ROUTE_VANTAGE_180 '+JSON.stringify(comparison));
+       const finite=probeExtendedFiniteService(k);
+       console.info('FINITE_SERVICE_720 '+JSON.stringify(finite));
+       expect(finite.initialSourceHashMatched).toBe(true);
+       expect(finite.scienceArmsMatchedAtServiceStart).toBe(true);
+       expect(finite.restoreContinuationPass).toBe(true);
+       expect(finite.commandCounts.costedRepairSupplies).toBe(2*finite.commandCounts.repair);
+       // Resupply frequency, long-run conditions and safe access are observed,
+       // NOT required to be positive: a negative result must remain visible.
+     }
      // Long-run improvement and absolute economy viability are measured first;
      // do not turn an unknown result into a cosmetic passing threshold.
      const managed=SimulationKernel.fromRunRecord(maintenanceStart,plugin);
