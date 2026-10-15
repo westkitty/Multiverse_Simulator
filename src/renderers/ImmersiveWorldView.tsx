@@ -435,9 +435,9 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           : null);
         const observed = liveLayout.current.points.find(site => site.id === inRange?.id);
         setReadout(inRange
-          ? `${observed?.label ?? 'Unidentified contact'} · ${Math.round(inRange.distance)} m · E / INSPECT`
+          ? `${observed?.label ?? 'Unidentified contact'} · ${Math.round(inRange.distance)} scene units · E / INSPECT`
           : nearby
-            ? `Nearest contact ${Math.round(nearby.distance)} m — move closer to investigate`
+            ? `Nearest contact ${Math.round(nearby.distance)} scene units — move closer to investigate`
             : 'Move toward a structure to investigate');
       }
       renderer.render(scene, camera);
@@ -527,7 +527,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
               <strong data-testid="field-waypoint-name" style={{ fontSize:12 }}>{guidedWaypoint.label}</strong>
               <output data-testid="field-bearing-readout" style={{ fontSize:12, color:'#ffe6a8' }}>
                 {bearingReadout
-                  ? `${bearingReadout.arrow} ${bearingReadout.direction} · ${Math.round(bearingReadout.distance)} scene metres`
+                  ? `${bearingReadout.arrow} ${bearingReadout.direction} · ${Math.round(bearingReadout.distance)} scene units`
                   : 'Acquiring visual bearing…'}
               </output>
               {guidedWaypoint.hazard !== null && guidedWaypoint.hazard > 70 &&
