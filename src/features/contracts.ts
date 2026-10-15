@@ -2,6 +2,17 @@ import {
   CommandExecutionContext,
   SystemExecutionContext,
 } from '../core/contracts';
+import type {
+  HazardDependencyGraph,
+  HazardEvaluationResult,
+} from './hazardGraph';
+import type {
+  CostPreview,
+  ScientificBudgetLedger,
+} from './budgetLedger';
+
+export * from './hazardGraph';
+export * from './budgetLedger';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -100,6 +111,8 @@ export interface VisibleFeatureState {
   activeCapabilities: string[];
   metrics: Record<string, number | string>;
   disclosedEntities: VisibleEntitySummary[];
+  hazards?: HazardEvaluationResult;
+  budgetBalances?: Record<string, number>;
 }
 
 export interface WorldFeatureModule<
@@ -109,6 +122,8 @@ export interface WorldFeatureModule<
   readonly worldId: string;
   readonly rulesVersion: number;
   readonly capabilities: readonly FeatureCapability[];
+  readonly hazardGraph?: HazardDependencyGraph;
+  readonly budgetLedger?: ScientificBudgetLedger;
 
   validateAction(
     raw: unknown,
@@ -123,6 +138,16 @@ export interface WorldFeatureModule<
   ): ActionExecutionReceipt;
 
   stepOwnedSystems?(ctx: SystemExecutionContext<TState, TConfig>): void;
+
+  evaluateHazards?(
+    metrics: Record<string, number>,
+    tick: number,
+  ): HazardEvaluationResult;
+
+  previewCost?(
+    capabilityId: string,
+    payload?: Record<string, unknown>,
+  ): CostPreview;
 
   projectVisibleState(
     state: Readonly<TState>,

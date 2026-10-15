@@ -1,6 +1,7 @@
 import {
   DisclosureContext,
   DisclosureLevel,
+  HazardEvaluationResult,
   VisibleEntitySummary,
   VisibleFeatureState,
 } from './contracts';
@@ -62,6 +63,8 @@ export function createBaseVisibleState(
   activeCapabilities: string[],
   metrics: Record<string, number | string> = {},
   disclosedEntities: VisibleEntitySummary[] = [],
+  hazards?: HazardEvaluationResult,
+  budgetBalances?: Record<string, number>,
 ): VisibleFeatureState {
   return {
     worldId,
@@ -69,5 +72,7 @@ export function createBaseVisibleState(
     activeCapabilities,
     metrics,
     disclosedEntities,
+    hazards,
+    budgetBalances,
   };
 }

@@ -33,3 +33,35 @@ Under no circumstances may:
 ### Consequences
 - **Positive**: Strict 100% hash preservation for historical saves, zero regression risk on existing production Atlas journeys, modular and testable domain architecture.
 - **Negative / Constraints**: Every feature addition requires both legacy negative assertions (does not fire under version 0) and version 1 positive assertions across all 15 universes.
+
+## ADR 0002: Ordered Hazard Dependency Graphs and Bounded Scientific Budget Ledger
+
+### Status
+Accepted (Wave G1 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G1 introduces:
+1. P002 (The Anatomy of a Catastrophe): Observable, interruptible failure chains driven by world-native telemetry, with explicit threshold evaluations, causal links, and upstream cause tracing.
+2. P003 (Conservation Has Teeth): Finite, accounted scientific budgets where interventions require preview and atomic debit, preventing negative balances and phantom resource creation.
+3. Initial P013 (Causality Detective): Controlled experiments with matched seeds, single-variable interventions, and observable outcome verification.
+
+### Decision
+1. **HazardDependencyGraph (`src/features/hazardGraph.ts`)**:
+   - Every universe defines a directed acyclic graph (DAG) of hazard nodes and links.
+   - Nodes specify source/target metrics, threshold condition operators (`>`, `<`, etc.), severity tiers, and associated mitigation action families.
+   - Evaluator distinguishes empirical `observedTrigger` from interpretative `hypothesizedExplanation`.
+   - Supports backward traversal (`findUpstreamCauses`) and forward risk projection (`findDownstreamRisks`).
+2. **ScientificBudgetLedger (`src/features/budgetLedger.ts`)**:
+   - Manages bounded non-negative stocks (energy, supplies, materials, etc.) per universe under `worldRulesVersion >= 1`.
+   - `previewDebit` guarantees cost transparency before action commitment.
+   - `applyTransaction` executes atomic debits and credits with receipt logging; any shortfall results in atomic rollback with no state change and no balance distortion.
+   - Zero phantom generation: replenishment only accumulates via explicit per-tick rates or verified recovery events.
+3. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, simulation systems bypass budget debits and cascade penalties, preserving exact legacy hash oracles and replay determinism.
+
+### Consequences
+- **Positive**: Complete causal transparency for all 15 failure sequences; rigorously bounded resource economics without infinite free actions.
+- **Negative / Constraints**: Interventions must specify valid resource debits that fit within available stocks; tests must assert atomic rollback on insufficient balances.

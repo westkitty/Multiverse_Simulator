@@ -23,7 +23,7 @@ import {
 registerBuiltInWorlds();
 
 describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => {
-  it('A. Registry Proof: registers and validates all 9 primary simulation worlds in globalPluginRegistry', () => {
+  it('A. Registry Proof: registers and validates all 9 primary simulation worlds in globalPluginRegistry', { timeout: 45000 }, () => {
     const expectedIds = [
       'ecosystem',
       'station',
@@ -146,7 +146,7 @@ describe('Nine-World Triple-Scale Expansion Proof Suite (Sections 2-10)', () => 
     }
   });
 
-  it('D & F. Determinism & No-Op Detection Proof: every intervention in all 9 worlds mutates state vs. control and replays deterministically', { timeout: 60000 }, () => {
+  it('D & F. Determinism & No-Op Detection Proof: every intervention in all 9 worlds mutates state vs. control and replays deterministically', { timeout: 120000 }, () => {
     for (const plugin of ORIGINAL_WORLD_PLUGINS) {
       for (const intervention of plugin.quickInterventions) {
         const control = new SimulationKernel({

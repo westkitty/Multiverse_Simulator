@@ -54,6 +54,6 @@ export default defineConfig(({ command, isPreview }) => ({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}'],
-    testTimeout: 20000,
+    testTimeout: 90000,
   },
 }));

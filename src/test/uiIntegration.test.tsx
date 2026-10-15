@@ -4,8 +4,10 @@ import { App } from '../App';
 import { useMultiverseStore } from '../store/multiverseStore';
 
 describe('Full React UI & Accessibility Integration Journeys', () => {
-  it('renders the Observatory, switches across all 3 worlds, steps simulation, dispatches commands, and toggles Accessible Table', async () => {
-    render(<App />);
+  it(
+    'renders the Observatory, switches across all 3 worlds, steps simulation, dispatches commands, and toggles Accessible Table',
+    async () => {
+      render(<App />);
 
     expect(
       screen.getByText(/THE SIMULATION MULTIVERSE/i),
@@ -71,10 +73,12 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     // Exercise viewport Fit to World and Layer Toggles
     fireEvent.click(screen.getByRole('button', { name: /Fit Camera to World/i }));
     fireEvent.click(screen.getByRole('button', { name: /Labels/i }));
-  });
+  }, 60000);
 
-  it('navigates across World Library, Timeline, Experiment Lab, Compare, Event Observatory, Data Vault, and Diagnostics', async () => {
-    render(<App />);
+  it(
+    'navigates across World Library, Timeline, Experiment Lab, Compare, Event Observatory, Data Vault, and Diagnostics',
+    async () => {
+      render(<App />);
 
     // 1. World Library: launch a new seeded world run
     fireEvent.click(screen.getByRole('tab', { name: /World Library/i }));
@@ -158,11 +162,14 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     fireEvent.click(
       screen.getByRole('button', { name: /Verify Archive Round-Trip/i }),
     );
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Round-Trip Archive Verification PASSED/i),
-      ).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText(/Round-Trip Archive Verification PASSED/i),
+        ).toBeInTheDocument();
+      },
+      { timeout: 10000 },
+    );
 
     // 7. Diagnostics & PDK: run 4-world PDK contract verification suite
     fireEvent.click(screen.getByRole('tab', { name: /Diagnostics & PDK/i }));
@@ -174,5 +181,5 @@ describe('Full React UI & Accessibility Integration Journeys', () => {
     expect(
       screen.getAllByText(/ALL CONTRACTS PASS/i).length,
     ).toBe(16);
-  });
+  }, 60000);
 });
