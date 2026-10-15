@@ -1,0 +1,1841 @@
+{
+  "artifactKind": "OMNIVERSE_III_COVERAGE_EVIDENCE",
+  "schemaVersion": 1,
+  "asOf": "2026-10-15",
+  "baselineCommit": "b3454bfd735406c4d6ae9aafe612ff4a6f93ab2d",
+  "worldCount": 15,
+  "featureCount": 20,
+  "totalCells": 300,
+  "cells": {
+    "ecosystem": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: habitat corridors; nutrient balancing; targeted firebreaks.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: watershed drought / nutrient runaway.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: water stores, seed stocks and restoration supplies.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around wetland pump and seed nursery using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed wetland pump and seed nursery with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for watershed drought / nutrient runaway.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: connected wetlands return, dead canopy regrows.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical ecosystem site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at wetland pump and seed nursery.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of moisture / nutrients / biomass with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Glasswater Refuge: Can the watershed recover without nutrient overshoot?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Glasswater Refuge.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about watershed drought / nutrient runaway with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for moisture / nutrients / biomass and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual ecosystem crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving moisture / nutrients / biomass; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around watershed drought / nutrient runaway and water stores, seed stocks and restoration supplies.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of ecosystem.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of ecosystem native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: wind, water and recovering wildlife; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "station": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: pressure sector isolation; scrubber allocation; crew evacuation.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: pressure leakage -> oxygen depletion -> compartment shutdown.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: scrubber cartridges, power and emergency oxygen.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around life-support scrubber and pressure bulkhead using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed life-support scrubber and pressure bulkhead with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for pressure leakage -> oxygen depletion -> compartment shutdown.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: dark pressure sectors re-illuminate and seal.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical station site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at life-support scrubber and pressure bulkhead.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / oxygen reserve / crew health with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Dark Habitation Ring: Which compartments can remain habitable?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Dark Habitation Ring.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about pressure leakage -> oxygen depletion -> compartment shutdown with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for pressure / oxygen reserve / crew health and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual station crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving pressure / oxygen reserve / crew health; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around pressure leakage -> oxygen depletion -> compartment shutdown and scrubber cartridges, power and emergency oxygen.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of station.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of station native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: life-support pumps, pressure alarms, enclosed hum; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "civilization": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: water distribution; infrastructure load; crossing reinforcement.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: water shortage -> food scarcity -> civic failure.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: cistern inventory, grain, repair materials.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around waterworks and river crossing using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed waterworks and river crossing with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for water shortage -> food scarcity -> civic failure.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: irrigation and civic infrastructure recover.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical civilization site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at waterworks and river crossing.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water stock / food stock / civic stability with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Abandoned River Capital: Can water and food be stabilized together?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Abandoned River Capital.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about water shortage -> food scarcity -> civic failure with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for water stock / food stock / civic stability and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual civilization crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving water stock / food stock / civic stability; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around water shortage -> food scarcity -> civic failure and cistern inventory, grain, repair materials.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of civilization.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of civilization native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: waterwheels, market ambience, stormwater; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "atmosphere": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: moisture-front control; instrument deployment; temporary countermeasures.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: moisture loss -> storm instability -> monitoring blindness.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: sensor power, atmospheric reagents, shelters.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around storm observation array and rain collector using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed storm observation array and rain collector with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for moisture loss -> storm instability -> monitoring blindness.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: cloud bands and instrument weathering change.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical atmosphere site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at storm observation array and rain collector.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / temperature / humidity with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Station Beneath the Storm: Which pressure transition precedes the storm?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Station Beneath the Storm.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about moisture loss -> storm instability -> monitoring blindness with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for pressure / temperature / humidity and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual atmosphere crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving pressure / temperature / humidity; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around moisture loss -> storm instability -> monitoring blindness and sensor power, atmospheric reagents, shelters.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of atmosphere.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of atmosphere native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: wind shear, rainfall, barometric pressure drone; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "ocean": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: upwelling; depth oxygenation; carbonate habitat protection.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: oxygen depletion -> habitat damage -> ecological feedback.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: oxygenation capacity, nutrient reserve, ROV power.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around oxygenation module and reef nursery using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed oxygenation module and reef nursery with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for oxygen depletion -> habitat damage -> ecological feedback.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: reef health, water clarity and life return.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical ocean site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at oxygenation module and reef nursery.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of dissolved oxygen / pH / nutrients with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Drowned Listening Garden: Can oxygen recovery persist at depth?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Drowned Listening Garden.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about oxygen depletion -> habitat damage -> ecological feedback with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for dissolved oxygen / pH / nutrients and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual ocean crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving dissolved oxygen / pH / nutrients; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around oxygen depletion -> habitat damage -> ecological feedback and oxygenation capacity, nutrient reserve, ROV power.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of ocean.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of ocean native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: water pressure, sonar and marine ambience; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "celestial": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: constrained transfer schedules; orbit circularization; radiation shielding.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: orbital instability -> high flux exposure -> failed transfers.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: propellant, orbital hardware and thermal protection.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around transit beacon and radiation shield using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed transit beacon and radiation shield with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for orbital instability -> high flux exposure -> failed transfers.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: orbital lanes, thermal stress and platforms respond.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical celestial site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at transit beacon and radiation shield.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of eccentricity / incident flux / habitability with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Lost Transit Observatory: Is there a safe scientific transit window?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Lost Transit Observatory.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about orbital instability -> high flux exposure -> failed transfers with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for eccentricity / incident flux / habitability and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual celestial crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving eccentricity / incident flux / habitability; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around orbital instability -> high flux exposure -> failed transfers and propellant, orbital hardware and thermal protection.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of celestial.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of celestial native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: relay pulses, thrusters and distant resonances; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "megacity": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: power isolation; flood rerouting; transport priority.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: power failure -> pumping loss -> flood and isolation.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: district fuel, spare parts, municipal stock.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around substation, pumps and transit link using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed substation, pumps and transit link with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for power failure -> pumping loss -> flood and isolation.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: windows, transit and utility corridors recover.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical megacity site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at substation, pumps and transit link.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of infrastructure health / pollution / reachable sites with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Blackout Quarter: Can repairs prevent recurring district inaccessibility?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Blackout Quarter.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about power failure -> pumping loss -> flood and isolation with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for infrastructure health / pollution / reachable sites and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual megacity crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving infrastructure health / pollution / reachable sites; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around power failure -> pumping loss -> flood and isolation and district fuel, spare parts, municipal stock.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of megacity.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of megacity native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: power harmonics, pumps and damaged substations; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "industrial": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: production balance; emergency freight; waste containment.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: freight interruption -> inventory scarcity -> factory stoppage.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: ore, processed goods, freight fuel and spares.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around freight depot and production buffer using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed freight depot and production buffer with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for freight interruption -> inventory scarcity -> factory stoppage.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: conveyors, stockyards and assembly lines restart.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical industrial site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at freight depot and production buffer.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of inventory / backlog / equipment health with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Factory Without Deliveries: Where is the bottleneck causing undelivered output?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Factory Without Deliveries.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about freight interruption -> inventory scarcity -> factory stoppage with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for inventory / backlog / equipment health and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual industrial crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving inventory / backlog / equipment health; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around freight interruption -> inventory scarcity -> factory stoppage and ore, processed goods, freight fuel and spares.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of industrial.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of industrial native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: conveyor machinery, compressed air, rail movement; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "geology": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: pressure venting; fault reinforcement; sensor coverage.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: tectonic stress -> rupture -> inaccessible monitoring.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: reinforcement material, bore capacity and sensors.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around fault brace and seismic sensor array using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed fault brace and seismic sensor array with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for tectonic stress -> rupture -> inaccessible monitoring.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: cracks, reinforcement and monitoring towers react.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical geology site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at fault brace and seismic sensor array.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of tectonic stress / magma pressure / sensor coverage with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at The Buried Seismic Array: Which intervention reduces the predicted local failure?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Buried Seismic Array.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about tectonic stress -> rupture -> inaccessible monitoring with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for tectonic stress / magma pressure / sensor coverage and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual geology crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving tectonic stress / magma pressure / sensor coverage; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around tectonic stress -> rupture -> inaccessible monitoring and reinforcement material, bore capacity and sensors.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of geology.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of geology native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: low ground resonance, drilling and rock movement; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "wild-meridian": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: migration corridors; watering refuges; ecological disturbance containment.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: drought -> habitat fragmentation -> wildlife decline.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: stored water, native seed stock and field energy.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around migration refuge and waterway restoration using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed migration refuge and waterway restoration with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for drought -> habitat fragmentation -> wildlife decline.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: corridors reconnect and wildlife populations return.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical wild-meridian site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at migration refuge and waterway restoration.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water / vegetation / wildlife with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at Silent Valley: What restores sustainable migration?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Silent Valley.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about drought -> habitat fragmentation -> wildlife decline with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for water / vegetation / wildlife and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual wild-meridian crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving water / vegetation / wildlife; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around drought -> habitat fragmentation -> wildlife decline and stored water, native seed stock and field energy.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of wild-meridian.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of wild-meridian native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: wind through grass, migratory calls and streams; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "hollow-deep": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: aquifer regulation; gas venting; tunnel reinforcement.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: aquifer pressure -> gas buildup -> structural collapse.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: bracing materials, vent energy and water reserve.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around gas vent, aquifer pump and tunnel brace using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed gas vent, aquifer pump and tunnel brace with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for aquifer pressure -> gas buildup -> structural collapse.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: cavern supports, seepage and access passages change.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical hollow-deep site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at gas vent, aquifer pump and tunnel brace.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water / gas / stress with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at Cathedral Below: Can a stable, scientifically observable passage be opened?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Cathedral Below.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about aquifer pressure -> gas buildup -> structural collapse with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for water / gas / stress and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual hollow-deep crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving water / gas / stress; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around aquifer pressure -> gas buildup -> structural collapse and bracing materials, vent energy and water reserve.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of hollow-deep.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of hollow-deep native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: rock echoes, dripping water and gas hiss; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "timeworn-empire": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: controlled excavation; ruin protection; stratum hypotheses.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: erosion -> exposure -> irreversible archaeological loss.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: conservation materials, crew time and excavation capacity.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around strata shelter and field conservation workshop using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed strata shelter and field conservation workshop with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for erosion -> exposure -> irreversible archaeological loss.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: stratified ruins exposed and stabilized over time.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical timeworn-empire site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at strata shelter and field conservation workshop.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of burial / erosion / exposure with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at City of Three Foundations: Can the three city eras be distinguished from evidence?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at City of Three Foundations.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about erosion -> exposure -> irreversible archaeological loss with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for burial / erosion / exposure and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual timeworn-empire crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving burial / erosion / exposure; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around erosion -> exposure -> irreversible archaeological loss and conservation materials, crew time and excavation capacity.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of timeworn-empire.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of timeworn-empire native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: wind over ruins, excavation tools and distant echoes; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "terraforming-frontier": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: atmospheric control; soil amendment; biome seeding.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: atmospheric deficiency -> poor soil -> biosphere instability.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: atmospheric reagents, biological stock and energy.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around biosphere dome and atmosphere regulator using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed biosphere dome and atmosphere regulator with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for atmospheric deficiency -> poor soil -> biosphere instability.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: greenery expands with genuinely viable habitats.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical terraforming-frontier site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at biosphere dome and atmosphere regulator.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / soil / oxygen with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at First Green: Can local life maintain itself without perpetual intervention?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at First Green.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about atmospheric deficiency -> poor soil -> biosphere instability with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for pressure / soil / oxygen and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual terraforming-frontier crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving pressure / soil / oxygen; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around atmospheric deficiency -> poor soil -> biosphere instability and atmospheric reagents, biological stock and energy.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of terraforming-frontier.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of terraforming-frontier native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: habitat air circulation, plant ambience and wind; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "machine-wilderness": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: power routing; maintenance swarm scheduling; parts recovery.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: power failures -> maintenance backlog -> automation collapse.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: recovered parts, energy and worker capacity.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around power relay and maintenance swarm hub using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed power relay and maintenance swarm hub with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for power failures -> maintenance backlog -> automation collapse.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: mechanical infrastructure transitions between dormant and active.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical machine-wilderness site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at power relay and maintenance swarm hub.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of power / wear / backlog with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at Unfinished City: Can the automated city be made self-maintaining?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Unfinished City.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about power failures -> maintenance backlog -> automation collapse with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for power / wear / backlog and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual machine-wilderness crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving power / wear / backlog; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around power failures -> maintenance backlog -> automation collapse and recovered parts, energy and worker capacity.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of machine-wilderness.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of machine-wilderness native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: servo pulses, machine ambience and relay clicks; all essential cues available silently.",
+        "receipts": []
+      }
+    },
+    "signal-expanse": {
+      "P001": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct native action families: array calibration; interference suppression; signal reconstruction.",
+        "receipts": []
+      },
+      "P002": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Trace native cascade: interference -> coverage loss -> false/fragmented observations.",
+        "receipts": []
+      },
+      "P003": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: calibration power, relay parts and processing capacity.",
+        "receipts": []
+      },
+      "P004": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around signal relay and interferometer using real domain routes.",
+        "receipts": []
+      },
+      "P005": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Build and operate a branch-owned costed signal relay and interferometer with timed construction and wear.",
+        "receipts": []
+      },
+      "P006": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for interference -> coverage loss -> false/fragmented observations.",
+        "receipts": []
+      },
+      "P007": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Render real state change: beams reconnect and false signal clutter declines.",
+        "receipts": []
+      },
+      "P008": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Preserve canonical signal-expanse site IDs through map-to-3D navigation and appropriate spatial topology.",
+        "receipts": []
+      },
+      "P009": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at signal relay and interferometer.",
+        "receipts": []
+      },
+      "P010": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of signal / noise / coverage with unit/tick/provenance.",
+        "receipts": []
+      },
+      "P011": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Unique three-stage native mission at Last Transmission: Can the transmission source be localized defensibly?",
+        "receipts": []
+      },
+      "P012": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Last Transmission.",
+        "receipts": []
+      },
+      "P013": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about interference -> coverage loss -> false/fragmented observations with native observables.",
+        "receipts": []
+      },
+      "P014": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Correct synchronized baseline/treatment branch diff for signal / noise / coverage and its physical site projection.",
+        "receipts": []
+      },
+      "P015": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Persist actual signal-expanse crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
+        "receipts": []
+      },
+      "P016": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Verify valid inbound/outbound cross-world research evidence involving signal / noise / coverage; accept only genuinely compatible mappings.",
+        "receipts": []
+      },
+      "P017": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "At least two priced tradeoff policies around interference -> coverage loss -> false/fragmented observations and calibration power, relay parts and processing capacity.",
+        "receipts": []
+      },
+      "P018": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Paired 2k/5k-tick conserved state, continuity, economic and recovery analysis of signal-expanse.",
+        "receipts": []
+      },
+      "P019": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Forge export/import of signal-expanse native configuration, seed, commands and compatible rules version.",
+        "receipts": []
+      },
+      "P020": {
+        "status": "PLANNED",
+        "rulesVersion": null,
+        "intendedNativeDeliverable": "Opt-in state-driven audio layers: interference, digital pulses and tuned carrier tones; all essential cues available silently.",
+        "receipts": []
+      }
+    }
+  }
+}
