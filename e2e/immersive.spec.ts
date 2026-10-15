@@ -12,6 +12,16 @@ test.describe('immersive 3D gameplay', () => {
   await page.getByRole('button', { name: /Enter this universe in 3D/ }).click();
   const explorer = page.getByRole('region', { name: 'Immersive 3D world explorer' });
   await expect(explorer).toBeVisible();
+  const bearing = explorer.getByRole('group', { name: 'Visual field bearing' });
+  await expect(bearing).toBeVisible();
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
+  // Keyboard Space must activate focused controls instead of being captured
+  // by the 3D movement listener.
+  await bearing.getByRole('button', { name: 'Hide field bearing' }).focus();
+  await page.keyboard.press('Space');
+  await expect(bearing).toContainText('Guide hidden');
+  await bearing.getByRole('button', { name: 'Track next known site' }).click();
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
   const protocol = page.getByRole('region', { name: 'World field protocol' });
   await expect(protocol).toBeVisible();
   await expect(protocol).toContainText('The watershed question');
@@ -40,6 +50,16 @@ test.describe('immersive 3D gameplay', () => {
     await expect.poll(() => coordinates.innerText(), { timeout: 20_000 }).not.toBe(initial);
   } finally {
     await page.keyboard.up('w');
+  }
+  // Touch-facing movement buttons are also operable from keyboard focus;
+  // Space must move only while held and release cleanly.
+  const beforeButtonMove=await coordinates.innerText();
+  await explorer.getByRole('button', { name:'Forward' }).focus();
+  await page.keyboard.down('Space');
+  try {
+    await expect.poll(() => coordinates.innerText(), {timeout:20_000}).not.toBe(beforeButtonMove);
+  } finally {
+    await page.keyboard.up('Space');
   }
 
   // Recenter using the already-created world on the next enter. The default
@@ -104,12 +124,23 @@ test('player can visit a real installation and pay its repair bill from the 3D s
     await page.getByRole('button',{name:'Step one tick'}).click();
   }
   await expect(dossier).toContainText('VISITED');
+  const canvas=explorer.getByLabel('Three.js playable universe').locator('canvas');
+  // Renderer telemetry is taken from actual beacon material assignments,
+  // rather than counting a new fake DOM badge.
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons ?? 0)), {timeout:20_000}).toBeGreaterThan(0);
+  const damagedBefore=await canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons));
   const repair=order.getByRole('button',{name:/Repair visited installation/});
   await expect(repair).toBeVisible();
   await expect(order.getByTestId('service-damaged-count')).toHaveText('1');
   await repair.click();
   await expect(order.getByTestId('field-service-feedback')).toContainText('repair accepted at tick');
   await expect(order).toContainText('Repairs charge 2 supplies');
+  // Two real native two-supply repairs take the first visited installation
+  // from its initial ~40% condition to the stable >=75% visual category.
+  await repair.click();
+  await expect(order.getByTestId('service-damaged-count')).toHaveText('0');
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons ?? -1)), {timeout:20_000})
+    .toBeLessThan(damagedBefore);
   expect(errors).toEqual([]);
 });
 
@@ -155,6 +186,12 @@ test('all fifteen universes open real Three.js canvases without leaving explorat
     const activeCanvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
     await expect(activeCanvas).toHaveCount(1);
     await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(20);
+    // The real WebGL scene contains the new world-specific 3D art geometry.
+    await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.artMotifs ?? 0))).toBeGreaterThan(0);
+    await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.facadeDetails ?? 0))).toBeGreaterThan(0);
+    expect(await activeCanvas.evaluate(el => (el as HTMLCanvasElement).dataset.artTier)).toMatch(/^(lite|full)$/);
+    await expect(explorer.getByRole('group', { name: 'Visual field bearing' })).toBeVisible();
+    await expect(explorer.getByRole('button', { name: 'Track next known site' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Forward' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Return to Atlas' })).toBeVisible();
   }
@@ -163,3 +200,29 @@ test('all fifteen universes open real Three.js canvases without leaving explorat
   });
 });
 
+
+test('mobile-first scene keeps real Three.js art, HUD, reticle and touch controls within the play surface', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  await page.goto('./');
+  await page.getByRole('button',{name:/Enter this universe in 3D/}).click();
+  const explorer=page.getByRole('region',{name:'Immersive 3D world explorer'});
+  const canvas=explorer.getByLabel('Three.js playable universe').locator('canvas');
+  await expect(canvas).toBeVisible();
+  await expect.poll(()=>canvas.evaluate(el=>(el as HTMLCanvasElement).dataset.artTier)).toBe('lite');
+  await expect(explorer.locator('.aaa-camera-reticle')).toBeVisible();
+  await expect(explorer.getByRole('button',{name:'Toggle 3D fullscreen'})).toBeVisible();
+  const movement=explorer.getByRole('button',{name:'Forward'});
+  const atlas=explorer.getByRole('button',{name:'Return to Atlas'});
+  await expect(movement).toBeVisible();
+  await expect(atlas).toBeVisible();
+  const frame=await explorer.boundingBox();
+  for(const control of [movement,atlas]){
+    const rect=await control.boundingBox();
+    expect(rect).not.toBeNull();
+    expect(rect!.x).toBeGreaterThanOrEqual(frame!.x);
+    expect(rect!.x+rect!.width).toBeLessThanOrEqual(frame!.x+frame!.width+1);
+    expect(rect!.y+rect!.height).toBeLessThanOrEqual(frame!.y+frame!.height+1);
+  }
+  await atlas.click();
+  await expect(page.getByRole('tab',{name:'Living World Atlas'})).toHaveAttribute('aria-selected','true');
+});

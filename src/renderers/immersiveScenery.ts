@@ -53,6 +53,7 @@ export function addImmersiveScenery(
   meshes.userData.role = 'scenic';
   const dummy = new THREE.Object3D();
   const tint = new THREE.Color();
+  const facadePlacements: Array<{x:number;y:number;z:number;yaw:number;width:number;height:number;tone:number}> = [];
   let count = 0;
   for (const site of scenicAnchors) {
     for (let i = 0; i < site.count; i++) {
@@ -60,7 +61,7 @@ export function addImmersiveScenery(
       const angle = (seed % 65536) / 65536 * Math.PI * 2;
       const radius = 9 + (seed >>> 16) % 19;
       const x = site.x + Math.cos(angle) * radius, z = site.z + Math.sin(angle) * radius;
-      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 6 || layout.points.some(point => Math.hypot(point.x - x, point.z - z) < 3.8)) continue;
+      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 16 || layout.points.some(point => Math.hypot(point.x - x, point.z - z) < 3.8)) continue;
       dummy.position.set(x, 0, z);
       dummy.rotation.set(0, seed % 628 / 100, 0);
       const size = .48 + (seed >>> 4) % 130 / 100;
@@ -76,6 +77,28 @@ export function addImmersiveScenery(
       meshes.setMatrixAt(count, dummy.matrix);
       tint.copy(baseColor).lerp(new THREE.Color(layout.profile.accent), ((seed >>> 23) % 18) / 100);
       meshes.setColorAt(count, tint);
+      if(style==='city'||style==='settlement') {
+        // Panel rhythm across the EXISTING background skyline, not only POIs:
+        // deterministic irregular illuminated recesses on two visible faces.
+        const yaw = seed % 628 / 100;
+        const sin = Math.sin(yaw), cos = Math.cos(yaw);
+        const maxX = (geometry.boundingBox!.max.x + .04) * size;
+        const maxZ = (geometry.boundingBox!.max.z + .04) * size;
+        const rows=style==='city'?4:2;
+        for(let row=0;row<rows;row++)for(let col=0;col<2;col++)for(let face=0;face<2;face++){
+          if(((seed>>> (row+col+face)) & 7)===0)continue;
+          const lx=face===0?(col===0?-0.36:.36)*size:maxX;
+          const lz=face===0?maxZ:(col===0?-.40:.40)*size;
+          facadePlacements.push({
+            x:x+lx*cos+lz*sin,
+            y:(row+1)/(rows+1)*(geometry.boundingBox!.max.y-geometry.boundingBox!.min.y)*size*height,
+            z:z-lx*sin+lz*cos,
+            yaw:yaw+(face?Math.PI/2:0),
+            width:.49*size,height:(style==='city'?.82:.65)*size*height,
+            tone:(seed+row*7+col*3+face)%7,
+          });
+        }
+      }
       count++;
     }
   }
@@ -83,6 +106,32 @@ export function addImmersiveScenery(
   meshes.instanceMatrix.needsUpdate = true;
   if (meshes.instanceColor) meshes.instanceColor.needsUpdate = true;
   scene.add(meshes);
+  const facadeMaterial = new THREE.MeshBasicMaterial({
+    color:0xffffff,transparent:true,opacity:.78,depthWrite:false,toneMapped:false,
+  });
+  if(facadePlacements.length) {
+    const lights = new THREE.InstancedMesh(
+      new THREE.BoxGeometry(1,1,.1),facadeMaterial,facadePlacements.length);
+    lights.name='aaa-scenic-facades';
+    const glow = new THREE.Color();
+    const highlight = new THREE.Color(layout.profile.accent);
+    for(let i=0;i<facadePlacements.length;i++){
+      const f=facadePlacements[i];
+      dummy.position.set(f.x,f.y,f.z);
+      dummy.rotation.set(0,f.yaw,0);
+      dummy.scale.set(f.width,f.height,1);
+      dummy.updateMatrix();
+      lights.setMatrixAt(i,dummy.matrix);
+      glow.copy(highlight).lerp(new THREE.Color(layout.profile.celestialColor),f.tone/12);
+      lights.setColorAt(i,glow);
+    }
+    lights.instanceMatrix.needsUpdate=true;
+    if(lights.instanceColor)lights.instanceColor.needsUpdate=true;
+    lights.computeBoundingSphere();
+    scene.add(lights);
+  } else {
+    facadeMaterial.dispose();
+  }
 
   // Traversable corridors reflect the actual region graph, not invented world connections.
   // Lines in remote/underwater/orbital worlds are elevated survey-guidance filaments.
@@ -178,7 +227,7 @@ export function addImmersiveScenery(
   }
   // ThreeWorldView owns all geometry disposal via scene traversal. Return only
   // the newly owned materials so shared meshes are not double-disposed.
-  return { materials: [scenicMaterial, corridors.material as THREE.Material, monumentMaterial], refresh: updateRoutes };
+  return { materials: [scenicMaterial, corridors.material as THREE.Material, monumentMaterial, ...(facadePlacements.length ? [facadeMaterial] : [])], refresh: updateRoutes };
 }
 
 /**
@@ -222,7 +271,7 @@ export function addImmersiveFlora(
       const angle = (seed % 65536) / 65536 * Math.PI * 2;
       const radius = 4.2 + (seed >>> 16) % 26;
       const x = site.x + Math.cos(angle) * radius, z = site.z + Math.sin(angle) * radius;
-      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 3.2) continue;
+      if (Math.hypot(x - layout.spawn.x, z - layout.spawn.z) < 11) continue;
       const floating = style === 'orbit' || style === 'signal';
       dummy.position.set(x, floating ? 6 + seed % 14 : 0, z);
       dummy.rotation.set(0, seed % 628 / 100, floating ? (seed % 100) / 100 : 0);

@@ -1,3 +1,4 @@
+import { SCENE_PROFILES } from '../exploration/immersiveLayout';
 import { frameBounds } from './frameBounds';
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -214,7 +215,22 @@ export const ThreeWorldViewport: React.FC<ThreeWorldViewportProps> = ({
     const connectionMeshes = new Map<string, THREE.Mesh>();
     const pickableObjects: THREE.Object3D[] = [];
 
+    let previousWorldPalette = '';
     const syncSceneObjects = (currentFrame: RenderFrameData, alpha: number) => {
+      // All observatory worlds inherit their own playable-world palette.
+      // A single existing renderer remains authoritative across world changes.
+      if (previousWorldPalette !== currentFrame.worldId) {
+        previousWorldPalette = currentFrame.worldId;
+        const profile = SCENE_PROFILES[currentFrame.worldId] ?? SCENE_PROFILES.ecosystem;
+        if (!highContrast) {
+          renderer.setClearColor(profile.skyZenith, 1);
+          (scene.fog as THREE.FogExp2).color.set(profile.horizon);
+          rimLight.color.set(profile.accent);
+          dirLight.color.set(profile.celestialColor);
+          ambientLight.color.set(profile.horizon).lerp(new THREE.Color(0xffffff), .60);
+          selectionRingMat.color.set(profile.accent);
+        }
+      }
       pickableObjects.length = 0;
       zoneGroup.visible = layersRef.current.showZones;
       entityGroup.visible = layersRef.current.showEntities;

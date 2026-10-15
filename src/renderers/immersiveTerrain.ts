@@ -65,11 +65,35 @@ export function addImmersiveTerrain(
     const x = positions.getX(i), z = positions.getZ(i);
     const y = terrainHeight(x, z, profile, visualSeed);
     positions.setY(i, y);
-    // Height- and position-based tone variation breaks the flat-color read.
-    const band = (Math.sin(x * .05 + z * .03 + visualSeed * .0001) + 1) * .5;
-    scratch.copy(base).lerp(tint, .25 + band * .55);
-    const lift = THREE.MathUtils.clamp(y / (profile.terrainAmplitude + 1), -.4, .6);
-    scratch.offsetHSL(0, 0, lift * .06);
+    // Art-directed terrain strata: one existing vertex-colored surface,
+    // no added texture downloads, overdraw or per-frame shading passes.
+    const macro = (Math.sin(x * .018 + visualSeed * .0001) *
+      Math.cos(z * .021 - visualSeed * .0003) + 1) * .5;
+    const contour = Math.abs(Math.sin((x + z) * .033 + visualSeed * .0002));
+    const altitude = THREE.MathUtils.clamp(y / (profile.terrainAmplitude + 1), -.75, .75);
+    let tintMix = .24 + macro * .39;
+    switch (profile.terrain) {
+      case 'deck':
+        // Broad industrial/naval panel bands, not a neon chessboard.
+        tintMix = .28 + macro * .16 + contour * .10;
+        break;
+      case 'crags':
+      case 'terraces':
+        tintMix = .23 + contour * .37 + Math.max(0, altitude) * .21;
+        break;
+      case 'mounds':
+      case 'dunes':
+        tintMix = .31 + macro * .26 + contour * .22;
+        break;
+      case 'cloud-bands':
+        tintMix = .42 + macro * .27;
+        break;
+      default:
+        tintMix = .22 + macro * .35 + (1 - contour) * .12;
+    }
+    scratch.copy(base).lerp(tint, THREE.MathUtils.clamp(tintMix, .1, .86));
+    // Slight altitude separation, never enough to hide hazards or sites.
+    scratch.offsetHSL(0, 0, altitude * .075);
     colors[i * 3] = scratch.r; colors[i * 3 + 1] = scratch.g; colors[i * 3 + 2] = scratch.b;
   }
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
