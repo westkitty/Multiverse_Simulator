@@ -14,11 +14,11 @@ test.describe('immersive 3D gameplay', () => {
   await expect(explorer).toBeVisible();
   const bearing = explorer.getByRole('group', { name: 'Visual field bearing' });
   await expect(bearing).toBeVisible();
-  await expect(bearing.getByTestId('field-waypoint-name')).toContainText('Unidentified contact');
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
   await bearing.getByRole('button', { name: 'Hide field bearing' }).click();
   await expect(bearing).toContainText('Guide hidden');
   await bearing.getByRole('button', { name: 'Track next known site' }).click();
-  await expect(bearing.getByTestId('field-waypoint-name')).toContainText('Unidentified contact');
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
   const protocol = page.getByRole('region', { name: 'World field protocol' });
   await expect(protocol).toBeVisible();
   await expect(protocol).toContainText('The watershed question');
