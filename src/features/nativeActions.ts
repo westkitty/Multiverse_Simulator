@@ -85,9 +85,27 @@ export class NativeActionRegistry {
       return { valid: false, error: `Action '${actionId}' is not registered` };
     }
 
+    // Check budget feasibility first
+    if (budgetLedger && action.resourceCosts.length > 0) {
+      const preview = budgetLedger.previewDebit([...action.resourceCosts]);
+      if (!preview.feasible) {
+        const shortfalls = preview.shortfalls
+          .map((s) => `${s.resource}: need ${s.required}, have ${s.available}`)
+          .join(', ');
+        return {
+          valid: false,
+          error: `Insufficient budget: ${shortfalls}`,
+          definition: action,
+        };
+      }
+    }
+
     // Check prerequisites
     if (action.prerequisites) {
       for (const req of action.prerequisites) {
+        if (!(req.field in state)) {
+          continue;
+        }
         const val = typeof state[req.field] === 'number' ? (state[req.field] as number) : 0;
         let met = false;
         switch (req.condition) {
@@ -114,21 +132,6 @@ export class NativeActionRegistry {
             definition: action,
           };
         }
-      }
-    }
-
-    // Check budget feasibility
-    if (budgetLedger && action.resourceCosts.length > 0) {
-      const preview = budgetLedger.previewDebit([...action.resourceCosts]);
-      if (!preview.feasible) {
-        const shortfalls = preview.shortfalls
-          .map((s) => `${s.resource}: need ${s.required}, have ${s.available}`)
-          .join(', ');
-        return {
-          valid: false,
-          error: `Insufficient budget: ${shortfalls}`,
-          definition: action,
-        };
       }
     }
 

@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const STATION_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const STATION_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "station.action.compartment_sealing",
+    "worldId": "station",
+    "familyKey": "compartment_sealing",
+    "name": "Pressure Sector Isolation",
+    "description": "Seal compromised ring bulkheads to stabilize atmospheric pressure.",
+    "readSet": [
+      "meanPressureKpa",
+      "o2ReserveMoles"
+    ],
+    "writeSet": [
+      "meanPressureKpa",
+      "o2ReserveMoles"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanPressureKpa",
+        "condition": "<",
+        "threshold": 80
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "power",
+        "amount": 6
+      },
+      {
+        "resource": "scrubbers",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanPressureKpa",
+        "delta": 15,
+        "unit": "kPa"
+      },
+      {
+        "field": "o2ReserveMoles",
+        "delta": 5,
+        "unit": "mol"
+      }
+    ],
+    "decisionImplication": "Arrests hull decompression at substantial electrical power draw.",
+    "dynamicHelp": "Engage when compartment pressure drops below 70 kPa to prevent structural blowout."
+  },
+  {
+    "id": "station.action.scrubber_overhaul",
+    "worldId": "station",
+    "familyKey": "scrubber_overhaul",
+    "name": "Scrubber Prioritization",
+    "description": "Rebuild and maximize chemical scrubbers to restore oxygen reserves.",
+    "readSet": [
+      "o2ReserveMoles",
+      "meanCrewHealth"
+    ],
+    "writeSet": [
+      "o2ReserveMoles",
+      "meanCrewHealth"
+    ],
+    "prerequisites": [
+      {
+        "field": "o2ReserveMoles",
+        "condition": "<",
+        "threshold": 60
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "scrubbers",
+        "amount": 4
+      },
+      {
+        "resource": "power",
+        "amount": 4
+      }
+    ],
+    "deltas": [
+      {
+        "field": "o2ReserveMoles",
+        "delta": 20,
+        "unit": "mol"
+      },
+      {
+        "field": "meanCrewHealth",
+        "delta": 5,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Replenishes atmospheric oxygen stock while expending chemical filtration media.",
+    "dynamicHelp": "Schedule overhaul when oxygen reserves fall below 60 mol to avert hypoxia."
+  },
+  {
+    "id": "station.action.life_support_priority",
+    "worldId": "station",
+    "familyKey": "life_support_priority",
+    "name": "Life Support Evacuation Priority",
+    "description": "Reroute all station reserves to protect residential sector crew survival.",
+    "readSet": [
+      "meanCrewHealth",
+      "meanPressureKpa"
+    ],
+    "writeSet": [
+      "meanCrewHealth",
+      "meanPressureKpa"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanCrewHealth",
+        "condition": "<",
+        "threshold": 50
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "emergency_o2",
+        "amount": 4
+      },
+      {
+        "resource": "power",
+        "amount": 5
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanCrewHealth",
+        "delta": 15,
+        "unit": "%"
+      },
+      {
+        "field": "meanPressureKpa",
+        "delta": 5,
+        "unit": "kPa"
+      }
+    ],
+    "decisionImplication": "Stabilizes crew mortality during extreme emergencies by burning reserve oxygen canisters.",
+    "dynamicHelp": "Execute when crew health falls below 50% to prevent fatal ring abandonment."
+  }
+] as const;
+
+
+export const STATION_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "station.instrument.life_support_analyzer",
+  "worldId": "station",
+  "name": "Habitation Ring Environmental Analyzer",
+  "description": "Monitors compartment pressure, breathable oxygen reserve, and crew health.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "power",
+      "amount": 2
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "scrubbers",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "meanPressureKpa",
+      "name": "Atmospheric Pressure",
+      "unit": "kPa",
+      "minValid": 0,
+      "maxValid": 120,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "o2ReserveMoles",
+      "name": "Oxygen Reserves",
+      "unit": "mol",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "meanCrewHealth",
+      "name": "Crew Health Index",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const stationFeatureModule = new StandardWorldFeatureModule({
+  instruments: STATION_INSTRUMENTS,
+  nativeActions: STATION_NATIVE_ACTIONS,
   worldId: 'station',
   capabilities: STATION_CAPABILITIES,
   hazardNodes: STATION_HAZARD_NODES,

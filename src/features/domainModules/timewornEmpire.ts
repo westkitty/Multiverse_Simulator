@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -68,7 +70,7 @@ export const TIMEWORN_EMPIRE_HAZARD_NODES: readonly HazardNode[] = [
     operator: '>',
     severity: 'warning',
     upstreamNodeIds: [],
-    mitigationActionFamily: 'timewornEmpire.action.windbreak_berm_reinforcement',
+    mitigationActionFamily: 'timewornEmpire.action.protective_capping',
     description: 'Severe aeolian abrasion scouring ancient masonry foundations',
     observedTriggerTemplate: 'Masonry erosion rate ({value}) exceeded {threshold}',
     hypothesizedExplanation: 'Unchecked seasonal dust storms carrying abrasive quartz particles',
@@ -83,7 +85,7 @@ export const TIMEWORN_EMPIRE_HAZARD_NODES: readonly HazardNode[] = [
     operator: '>',
     severity: 'critical',
     upstreamNodeIds: ['sandstorm_scour'],
-    mitigationActionFamily: 'timewornEmpire.action.protective_capping',
+    mitigationActionFamily: 'timewornEmpire.action.windbreak_berm_reinforcement',
     description: 'Protective topsoil stripped away, exposing fragile inscriptions',
     observedTriggerTemplate: 'Archaeological exposure level ({value}) exceeded {threshold}',
     hypothesizedExplanation: 'Wind erosion stripping protective dune layers from buried monuments',
@@ -235,7 +237,198 @@ export const TIMEWORN_EMPIRE_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const TIMEWORN_EMPIRE_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "timewornEmpire.action.windbreak_berm_reinforcement",
+    "worldId": "timeworn-empire",
+    "familyKey": "windbreak_berm_reinforcement",
+    "name": "Controlled Stratum Excavation",
+    "description": "Excavate sanddrifts under protective shrouds to reveal underlying masonry.",
+    "readSet": [
+      "burial",
+      "exposure"
+    ],
+    "writeSet": [
+      "burial",
+      "exposure"
+    ],
+    "prerequisites": [
+      {
+        "field": "burial",
+        "condition": ">",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "excavation_capacity",
+        "amount": 5
+      },
+      {
+        "resource": "crew_time",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "burial",
+        "delta": -20,
+        "unit": "cm"
+      },
+      {
+        "field": "exposure",
+        "delta": 12,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Uncovers foundational monuments while managing fragile sediment shifts.",
+    "dynamicHelp": "Excavate when drift burial exceeds 45 cm to recover lost inscriptions."
+  },
+  {
+    "id": "timewornEmpire.action.protective_capping",
+    "worldId": "timeworn-empire",
+    "familyKey": "protective_capping",
+    "name": "Ruin Protection & Chemical Capping",
+    "description": "Apply silane consolidants to porous sandstone to halt wind scour.",
+    "readSet": [
+      "erosion",
+      "exposure"
+    ],
+    "writeSet": [
+      "erosion",
+      "exposure"
+    ],
+    "prerequisites": [
+      {
+        "field": "erosion",
+        "condition": ">",
+        "threshold": 30
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "conservation_materials",
+        "amount": 5
+      },
+      {
+        "resource": "crew_time",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "erosion",
+        "delta": -18,
+        "unit": "mm/yr"
+      },
+      {
+        "field": "exposure",
+        "delta": 4,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Halts irreversible wind erosion on ancient facades, burning chemical consolidants.",
+    "dynamicHelp": "Apply protective capping when stone erosion rates exceed 30 mm/yr."
+  },
+  {
+    "id": "timewornEmpire.action.tomb_humidity_buffering",
+    "worldId": "timeworn-empire",
+    "familyKey": "tomb_humidity_buffering",
+    "name": "Stratum Hypothesis Testing",
+    "description": "Buffer microclimates and document conflicting architectural chronologies.",
+    "readSet": [
+      "exposure",
+      "erosion"
+    ],
+    "writeSet": [
+      "exposure",
+      "erosion"
+    ],
+    "prerequisites": [
+      {
+        "field": "exposure",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "crew_time",
+        "amount": 4
+      },
+      {
+        "resource": "conservation_materials",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "exposure",
+        "delta": 18,
+        "unit": "%"
+      },
+      {
+        "field": "erosion",
+        "delta": -4,
+        "unit": "mm/yr"
+      }
+    ],
+    "decisionImplication": "Systematizes stratigraphic layers to resolve historical succession debates.",
+    "dynamicHelp": "Test stratum hypotheses when exposed ruins coverage falls below 40%."
+  }
+] as const;
+
+
+export const TIMEWORN_EMPIRE_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "timewornEmpire.instrument.stratigraphic_ground_radar",
+  "worldId": "timeworn-empire",
+  "name": "City of Three Foundations Ground Radar",
+  "description": "Maps aeolian burial depth, architectural stone erosion, and exposed stratum ruins.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "crew_time",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "conservation_materials",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "burial",
+      "name": "Sand Sediment Burial",
+      "unit": "cm",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "erosion",
+      "name": "Masonry Wind Erosion",
+      "unit": "mm/yr",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    },
+    {
+      "id": "exposure",
+      "name": "Exposed Archaeological Stratum",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const timewornEmpireFeatureModule = new StandardWorldFeatureModule({
+  instruments: TIMEWORN_EMPIRE_INSTRUMENTS,
+  nativeActions: TIMEWORN_EMPIRE_NATIVE_ACTIONS,
   worldId: 'timeworn-empire',
   capabilities: TIMEWORN_EMPIRE_CAPABILITIES,
   hazardNodes: TIMEWORN_EMPIRE_HAZARD_NODES,

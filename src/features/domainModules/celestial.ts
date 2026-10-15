@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const CELESTIAL_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const CELESTIAL_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "celestial.action.orbit_correction_burn",
+    "worldId": "celestial",
+    "familyKey": "orbit_correction_burn",
+    "name": "Constrained Transfer Schedule",
+    "description": "Execute delta-V burns at periapsis to prevent runaway orbital elongation.",
+    "readSet": [
+      "meanEccentricity",
+      "meanHabitabilityIndex"
+    ],
+    "writeSet": [
+      "meanEccentricity",
+      "meanHabitabilityIndex"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanEccentricity",
+        "condition": ">",
+        "threshold": 0.25
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "propellant",
+        "amount": 6
+      },
+      {
+        "resource": "orbital_hardware",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanEccentricity",
+        "delta": -0.06,
+        "unit": "e"
+      },
+      {
+        "field": "meanHabitabilityIndex",
+        "delta": 10,
+        "unit": "index"
+      }
+    ],
+    "decisionImplication": "Lowers eccentricity to prevent deep thermal extremes at high propellant cost.",
+    "dynamicHelp": "Perform burn when eccentricity exceeds 0.25 e to safeguard biosphere stability."
+  },
+  {
+    "id": "celestial.action.shield_orientation",
+    "worldId": "celestial",
+    "familyKey": "shield_orientation",
+    "name": "Radiation & Thermal Shield Staging",
+    "description": "Orient orbital occulting arrays to attenuate lethal solar flare flux.",
+    "readSet": [
+      "meanTerrestrialTempK",
+      "meanHabitabilityIndex"
+    ],
+    "writeSet": [
+      "meanTerrestrialTempK",
+      "meanHabitabilityIndex"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanTerrestrialTempK",
+        "condition": ">",
+        "threshold": 310
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "thermal_protection",
+        "amount": 4
+      },
+      {
+        "resource": "orbital_hardware",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanTerrestrialTempK",
+        "delta": -25,
+        "unit": "K"
+      },
+      {
+        "field": "meanHabitabilityIndex",
+        "delta": 12,
+        "unit": "index"
+      }
+    ],
+    "decisionImplication": "Shields planetary surface from coronal mass ejections and radiant heat.",
+    "dynamicHelp": "Deploy thermal arrays when equilibrium temperatures exceed 310 K."
+  },
+  {
+    "id": "celestial.action.transit_station_stabilization",
+    "worldId": "celestial",
+    "familyKey": "transit_station_stabilization",
+    "name": "Orbit Circularization Lock",
+    "description": "Engage magnetic station tethers to damp resonance with outer gas giants.",
+    "readSet": [
+      "meanHabitabilityIndex",
+      "meanEccentricity"
+    ],
+    "writeSet": [
+      "meanHabitabilityIndex",
+      "meanEccentricity"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanHabitabilityIndex",
+        "condition": "<",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "orbital_hardware",
+        "amount": 5
+      },
+      {
+        "resource": "propellant",
+        "amount": 4
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanHabitabilityIndex",
+        "delta": 18,
+        "unit": "index"
+      },
+      {
+        "field": "meanEccentricity",
+        "delta": -0.03,
+        "unit": "e"
+      }
+    ],
+    "decisionImplication": "Locks orbital geometry into stable resonance, halting long-term orbital decay.",
+    "dynamicHelp": "Engage tethers when planetary habitability rating drops below 45 index."
+  }
+] as const;
+
+
+export const CELESTIAL_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "celestial.instrument.astrometric_spectrometer",
+  "worldId": "celestial",
+  "name": "Transit Astrometric Spectrometer",
+  "description": "Measures orbital eccentricity, planetary equilibrium flux, and habitability index.",
+  "deviceClass": "spectral_analyzer",
+  "sampleCost": [
+    {
+      "resource": "propellant",
+      "amount": 2
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "thermal_protection",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "meanEccentricity",
+      "name": "Orbital Eccentricity",
+      "unit": "e",
+      "minValid": 0,
+      "maxValid": 1,
+      "basePrecision": 0.01
+    },
+    {
+      "id": "meanTerrestrialTempK",
+      "name": "Equilibrium Temperature",
+      "unit": "K",
+      "minValid": 0,
+      "maxValid": 1000,
+      "basePrecision": 1
+    },
+    {
+      "id": "meanHabitabilityIndex",
+      "name": "Habitability Rating",
+      "unit": "index",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const celestialFeatureModule = new StandardWorldFeatureModule({
+  instruments: CELESTIAL_INSTRUMENTS,
+  nativeActions: CELESTIAL_NATIVE_ACTIONS,
   worldId: 'celestial',
   capabilities: CELESTIAL_CAPABILITIES,
   hazardNodes: CELESTIAL_HAZARD_NODES,

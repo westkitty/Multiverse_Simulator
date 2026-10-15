@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const TERRAFORMING_FRONTIER_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const TERRAFORMING_FRONTIER_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "terraformingFrontier.action.atmospheric_seal_maintenance",
+    "worldId": "terraforming-frontier",
+    "familyKey": "atmospheric_seal_maintenance",
+    "name": "Atmospheric Pressure Regulation",
+    "description": "Seal dome boundary fissures and pump buffer gas to maintain pressure.",
+    "readSet": [
+      "pressure",
+      "oxygen"
+    ],
+    "writeSet": [
+      "pressure",
+      "oxygen"
+    ],
+    "prerequisites": [
+      {
+        "field": "pressure",
+        "condition": "<",
+        "threshold": 65
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "energy",
+        "amount": 5
+      },
+      {
+        "resource": "reagents",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "pressure",
+        "delta": 18,
+        "unit": "kPa"
+      },
+      {
+        "field": "oxygen",
+        "delta": 2,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Restores dome barometric baseline, preventing plant tissue desiccation.",
+    "dynamicHelp": "Repair dome seals when atmospheric pressure drops below 65 kPa."
+  },
+  {
+    "id": "terraformingFrontier.action.microbial_innoculation",
+    "worldId": "terraforming-frontier",
+    "familyKey": "microbial_innoculation",
+    "name": "Soil Fertility Amendment",
+    "description": "Introduce engineered mycorrhizal fungi into regolith to kickstart nitrogen fixation.",
+    "readSet": [
+      "soil",
+      "oxygen"
+    ],
+    "writeSet": [
+      "soil",
+      "oxygen"
+    ],
+    "prerequisites": [
+      {
+        "field": "soil",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "bio_stock",
+        "amount": 4
+      },
+      {
+        "resource": "reagents",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "soil",
+        "delta": 22,
+        "unit": "%"
+      },
+      {
+        "field": "oxygen",
+        "delta": 3,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Transforms barren planetary gravel into living loam using biological inoculum.",
+    "dynamicHelp": "Inoculate soil when fertility index drops below 40%."
+  },
+  {
+    "id": "terraformingFrontier.action.lichen_nursery_expansion",
+    "worldId": "terraforming-frontier",
+    "familyKey": "lichen_nursery_expansion",
+    "name": "Biome Nursery Seeding",
+    "description": "Expand pioneer lichen mats across bare rock to accelerate photosynthetic output.",
+    "readSet": [
+      "oxygen",
+      "soil"
+    ],
+    "writeSet": [
+      "oxygen",
+      "soil"
+    ],
+    "prerequisites": [
+      {
+        "field": "oxygen",
+        "condition": "<",
+        "threshold": 14
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "bio_stock",
+        "amount": 5
+      },
+      {
+        "resource": "energy",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "oxygen",
+        "delta": 4.5,
+        "unit": "%"
+      },
+      {
+        "field": "soil",
+        "delta": 5,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Drives exponential atmospheric oxygen generation by propagating hardy lichen.",
+    "dynamicHelp": "Seed nurseries when atmospheric oxygen fraction drops below 14%."
+  }
+] as const;
+
+
+export const TERRAFORMING_FRONTIER_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "terraformingFrontier.instrument.edaphic_atmosphere_probe",
+  "worldId": "terraforming-frontier",
+  "name": "First Green Bio-Atmospheric Probe",
+  "description": "Measures dome atmospheric pressure, organic soil fertility, and free oxygen.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "energy",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "reagents",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "pressure",
+      "name": "Dome Atmospheric Pressure",
+      "unit": "kPa",
+      "minValid": 0,
+      "maxValid": 120,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "soil",
+      "name": "Organic Soil Fertility",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    },
+    {
+      "id": "oxygen",
+      "name": "Free Gaseous Oxygen",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 30,
+      "basePrecision": 0.1
+    }
+  ]
+}] as const;
+
+
 export const terraformingFrontierFeatureModule = new StandardWorldFeatureModule({
+  instruments: TERRAFORMING_FRONTIER_INSTRUMENTS,
+  nativeActions: TERRAFORMING_FRONTIER_NATIVE_ACTIONS,
   worldId: 'terraforming-frontier',
   capabilities: TERRAFORMING_FRONTIER_CAPABILITIES,
   hazardNodes: TERRAFORMING_FRONTIER_HAZARD_NODES,

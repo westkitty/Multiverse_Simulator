@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const ATMOSPHERE_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const ATMOSPHERE_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "atmosphere.action.cloud_seeding",
+    "worldId": "atmosphere",
+    "familyKey": "cloud_seeding",
+    "name": "Moisture-Front Redirection",
+    "description": "Disperse condensation nuclei to steer supercell storm fronts.",
+    "readSet": [
+      "meanHumidityPct",
+      "meanPressureHpa"
+    ],
+    "writeSet": [
+      "meanHumidityPct",
+      "meanPressureHpa"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanHumidityPct",
+        "condition": "<",
+        "threshold": 20
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "reagents",
+        "amount": 4
+      },
+      {
+        "resource": "sensor_power",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanHumidityPct",
+        "delta": 10,
+        "unit": "%"
+      },
+      {
+        "field": "meanPressureHpa",
+        "delta": 10,
+        "unit": "hPa"
+      }
+    ],
+    "decisionImplication": "Forces localized condensation to restore tropospheric moisture before desiccation.",
+    "dynamicHelp": "Deploy when humidity drops below 20% to prevent desiccating runaway."
+  },
+  {
+    "id": "atmosphere.action.barometric_dampening",
+    "worldId": "atmosphere",
+    "familyKey": "barometric_dampening",
+    "name": "Storm Instrument Deployment",
+    "description": "Deploy sonic dampening arrays to stabilize barometric pressure gradients.",
+    "readSet": [
+      "meanPressureHpa",
+      "meanTemperatureC"
+    ],
+    "writeSet": [
+      "meanPressureHpa",
+      "meanTemperatureC"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanPressureHpa",
+        "condition": "<",
+        "threshold": 970
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "sensor_power",
+        "amount": 5
+      },
+      {
+        "resource": "shelters",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanPressureHpa",
+        "delta": 15,
+        "unit": "hPa"
+      },
+      {
+        "field": "meanTemperatureC",
+        "delta": -3,
+        "unit": "C"
+      }
+    ],
+    "decisionImplication": "Elevates local atmospheric pressure, damping wind shear at substantial power cost.",
+    "dynamicHelp": "Fire when pressure drops below 970 hPa to counter eye-wall formation."
+  },
+  {
+    "id": "atmosphere.action.thermal_sink_deployment",
+    "worldId": "atmosphere",
+    "familyKey": "thermal_sink_deployment",
+    "name": "Temporary Climate Countermeasures",
+    "description": "Vent subterranean heat sinks into updrafts to collapse convective cells.",
+    "readSet": [
+      "meanTemperatureC",
+      "meanHumidityPct"
+    ],
+    "writeSet": [
+      "meanTemperatureC",
+      "meanHumidityPct"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanTemperatureC",
+        "condition": ">",
+        "threshold": 35
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "shelters",
+        "amount": 4
+      },
+      {
+        "resource": "reagents",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanTemperatureC",
+        "delta": -10,
+        "unit": "C"
+      },
+      {
+        "field": "meanHumidityPct",
+        "delta": 5,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Cools thermal updrafts to quench tornado genesis, utilizing thermal buffer stores.",
+    "dynamicHelp": "Activate when surface temperatures exceed 35 C during low-pressure alerts."
+  }
+] as const;
+
+
+export const ATMOSPHERE_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "atmosphere.instrument.meteorological_sonde",
+  "worldId": "atmosphere",
+  "name": "Storm Tower Meteorological Sonde",
+  "description": "Calibrated micro-barometer and hygrometer for turbulent storm tracking.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "sensor_power",
+      "amount": 2
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "reagents",
+      "amount": 3
+    }
+  ],
+  "channels": [
+    {
+      "id": "meanHumidityPct",
+      "name": "Relative Humidity",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "meanPressureHpa",
+      "name": "Barometric Pressure",
+      "unit": "hPa",
+      "minValid": 800,
+      "maxValid": 1100,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "meanTemperatureC",
+      "name": "Air Temperature",
+      "unit": "C",
+      "minValid": -50,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const atmosphereFeatureModule = new StandardWorldFeatureModule({
+  instruments: ATMOSPHERE_INSTRUMENTS,
+  nativeActions: ATMOSPHERE_NATIVE_ACTIONS,
   worldId: 'atmosphere',
   capabilities: ATMOSPHERE_CAPABILITIES,
   hazardNodes: ATMOSPHERE_HAZARD_NODES,

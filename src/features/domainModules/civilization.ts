@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const CIVILIZATION_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const CIVILIZATION_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "civilization.action.aqueduct_restoration",
+    "worldId": "civilization",
+    "familyKey": "aqueduct_restoration",
+    "name": "Water Distribution Reallocation",
+    "description": "Rebuild damaged masonry conduits to restore urban water access.",
+    "readSet": [
+      "totalWaterStock",
+      "meanWaterworksLevel"
+    ],
+    "writeSet": [
+      "totalWaterStock",
+      "meanWaterworksLevel"
+    ],
+    "prerequisites": [
+      {
+        "field": "totalWaterStock",
+        "condition": "<",
+        "threshold": 100
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "repair_materials",
+        "amount": 4
+      },
+      {
+        "resource": "grain",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "totalWaterStock",
+        "delta": 20,
+        "unit": "ML"
+      },
+      {
+        "field": "meanWaterworksLevel",
+        "delta": 0.5,
+        "unit": "level"
+      }
+    ],
+    "decisionImplication": "Replenishes urban drinking water networks but consumes masonry repair materials.",
+    "dynamicHelp": "Initiate when water storage drops below 40 ML to prevent municipal rationing riots."
+  },
+  {
+    "id": "civilization.action.granary_rationing",
+    "worldId": "civilization",
+    "familyKey": "granary_rationing",
+    "name": "Granary Load Negotiation",
+    "description": "Reallocate food stores and optimize distribution lines.",
+    "readSet": [
+      "totalFoodStock",
+      "totalWaterStock"
+    ],
+    "writeSet": [
+      "totalFoodStock",
+      "totalWaterStock"
+    ],
+    "prerequisites": [
+      {
+        "field": "totalFoodStock",
+        "condition": "<",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "grain",
+        "amount": 3
+      },
+      {
+        "resource": "cistern_inventory",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "totalFoodStock",
+        "delta": 15,
+        "unit": "t"
+      },
+      {
+        "field": "totalWaterStock",
+        "delta": 5,
+        "unit": "ML"
+      }
+    ],
+    "decisionImplication": "Extends emergency food reserves during drought through strict civic quotas.",
+    "dynamicHelp": "Enact when grain reserves dip below 45 t to protect vulnerable districts."
+  },
+  {
+    "id": "civilization.action.civic_assembly",
+    "worldId": "civilization",
+    "familyKey": "civic_assembly",
+    "name": "Crossing Reinforcement & Assembly",
+    "description": "Mobilize district engineers to shore up crumbling river bridges.",
+    "readSet": [
+      "meanWaterworksLevel",
+      "totalWaterStock"
+    ],
+    "writeSet": [
+      "meanWaterworksLevel",
+      "totalWaterStock"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanWaterworksLevel",
+        "condition": "<",
+        "threshold": 3
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "repair_materials",
+        "amount": 5
+      },
+      {
+        "resource": "grain",
+        "amount": 4
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanWaterworksLevel",
+        "delta": 1.5,
+        "unit": "level"
+      },
+      {
+        "field": "totalWaterStock",
+        "delta": 10,
+        "unit": "ML"
+      }
+    ],
+    "decisionImplication": "Restores cross-river transport capacity while mobilizing significant labor grain.",
+    "dynamicHelp": "Call when infrastructure degrades below level 3 to avert bridge collapse."
+  }
+] as const;
+
+
+export const CIVILIZATION_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "civilization.instrument.civic_infrastructure_probe",
+  "worldId": "civilization",
+  "name": "River Capital Civic & Hydrology Probe",
+  "description": "Evaluates municipal reservoir levels, granary reserves, and civic stability.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "grain",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "repair_materials",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "totalWaterStock",
+      "name": "Municipal Water Stock",
+      "unit": "ML",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "totalFoodStock",
+      "name": "Granary Food Stock",
+      "unit": "t",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "meanWaterworksLevel",
+      "name": "Waterworks Operating Tier",
+      "unit": "level",
+      "minValid": 0,
+      "maxValid": 10,
+      "basePrecision": 0.1
+    }
+  ]
+}] as const;
+
+
 export const civilizationFeatureModule = new StandardWorldFeatureModule({
+  instruments: CIVILIZATION_INSTRUMENTS,
+  nativeActions: CIVILIZATION_NATIVE_ACTIONS,
   worldId: 'civilization',
   capabilities: CIVILIZATION_CAPABILITIES,
   hazardNodes: CIVILIZATION_HAZARD_NODES,

@@ -1,4 +1,6 @@
 import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig,
   EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
@@ -352,7 +354,196 @@ export const ECOSYSTEM_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const ECOSYSTEM_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "ecosystem.action.habitat_corridors",
+    "worldId": "ecosystem",
+    "familyKey": "habitat_corridors",
+    "name": "Habitat Corridors",
+    "description": "Establish migratory corridors to relieve local drought stress.",
+    "readSet": [
+      "moisture",
+      "biomass"
+    ],
+    "writeSet": [
+      "moisture",
+      "biomass"
+    ],
+    "prerequisites": [
+      {
+        "field": "moisture",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "water_stores",
+        "amount": 5
+      },
+      {
+        "resource": "supplies",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "moisture",
+        "delta": 15,
+        "unit": "%"
+      },
+      {
+        "field": "biomass",
+        "delta": 5,
+        "unit": "t"
+      }
+    ],
+    "decisionImplication": "Restores watershed moisture at the cost of precious stored water.",
+    "dynamicHelp": "Enact when moisture drops below 40% to halt progressive desertification."
+  },
+  {
+    "id": "ecosystem.action.nutrient_balancing",
+    "worldId": "ecosystem",
+    "familyKey": "nutrient_balancing",
+    "name": "Nutrient Balancing",
+    "description": "Apply enzymatic treatments to halt toxic nutrient runaway.",
+    "readSet": [
+      "nutrients",
+      "moisture"
+    ],
+    "writeSet": [
+      "nutrients",
+      "moisture"
+    ],
+    "prerequisites": [
+      {
+        "field": "nutrients",
+        "condition": ">",
+        "threshold": 60
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "supplies",
+        "amount": 4
+      },
+      {
+        "resource": "water_stores",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "nutrients",
+        "delta": -20,
+        "unit": "ppm"
+      },
+      {
+        "field": "moisture",
+        "delta": 5,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Directly counters toxic mineralization but expends biochemical supplies.",
+    "dynamicHelp": "Target when nutrient concentration exceeds 60 ppm to avert root necrosis."
+  },
+  {
+    "id": "ecosystem.action.targeted_firebreaks",
+    "worldId": "ecosystem",
+    "familyKey": "targeted_firebreaks",
+    "name": "Targeted Firebreaks",
+    "description": "Construct controlled firebreaks to protect dying forest canopy.",
+    "readSet": [
+      "biomass",
+      "nutrients"
+    ],
+    "writeSet": [
+      "biomass",
+      "nutrients"
+    ],
+    "prerequisites": [
+      {
+        "field": "biomass",
+        "condition": "<",
+        "threshold": 30
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "seed_stocks",
+        "amount": 4
+      },
+      {
+        "resource": "supplies",
+        "amount": 6
+      }
+    ],
+    "deltas": [
+      {
+        "field": "biomass",
+        "delta": 15,
+        "unit": "t"
+      },
+      {
+        "field": "nutrients",
+        "delta": -10,
+        "unit": "ppm"
+      }
+    ],
+    "decisionImplication": "Prevents total canopy collapse by sacrificing seed stocks for containment.",
+    "dynamicHelp": "Deploy when biomass falls below 30 t to preserve core woodland habitat."
+  }
+] as const;
+
+export const ECOSYSTEM_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "ecosystem.instrument.soil_canopy_sampler",
+  "worldId": "ecosystem",
+  "name": "Glasswater Soil & Canopy Sampler",
+  "description": "Measures soil hydration, mineral nutrients, and vegetative biomass.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "supplies",
+      "amount": 2
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "supplies",
+      "amount": 4
+    }
+  ],
+  "channels": [
+    {
+      "id": "moisture",
+      "name": "Soil Moisture",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "nutrients",
+      "name": "Nutrient Concentration",
+      "unit": "ppm",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "biomass",
+      "name": "Vegetation Biomass",
+      "unit": "t",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
 export const ECOSYSTEM_CONFIG = {
+  instruments: ECOSYSTEM_INSTRUMENTS,
+  nativeActions: ECOSYSTEM_NATIVE_ACTIONS,
   worldId: 'ecosystem',
   capabilities: ECOSYSTEM_CAPABILITIES,
   hazardNodes: ECOSYSTEM_HAZARD_NODES,

@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const HOLLOW_DEEP_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const HOLLOW_DEEP_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "hollowDeep.action.aquifer_sump_drainage",
+    "worldId": "hollow-deep",
+    "familyKey": "aquifer_sump_drainage",
+    "name": "Aquifer Sump Regulation",
+    "description": "Activate high-head sump pumps to dewater submerged passages.",
+    "readSet": [
+      "water",
+      "stress"
+    ],
+    "writeSet": [
+      "water",
+      "stress"
+    ],
+    "prerequisites": [
+      {
+        "field": "water",
+        "condition": ">",
+        "threshold": 50
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "vent_energy",
+        "amount": 5
+      },
+      {
+        "resource": "bracing",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "water",
+        "delta": -22,
+        "unit": "m3"
+      },
+      {
+        "field": "stress",
+        "delta": 4,
+        "unit": "kPa"
+      }
+    ],
+    "decisionImplication": "Drains flooded transit tunnels at significant pumping energy expenditure.",
+    "dynamicHelp": "Pump sumps when cave water levels exceed 50 m3 to keep survey routes passable."
+  },
+  {
+    "id": "hollowDeep.action.methane_vent_flaring",
+    "worldId": "hollow-deep",
+    "familyKey": "methane_vent_flaring",
+    "name": "Gas Pocket Flaring & Venting",
+    "description": "Purge and flare toxic gas pockets before explosive thresholds are reached.",
+    "readSet": [
+      "gas",
+      "stress"
+    ],
+    "writeSet": [
+      "gas",
+      "stress"
+    ],
+    "prerequisites": [
+      {
+        "field": "gas",
+        "condition": ">",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "vent_energy",
+        "amount": 4
+      },
+      {
+        "resource": "water_reserve",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "gas",
+        "delta": -25,
+        "unit": "ppm"
+      },
+      {
+        "field": "stress",
+        "delta": -3,
+        "unit": "kPa"
+      }
+    ],
+    "decisionImplication": "Neutralizes explosive methane pockets, preventing catastrophic cave-in sparks.",
+    "dynamicHelp": "Vent gas pockets when methane levels exceed 45 ppm."
+  },
+  {
+    "id": "hollowDeep.action.acoustic_rockbolt_installation",
+    "worldId": "hollow-deep",
+    "familyKey": "acoustic_rockbolt_installation",
+    "name": "Passage Bracing & Rockbolting",
+    "description": "Drill pre-stressed steel rockbolts into fracture zones to prevent roof collapse.",
+    "readSet": [
+      "stress",
+      "water"
+    ],
+    "writeSet": [
+      "stress",
+      "water"
+    ],
+    "prerequisites": [
+      {
+        "field": "stress",
+        "condition": ">",
+        "threshold": 55
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "bracing",
+        "amount": 5
+      },
+      {
+        "resource": "water_reserve",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "stress",
+        "delta": -25,
+        "unit": "kPa"
+      },
+      {
+        "field": "water",
+        "delta": -4,
+        "unit": "m3"
+      }
+    ],
+    "decisionImplication": "Reinforces unstable cavern ceilings against structural failure using heavy timber.",
+    "dynamicHelp": "Install rockbolts when cavern stress climbs above 55 kPa."
+  }
+] as const;
+
+
+export const HOLLOW_DEEP_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "hollowDeep.instrument.spelunking_gas_stress_probe",
+  "worldId": "hollow-deep",
+  "name": "Cathedral Below Geotechnical Probe",
+  "description": "Measures cavern floodwater levels, combustible methane gas, and ceiling stress.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "vent_energy",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "bracing",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "water",
+      "name": "Floodwater Sump Level",
+      "unit": "m3",
+      "minValid": 0,
+      "maxValid": 150,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "gas",
+      "name": "Pocket Gas Concentration",
+      "unit": "ppm",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "stress",
+      "name": "Subterranean Strata Stress",
+      "unit": "kPa",
+      "minValid": 0,
+      "maxValid": 150,
+      "basePrecision": 0.5
+    }
+  ]
+}] as const;
+
+
 export const hollowDeepFeatureModule = new StandardWorldFeatureModule({
+  instruments: HOLLOW_DEEP_INSTRUMENTS,
+  nativeActions: HOLLOW_DEEP_NATIVE_ACTIONS,
   worldId: 'hollow-deep',
   capabilities: HOLLOW_DEEP_CAPABILITIES,
   hazardNodes: HOLLOW_DEEP_HAZARD_NODES,

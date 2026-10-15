@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const SIGNAL_EXPANSE_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const SIGNAL_EXPANSE_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "signalExpanse.action.rf_notch_filtering",
+    "worldId": "signal-expanse",
+    "familyKey": "rf_notch_filtering",
+    "name": "Interference Suppression",
+    "description": "Apply cryogenic notch filters to eliminate interstellar plasma noise spikes.",
+    "readSet": [
+      "noise",
+      "signal"
+    ],
+    "writeSet": [
+      "noise",
+      "signal"
+    ],
+    "prerequisites": [
+      {
+        "field": "noise",
+        "condition": ">",
+        "threshold": -45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "calibration_power",
+        "amount": 4
+      },
+      {
+        "resource": "relay_parts",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "noise",
+        "delta": -22,
+        "unit": "dBm"
+      },
+      {
+        "field": "signal",
+        "delta": 6,
+        "unit": "dB"
+      }
+    ],
+    "decisionImplication": "Quiets background radio chatter to unmask faint deep-space transmissions.",
+    "dynamicHelp": "Engage notch filters when thermal noise rises above -45 dBm."
+  },
+  {
+    "id": "signalExpanse.action.gimbal_servo_recalibration",
+    "worldId": "signal-expanse",
+    "familyKey": "gimbal_servo_recalibration",
+    "name": "Antenna Array Calibration",
+    "description": "Phase-align multi-dish interferometers to maximize synthetic aperture baseline.",
+    "readSet": [
+      "coverage",
+      "signal"
+    ],
+    "writeSet": [
+      "coverage",
+      "signal"
+    ],
+    "prerequisites": [
+      {
+        "field": "coverage",
+        "condition": "<",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "relay_parts",
+        "amount": 4
+      },
+      {
+        "resource": "processing_capacity",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "coverage",
+        "delta": 25,
+        "unit": "%"
+      },
+      {
+        "field": "signal",
+        "delta": 5,
+        "unit": "dB"
+      }
+    ],
+    "decisionImplication": "Restores telescope geometry for precise astronomical source triangulation.",
+    "dynamicHelp": "Calibrate dish gimbals when baseline coverage drops below 45%."
+  },
+  {
+    "id": "signalExpanse.action.coherent_integrator_lock",
+    "worldId": "signal-expanse",
+    "familyKey": "coherent_integrator_lock",
+    "name": "Distributed Signal Reconstruction",
+    "description": "Lock coherent Fourier correlators onto repeating pulses to reconstruct message data.",
+    "readSet": [
+      "signal",
+      "noise"
+    ],
+    "writeSet": [
+      "signal",
+      "noise"
+    ],
+    "prerequisites": [
+      {
+        "field": "signal",
+        "condition": "<",
+        "threshold": 35
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "processing_capacity",
+        "amount": 5
+      },
+      {
+        "resource": "calibration_power",
+        "amount": 4
+      }
+    ],
+    "deltas": [
+      {
+        "field": "signal",
+        "delta": 25,
+        "unit": "dB"
+      },
+      {
+        "field": "noise",
+        "delta": -4,
+        "unit": "dBm"
+      }
+    ],
+    "decisionImplication": "Pulls weak candidate carrier waves out of the static using heavy FFT compute.",
+    "dynamicHelp": "Lock correlators when carrier SNR falls below 35 dB."
+  }
+] as const;
+
+
+export const SIGNAL_EXPANSE_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "signalExpanse.instrument.radio_interferometer_receiver",
+  "worldId": "signal-expanse",
+  "name": "Last Transmission Interferometer Receiver",
+  "description": "Measures cryogenic RF noise floor, antenna baseline coverage, and coherent signal SNR.",
+  "deviceClass": "spectral_analyzer",
+  "sampleCost": [
+    {
+      "resource": "calibration_power",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "relay_parts",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "noise",
+      "name": "Cryogenic Noise Floor",
+      "unit": "dBm",
+      "minValid": -120,
+      "maxValid": 0,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "coverage",
+      "name": "Antenna Baseline Coverage",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "signal",
+      "name": "Coherent Carrier Signal SNR",
+      "unit": "dB",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const signalExpanseFeatureModule = new StandardWorldFeatureModule({
+  instruments: SIGNAL_EXPANSE_INSTRUMENTS,
+  nativeActions: SIGNAL_EXPANSE_NATIVE_ACTIONS,
   worldId: 'signal-expanse',
   capabilities: SIGNAL_EXPANSE_CAPABILITIES,
   hazardNodes: SIGNAL_EXPANSE_HAZARD_NODES,

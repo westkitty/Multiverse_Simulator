@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const OCEAN_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const OCEAN_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "ocean.action.aeration_upwelling",
+    "worldId": "ocean",
+    "familyKey": "aeration_upwelling",
+    "name": "Controlled Hydrothermal Upwelling",
+    "description": "Pump oxygenated deep currents into hypoxic benthic shallows.",
+    "readSet": [
+      "meanSurfaceOxygenMgL",
+      "meanSurfaceNutrientsUmol"
+    ],
+    "writeSet": [
+      "meanSurfaceOxygenMgL",
+      "meanSurfaceNutrientsUmol"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanSurfaceOxygenMgL",
+        "condition": "<",
+        "threshold": 6
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "oxygenation_capacity",
+        "amount": 5
+      },
+      {
+        "resource": "rov_power",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanSurfaceOxygenMgL",
+        "delta": 3.5,
+        "unit": "mg/L"
+      },
+      {
+        "field": "meanSurfaceNutrientsUmol",
+        "delta": -10,
+        "unit": "uM"
+      }
+    ],
+    "decisionImplication": "Prevents marine dead-zone formation at the expense of pumped oxygen reserves.",
+    "dynamicHelp": "Trigger when surface oxygen drops below 6 mg/L to protect benthic reef gardens."
+  },
+  {
+    "id": "ocean.action.alkalinity_injection",
+    "worldId": "ocean",
+    "familyKey": "alkalinity_injection",
+    "name": "Depth Oxygenation & Alkalinization",
+    "description": "Inject basic buffer slurry to reverse carbonate coral calcification decay.",
+    "readSet": [
+      "meanCarbonatePh",
+      "meanSurfaceOxygenMgL"
+    ],
+    "writeSet": [
+      "meanCarbonatePh",
+      "meanSurfaceOxygenMgL"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanCarbonatePh",
+        "condition": "<",
+        "threshold": 7.9
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "nutrient_reserve",
+        "amount": 4
+      },
+      {
+        "resource": "oxygenation_capacity",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanCarbonatePh",
+        "delta": 0.35,
+        "unit": "pH"
+      },
+      {
+        "field": "meanSurfaceOxygenMgL",
+        "delta": 1,
+        "unit": "mg/L"
+      }
+    ],
+    "decisionImplication": "Buffers ocean acidification directly, preserving calcium carbonate shell structures.",
+    "dynamicHelp": "Administer when pH dips below 7.9 to halt catastrophic coral bleaching."
+  },
+  {
+    "id": "ocean.action.benthic_restoration",
+    "worldId": "ocean",
+    "familyKey": "benthic_restoration",
+    "name": "Carbonate Habitat Protection",
+    "description": "Deploy acoustic deterrents and artificial bio-scaffolding across kelp reefs.",
+    "readSet": [
+      "meanSurfaceNutrientsUmol",
+      "meanCarbonatePh"
+    ],
+    "writeSet": [
+      "meanSurfaceNutrientsUmol",
+      "meanCarbonatePh"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanSurfaceNutrientsUmol",
+        "condition": ">",
+        "threshold": 50
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "rov_power",
+        "amount": 4
+      },
+      {
+        "resource": "nutrient_reserve",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanSurfaceNutrientsUmol",
+        "delta": -15,
+        "unit": "uM"
+      },
+      {
+        "field": "meanCarbonatePh",
+        "delta": 0.15,
+        "unit": "pH"
+      }
+    ],
+    "decisionImplication": "Binds excessive algae nutrients to seabed sediment, stabilizing water clarity.",
+    "dynamicHelp": "Enact when nutrient runoff exceeds 50 uM to prevent toxic algal blooms."
+  }
+] as const;
+
+
+export const OCEAN_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "ocean.instrument.bathymetric_profiler",
+  "worldId": "ocean",
+  "name": "Drowned Garden Oceanographic Profiler",
+  "description": "Samples dissolved oxygen, ocean acidification pH, and marine nutrients.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "rov_power",
+      "amount": 2
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "oxygenation_capacity",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "meanSurfaceOxygenMgL",
+      "name": "Dissolved Oxygen",
+      "unit": "mg/L",
+      "minValid": 0,
+      "maxValid": 20,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "meanCarbonatePh",
+      "name": "Carbonate System pH",
+      "unit": "pH",
+      "minValid": 6.5,
+      "maxValid": 9,
+      "basePrecision": 0.05
+    },
+    {
+      "id": "meanSurfaceNutrientsUmol",
+      "name": "Dissolved Nutrients",
+      "unit": "uM",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.5
+    }
+  ]
+}] as const;
+
+
 export const oceanFeatureModule = new StandardWorldFeatureModule({
+  instruments: OCEAN_INSTRUMENTS,
+  nativeActions: OCEAN_NATIVE_ACTIONS,
   worldId: 'ocean',
   capabilities: OCEAN_CAPABILITIES,
   hazardNodes: OCEAN_HAZARD_NODES,

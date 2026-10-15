@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -68,7 +70,7 @@ export const INDUSTRIAL_HAZARD_NODES: readonly HazardNode[] = [
     operator: '>',
     severity: 'warning',
     upstreamNodeIds: [],
-    mitigationActionFamily: 'industrial.action.conveyor_spur_activation',
+    mitigationActionFamily: 'industrial.action.blast_furnace_feed_override',
     description: 'Heavy rail freight interruption causes supply bottlenecks',
     observedTriggerTemplate: 'Unfulfilled freight backlog ({value}) exceeded {threshold}',
     hypothesizedExplanation: 'Automated rail derailment and marshalling yard power failure blocking ore transit',
@@ -83,7 +85,7 @@ export const INDUSTRIAL_HAZARD_NODES: readonly HazardNode[] = [
     operator: '<',
     severity: 'critical',
     upstreamNodeIds: ['freight_stoppage'],
-    mitigationActionFamily: 'industrial.action.blast_furnace_feed_override',
+    mitigationActionFamily: 'industrial.action.conveyor_spur_activation',
     description: 'On-site feedstock reserves depleted by unreplenished consumption',
     observedTriggerTemplate: 'Raw ore stock ({value} t) fell below {threshold} t',
     hypothesizedExplanation: 'Continuous smelting without incoming freight emptying storage silos',
@@ -235,7 +237,198 @@ export const INDUSTRIAL_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const INDUSTRIAL_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "industrial.action.conveyor_spur_activation",
+    "worldId": "industrial",
+    "familyKey": "conveyor_spur_activation",
+    "name": "Extraction & Production Rebalance",
+    "description": "Engage auxiliary conveyor lines to clear mineral delivery bottlenecks.",
+    "readSet": [
+      "totalRawOreStock",
+      "extractionOutputRate"
+    ],
+    "writeSet": [
+      "totalRawOreStock",
+      "extractionOutputRate"
+    ],
+    "prerequisites": [
+      {
+        "field": "totalRawOreStock",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "spares",
+        "amount": 4
+      },
+      {
+        "resource": "ore",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "totalRawOreStock",
+        "delta": 25,
+        "unit": "t"
+      },
+      {
+        "field": "extractionOutputRate",
+        "delta": 5,
+        "unit": "t/hr"
+      }
+    ],
+    "decisionImplication": "Restores furnace feed stability, avoiding shutdown at mechanical spare wear.",
+    "dynamicHelp": "Activate conveyor spurs when ore storage drops below 40 t."
+  },
+  {
+    "id": "industrial.action.blast_furnace_feed_override",
+    "worldId": "industrial",
+    "familyKey": "blast_furnace_feed_override",
+    "name": "Emergency Freight Routing",
+    "description": "Override blast furnace feed schedules to process stranded critical batches.",
+    "readSet": [
+      "unfulfilledDemandBacklog",
+      "extractionOutputRate"
+    ],
+    "writeSet": [
+      "unfulfilledDemandBacklog",
+      "extractionOutputRate"
+    ],
+    "prerequisites": [
+      {
+        "field": "unfulfilledDemandBacklog",
+        "condition": ">",
+        "threshold": 50
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "freight_fuel",
+        "amount": 5
+      },
+      {
+        "resource": "processed_goods",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "unfulfilledDemandBacklog",
+        "delta": -25,
+        "unit": "orders"
+      },
+      {
+        "field": "extractionOutputRate",
+        "delta": 8,
+        "unit": "t/hr"
+      }
+    ],
+    "decisionImplication": "Drives down industrial supply chain backlog by burning priority freight fuel.",
+    "dynamicHelp": "Override feed lines when unfulfilled order backlog exceeds 50 orders."
+  },
+  {
+    "id": "industrial.action.slag_cooling_purge",
+    "worldId": "industrial",
+    "familyKey": "slag_cooling_purge",
+    "name": "Foundry Waste Containment",
+    "description": "Purge solidified slag buildup and flush cooling channels to avert furnace burst.",
+    "readSet": [
+      "extractionOutputRate",
+      "unfulfilledDemandBacklog"
+    ],
+    "writeSet": [
+      "extractionOutputRate",
+      "unfulfilledDemandBacklog"
+    ],
+    "prerequisites": [
+      {
+        "field": "extractionOutputRate",
+        "condition": "<",
+        "threshold": 25
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "spares",
+        "amount": 5
+      },
+      {
+        "resource": "ore",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "extractionOutputRate",
+        "delta": 15,
+        "unit": "t/hr"
+      },
+      {
+        "field": "unfulfilledDemandBacklog",
+        "delta": -5,
+        "unit": "orders"
+      }
+    ],
+    "decisionImplication": "Cleans toxic furnace encrustation, preventing catastrophic thermal runaway.",
+    "dynamicHelp": "Purge cooling jackets when smelter extraction rate drops below 25 t/hr."
+  }
+] as const;
+
+
+export const INDUSTRIAL_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "industrial.instrument.furnace_telemetry_monitor",
+  "worldId": "industrial",
+  "name": "Heavy Foundry Diagnostic Monitor",
+  "description": "Monitors ore stock reserves, unfulfilled order backlogs, and extraction flow.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "freight_fuel",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "spares",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "unfulfilledDemandBacklog",
+      "name": "Order Backlog",
+      "unit": "orders",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 1
+    },
+    {
+      "id": "totalRawOreStock",
+      "name": "Raw Ore Storage",
+      "unit": "t",
+      "minValid": 0,
+      "maxValid": 200,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "extractionOutputRate",
+      "name": "Smelter Output Rate",
+      "unit": "t/hr",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const industrialFeatureModule = new StandardWorldFeatureModule({
+  instruments: INDUSTRIAL_INSTRUMENTS,
+  nativeActions: INDUSTRIAL_NATIVE_ACTIONS,
   worldId: 'industrial',
   capabilities: INDUSTRIAL_CAPABILITIES,
   hazardNodes: INDUSTRIAL_HAZARD_NODES,

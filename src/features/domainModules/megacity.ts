@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const MEGACITY_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const MEGACITY_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "megacity.action.grid_substation_bypass",
+    "worldId": "megacity",
+    "familyKey": "grid_substation_bypass",
+    "name": "Power-Grid Isolation & Bypass",
+    "description": "Reroute flooded high-voltage substations through hardened industrial loops.",
+    "readSet": [
+      "totalHousingCapacityK",
+      "cityLivabilityIndex"
+    ],
+    "writeSet": [
+      "totalHousingCapacityK",
+      "cityLivabilityIndex"
+    ],
+    "prerequisites": [
+      {
+        "field": "totalHousingCapacityK",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "spare_parts",
+        "amount": 4
+      },
+      {
+        "resource": "district_fuel",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "totalHousingCapacityK",
+        "delta": 15,
+        "unit": "kResidents"
+      },
+      {
+        "field": "cityLivabilityIndex",
+        "delta": 8,
+        "unit": "index"
+      }
+    ],
+    "decisionImplication": "Restores domestic power to dark residential blocks by burning grid spares.",
+    "dynamicHelp": "Bypass substations when active housing capacity drops below 40k residents."
+  },
+  {
+    "id": "megacity.action.stormwater_drain_clearance",
+    "worldId": "megacity",
+    "familyKey": "stormwater_drain_clearance",
+    "name": "Stormwater Flood Rerouting",
+    "description": "Clear clogged drainage conduits to prevent runoff contamination.",
+    "readSet": [
+      "meanPollutionAqi",
+      "cityLivabilityIndex"
+    ],
+    "writeSet": [
+      "meanPollutionAqi",
+      "cityLivabilityIndex"
+    ],
+    "prerequisites": [
+      {
+        "field": "meanPollutionAqi",
+        "condition": ">",
+        "threshold": 120
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "district_fuel",
+        "amount": 5
+      },
+      {
+        "resource": "municipal_stock",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "meanPollutionAqi",
+        "delta": -25,
+        "unit": "AQI"
+      },
+      {
+        "field": "cityLivabilityIndex",
+        "delta": 6,
+        "unit": "index"
+      }
+    ],
+    "decisionImplication": "Flushes toxic stagnation from lower quarters, burning diesel pump fuel.",
+    "dynamicHelp": "Clear drains when pollution index rises above 120 AQI."
+  },
+  {
+    "id": "megacity.action.emergency_caucus_dispatch",
+    "worldId": "megacity",
+    "familyKey": "emergency_caucus_dispatch",
+    "name": "District Transport Prioritization",
+    "description": "Mobilize transit fleets to evacuate isolated quarters and deliver relief.",
+    "readSet": [
+      "cityLivabilityIndex",
+      "totalHousingCapacityK"
+    ],
+    "writeSet": [
+      "cityLivabilityIndex",
+      "totalHousingCapacityK"
+    ],
+    "prerequisites": [
+      {
+        "field": "cityLivabilityIndex",
+        "condition": "<",
+        "threshold": 50
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "municipal_stock",
+        "amount": 4
+      },
+      {
+        "resource": "spare_parts",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "cityLivabilityIndex",
+        "delta": 18,
+        "unit": "index"
+      },
+      {
+        "field": "totalHousingCapacityK",
+        "delta": 5,
+        "unit": "kResidents"
+      }
+    ],
+    "decisionImplication": "Restores civic order and access across isolated sectors using municipal supplies.",
+    "dynamicHelp": "Deploy relief corridors when livability falls below 50 index."
+  }
+] as const;
+
+
+export const MEGACITY_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "megacity.instrument.urban_telemetry_probe",
+  "worldId": "megacity",
+  "name": "Blackout Quarter Infrastructure Probe",
+  "description": "Surveys district power grid integrity, particulate air quality, and livability.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "district_fuel",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "spare_parts",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "totalHousingCapacityK",
+      "name": "Operational Housing",
+      "unit": "kResidents",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "meanPollutionAqi",
+      "name": "Particulate Pollution",
+      "unit": "AQI",
+      "minValid": 0,
+      "maxValid": 300,
+      "basePrecision": 1
+    },
+    {
+      "id": "cityLivabilityIndex",
+      "name": "Livability Index",
+      "unit": "index",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const megacityFeatureModule = new StandardWorldFeatureModule({
+  instruments: MEGACITY_INSTRUMENTS,
+  nativeActions: MEGACITY_NATIVE_ACTIONS,
   worldId: 'megacity',
   capabilities: MEGACITY_CAPABILITIES,
   hazardNodes: MEGACITY_HAZARD_NODES,

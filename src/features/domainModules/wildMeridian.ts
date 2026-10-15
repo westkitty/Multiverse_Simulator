@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const WILD_MERIDIAN_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const WILD_MERIDIAN_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "wildMeridian.action.watering_hole_recharge",
+    "worldId": "wild-meridian",
+    "familyKey": "watering_hole_recharge",
+    "name": "Watering Refuge Re-Hydration",
+    "description": "Pump groundwater reserves into valley wetlands to relieve wildlife drought.",
+    "readSet": [
+      "water",
+      "wildlife"
+    ],
+    "writeSet": [
+      "water",
+      "wildlife"
+    ],
+    "prerequisites": [
+      {
+        "field": "water",
+        "condition": "<",
+        "threshold": 35
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "stored_water",
+        "amount": 5
+      },
+      {
+        "resource": "field_energy",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "water",
+        "delta": 20,
+        "unit": "ML"
+      },
+      {
+        "field": "wildlife",
+        "delta": 8,
+        "unit": "index"
+      }
+    ],
+    "decisionImplication": "Refills critical oasis water holes, preventing herd dispersal and death.",
+    "dynamicHelp": "Recharge wetlands when valley water reserves drop below 35 ML."
+  },
+  {
+    "id": "wildMeridian.action.scrubland_reseeding",
+    "worldId": "wild-meridian",
+    "familyKey": "scrubland_reseeding",
+    "name": "Ecological Disturbance Containment",
+    "description": "Broadcast drought-hardy seeds to knit eroding soil and restore scrub cover.",
+    "readSet": [
+      "vegetation",
+      "water"
+    ],
+    "writeSet": [
+      "vegetation",
+      "water"
+    ],
+    "prerequisites": [
+      {
+        "field": "vegetation",
+        "condition": "<",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "seed_stock",
+        "amount": 4
+      },
+      {
+        "resource": "stored_water",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "vegetation",
+        "delta": 18,
+        "unit": "%"
+      },
+      {
+        "field": "water",
+        "delta": 4,
+        "unit": "ML"
+      }
+    ],
+    "decisionImplication": "Stabilizes fragile topsoil against desertification, consuming seed banks.",
+    "dynamicHelp": "Reseed terrain when scrubland vegetation density drops below 40%."
+  },
+  {
+    "id": "wildMeridian.action.migration_corridor_fencing",
+    "worldId": "wild-meridian",
+    "familyKey": "migration_corridor_fencing",
+    "name": "Migration Corridor Protection",
+    "description": "Establish acoustic boundary perimeters to steer herds away from dry basins.",
+    "readSet": [
+      "wildlife",
+      "vegetation"
+    ],
+    "writeSet": [
+      "wildlife",
+      "vegetation"
+    ],
+    "prerequisites": [
+      {
+        "field": "wildlife",
+        "condition": "<",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "field_energy",
+        "amount": 4
+      },
+      {
+        "resource": "seed_stock",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "wildlife",
+        "delta": 16,
+        "unit": "index"
+      },
+      {
+        "field": "vegetation",
+        "delta": 4,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Protects endangered megafauna migration routes through active field guidance.",
+    "dynamicHelp": "Activate perimeter fences when wildlife health index drops below 45."
+  }
+] as const;
+
+
+export const WILD_MERIDIAN_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "wildMeridian.instrument.ecotag_monitor",
+  "worldId": "wild-meridian",
+  "name": "Silent Valley Wildlife & Hydro Monitor",
+  "description": "Tracks regional aquifer volume, scrubland canopy, and migratory herd indices.",
+  "deviceClass": "environmental_sampler",
+  "sampleCost": [
+    {
+      "resource": "field_energy",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "seed_stock",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "water",
+      "name": "Aquifer Reserve Volume",
+      "unit": "ML",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    },
+    {
+      "id": "vegetation",
+      "name": "Scrubland Foliage Density",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.1
+    },
+    {
+      "id": "wildlife",
+      "name": "Megafauna Population Index",
+      "unit": "index",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    }
+  ]
+}] as const;
+
+
 export const wildMeridianFeatureModule = new StandardWorldFeatureModule({
+  instruments: WILD_MERIDIAN_INSTRUMENTS,
+  nativeActions: WILD_MERIDIAN_NATIVE_ACTIONS,
   worldId: 'wild-meridian',
   capabilities: WILD_MERIDIAN_CAPABILITIES,
   hazardNodes: WILD_MERIDIAN_HAZARD_NODES,

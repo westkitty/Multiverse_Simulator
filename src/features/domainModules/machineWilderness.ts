@@ -1,4 +1,6 @@
-import { EmergencyDefinition,
+import {
+  NativeActionFamilyDefinition,
+  ScientificInstrumentConfig, EmergencyDefinition,
   FeatureCapability,
   PolicyDefinition,
   RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
@@ -235,7 +237,198 @@ export const MACHINE_WILDERNESS_POLICIES: readonly PolicyDefinition[] = [
   }
 ] as const;
 
+export const MACHINE_WILDERNESS_NATIVE_ACTIONS: readonly NativeActionFamilyDefinition[] = [
+  {
+    "id": "machineWilderness.action.solar_collector_realignment",
+    "worldId": "machine-wilderness",
+    "familyKey": "solar_collector_realignment",
+    "name": "Distributed Power Routing",
+    "description": "Reposition photovoltaic fields to maximize collector incidence across the sector.",
+    "readSet": [
+      "power",
+      "wear"
+    ],
+    "writeSet": [
+      "power",
+      "wear"
+    ],
+    "prerequisites": [
+      {
+        "field": "power",
+        "condition": "<",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "energy",
+        "amount": 3
+      },
+      {
+        "resource": "worker_capacity",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "power",
+        "delta": 25,
+        "unit": "kW"
+      },
+      {
+        "field": "wear",
+        "delta": 4,
+        "unit": "%"
+      }
+    ],
+    "decisionImplication": "Restores primary battery charging, powering maintenance relays at minor gear wear.",
+    "dynamicHelp": "Realign solar mirrors when grid output drops below 45 kW."
+  },
+  {
+    "id": "machineWilderness.action.drone_motor_lubrication",
+    "worldId": "machine-wilderness",
+    "familyKey": "drone_motor_lubrication",
+    "name": "Maintenance Swarm Scheduling",
+    "description": "Overhaul automaton joints with synthetic lubricant to prevent gear seizure.",
+    "readSet": [
+      "wear",
+      "backlog"
+    ],
+    "writeSet": [
+      "wear",
+      "backlog"
+    ],
+    "prerequisites": [
+      {
+        "field": "wear",
+        "condition": ">",
+        "threshold": 45
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "recovered_parts",
+        "amount": 4
+      },
+      {
+        "resource": "worker_capacity",
+        "amount": 2
+      }
+    ],
+    "deltas": [
+      {
+        "field": "wear",
+        "delta": -22,
+        "unit": "%"
+      },
+      {
+        "field": "backlog",
+        "delta": -5,
+        "unit": "tasks"
+      }
+    ],
+    "decisionImplication": "Lowers robotic swarm breakdown rates, maintaining persistent autonomous labor.",
+    "dynamicHelp": "Schedule maintenance when swarm joint wear climbs above 45%."
+  },
+  {
+    "id": "machineWilderness.action.fabrication_queue_clearing",
+    "worldId": "machine-wilderness",
+    "familyKey": "fabrication_queue_clearing",
+    "name": "Durable Parts Recovery",
+    "description": "Dismantle derelict chassis to salvage raw silicon and clear fabrication backlog.",
+    "readSet": [
+      "backlog",
+      "power"
+    ],
+    "writeSet": [
+      "backlog",
+      "power"
+    ],
+    "prerequisites": [
+      {
+        "field": "backlog",
+        "condition": ">",
+        "threshold": 40
+      }
+    ],
+    "resourceCosts": [
+      {
+        "resource": "worker_capacity",
+        "amount": 4
+      },
+      {
+        "resource": "energy",
+        "amount": 3
+      }
+    ],
+    "deltas": [
+      {
+        "field": "backlog",
+        "delta": -20,
+        "unit": "tasks"
+      },
+      {
+        "field": "power",
+        "delta": 6,
+        "unit": "kW"
+      }
+    ],
+    "decisionImplication": "Clears choked production queues, recovering parts for the central warehouse.",
+    "dynamicHelp": "Scrap derelicts when assembly backlog exceeds 40 tasks."
+  }
+] as const;
+
+
+export const MACHINE_WILDERNESS_INSTRUMENTS: readonly ScientificInstrumentConfig[] = [{
+  "id": "machineWilderness.instrument.swarm_diagnostic_scanner",
+  "worldId": "machine-wilderness",
+  "name": "Unfinished City Grid Diagnostic Scanner",
+  "description": "Monitors distributed bus power, mechanical swarm wear, and fabrication queue backlogs.",
+  "deviceClass": "structural_probe",
+  "sampleCost": [
+    {
+      "resource": "energy",
+      "amount": 1
+    }
+  ],
+  "calibrationCost": [
+    {
+      "resource": "recovered_parts",
+      "amount": 2
+    }
+  ],
+  "channels": [
+    {
+      "id": "power",
+      "name": "Distributed Grid Power",
+      "unit": "kW",
+      "minValid": 0,
+      "maxValid": 150,
+      "basePrecision": 0.5
+    },
+    {
+      "id": "wear",
+      "name": "Automaton Swarm Mechanical Wear",
+      "unit": "%",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.2
+    },
+    {
+      "id": "backlog",
+      "name": "Fabrication Queue Backlog",
+      "unit": "tasks",
+      "minValid": 0,
+      "maxValid": 100,
+      "basePrecision": 0.5
+    }
+  ]
+}] as const;
+
+
 export const machineWildernessFeatureModule = new StandardWorldFeatureModule({
+  instruments: MACHINE_WILDERNESS_INSTRUMENTS,
+  nativeActions: MACHINE_WILDERNESS_NATIVE_ACTIONS,
   worldId: 'machine-wilderness',
   capabilities: MACHINE_WILDERNESS_CAPABILITIES,
   hazardNodes: MACHINE_WILDERNESS_HAZARD_NODES,
