@@ -82,7 +82,7 @@ export class ScientificBudgetLedger {
     for (const [res, cfg] of Object.entries(initialResources)) {
       const anyCfg = cfg as unknown as Record<string, unknown>;
       const cap = Math.max(1, Number(anyCfg.capacity ?? anyCfg.maxCapacity ?? 100));
-      const rawBal = Number(anyCfg.balance ?? anyCfg.current ?? cap);
+      const rawBal = Number(anyCfg.balance ?? anyCfg.current ?? anyCfg.initial ?? cap);
       const bal = Number.isFinite(rawBal) ? Math.max(0, Math.min(cap, rawBal)) : 0;
       const rep = Math.max(0, Number(anyCfg.replenishmentRate ?? anyCfg.replenishmentPerTick ?? 0));
       this.resources.set(res, { balance: bal, capacity: cap, replenishmentRate: rep });

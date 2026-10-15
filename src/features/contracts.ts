@@ -12,11 +12,17 @@ import type {
 } from './budgetLedger';
 import type { LogisticsNetwork } from './logisticsWeb';
 import type { FacilityManager } from './facilitySystem';
+import type { EmergencyManager } from './emergencySystem';
+import type { VisualRestorationManager } from './visualRestoration';
+import type { PolicyManager } from './policyTrial';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
 export * from './logisticsWeb';
 export * from './facilitySystem';
+export * from './emergencySystem';
+export * from './visualRestoration';
+export * from './policyTrial';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -130,6 +136,9 @@ export interface WorldFeatureModule<
   readonly budgetLedger?: ScientificBudgetLedger;
   readonly logisticsNetwork?: LogisticsNetwork;
   readonly facilityManager?: FacilityManager;
+  readonly emergencyManager?: EmergencyManager;
+  readonly visualRestorationManager?: VisualRestorationManager;
+  readonly policyManager?: PolicyManager;
 
   validateAction(
     raw: unknown,

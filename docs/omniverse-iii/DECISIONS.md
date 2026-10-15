@@ -99,3 +99,38 @@ Gate G2 introduces:
 ### Consequences
 - **Positive**: Exact physical conservation of cargo across all transport routes; authentic strategic trade-offs between construction, maintenance, and regional survival.
 - **Negative / Constraints**: Facilities require persistent upkeep supply chains; neglecting maintenance directly degrades domain benefits.
+
+## ADR 0004: Cascading Emergency State Machines, Visual Restoration Layers, and Three-Arm Policy Trials
+
+### Status
+Accepted (Wave G3 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G3 introduces:
+1. P006 (Cascading Emergencies): Multi-stage crises (dormant -> precursor -> active -> escalating -> contained -> resolved) that emerge dynamically from native hazard triggers. Precursors provide early warning and allow low-cost mitigation; unmitigated precursors escalate into active and escalating emergencies applying compounding metric penalties, budget drain, and secondary hazard triggers.
+2. P007 (The World Must Remember Your Hands): Observable environmental visual restoration indicators directly derived from authoritative simulation state. Provides continuous or quantized opacities, mesh tier reveals, reduced-motion alternatives with zero particle motion and quantized opacity stepping, and accessible screen-reader summaries.
+3. P017 initial (No Perfect Intervention): Every world defines competing priced policies. A deterministic Three-Arm Trial framework compares Baseline (status quo), Policy A (intensive/capital), and Policy B (alternative/conservation) over fixed horizons to quantify real trade-offs and secondary collateral effects.
+
+### Decision
+1. **EmergencyManager (`src/features/emergencySystem.ts`)**:
+   - Manages structured `EmergencyState` per registered crisis.
+   - Evaluates precursor and active thresholds. If unresolved within `escalateDelayTicks`, automatically escalates severity and penalties (2x multiplier in escalating stage).
+   - Mitigations demote emergency stages and reduce severity proportional to intervention effectiveness.
+   - Fully serializable for save compatibility.
+2. **VisualRestorationManager (`src/features/visualRestoration.ts`)**:
+   - Computes declarative restoration progress from simulation state metrics.
+   - Categorizes layers into four stages: `degraded`, `stabilizing`, `restoring`, `flourishing`.
+   - `reducedMotion` option eliminates continuous particle motion and quantizes opacity to discrete steps to prevent strobe or motion sickness.
+   - Generates screen-reader accessible textual descriptions of environmental state.
+3. **PolicyManager (`src/features/policyTrial.ts`)**:
+   - Registers world-specific priced policies with explicit resource costs, direct benefits, and inevitable side-effects.
+   - Evaluates three-arm comparative trials (Baseline vs Policy A vs Policy B) to demonstrate that every intervention has costs and trade-offs.
+4. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, emergency cascading penalties and policy constraints remain inactive, preserving legacy determinism.
+
+### Consequences
+- **Positive**: True cascading crisis dynamics; transparent environmental recovery; rigorous three-arm policy trade-off evaluations.
+- **Negative / Constraints**: Crises demand timely resource and intervention commitments; ignoring precursors leads to compounding multi-system degradation.
