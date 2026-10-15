@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const MACHINE_WILDERNESS_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const MACHINE_WILDERNESS_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Immobilized maintenance drones cannot execute fabrication tasks, freezing the queue',
   },
 ];
+
+
+export const MACHINE_WILDERNESS_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "machine_wilderness.fabricator_meltdown",
+    "worldId": "machine-wilderness",
+    "name": "Automated Foundry Meltdown & Backlog Surge",
+    "description": "Grid brownout freezing assembly cranes and triggering runaway logic loops.",
+    "triggerMetric": "power",
+    "triggerOperator": "<",
+    "precursorThreshold": 35,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "machine_wilderness.action.drone_repair"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "wear": 2.5,
+        "backlog": 3
+      },
+      "budgetDrainPerTick": {
+        "energy": 1
+      },
+      "secondaryHazardNodeId": "servo_fatigue",
+      "description": "Stalled assembly lines burn out gearboxes and choke fabricator queues."
+    }
+  }
+] as const;
+
+export const MACHINE_WILDERNESS_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "solar_arrays",
+    "name": "Autonomous Solar Harvesters",
+    "metricKey": "power",
+    "baselineValue": 15,
+    "targetValue": 90,
+    "visualElements": {
+      "materialColor": "#fbc02d",
+      "accentHex": "#fff176",
+      "activeMeshes": [
+        "bent_photovoltaic_shards",
+        "aligned_tracker_panel",
+        "high_output_solar_pylon",
+        "orbital_microwaved_collector_node"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Shattered mirror shards and dead, unmoving tracker pylons.",
+      "stabilizing": "Automated cleaning drones scrub dust from solar surfaces.",
+      "restoring": "Coordinated collector mirrors swivel to track the morning sun.",
+      "flourishing": "Towering fields of immaculate solar mirrors feeding gigawatts into the core."
+    }
+  },
+  {
+    "id": "assembly_fabricators",
+    "name": "Nanofabricator Assembly Lines",
+    "metricKey": "wear",
+    "baselineValue": 90,
+    "targetValue": 15,
+    "visualElements": {
+      "materialColor": "#00897b",
+      "accentHex": "#4db6ac",
+      "activeMeshes": [
+        "rusted_hydraulic_arm",
+        "re-greased_rotary_axis",
+        "calibrated_welding_rig",
+        "flawless_nanofabrication_line"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Seized robot arms dripping burnt hydraulic grease.",
+      "stabilizing": "Self-repair routines replace damaged stepper motors.",
+      "restoring": "Fluid, high-speed welding arms assembling precision chassis.",
+      "flourishing": "Silent, hyper-accurate autonomous mega-fabricator operating without friction."
+    }
+  }
+] as const;
+
+export const MACHINE_WILDERNESS_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "machine_wilderness.central_grid_cold_start",
+    "worldId": "machine-wilderness",
+    "name": "Central Grid Cold Start",
+    "description": "Surges capacitors to reboot core reactor, putting extreme thermal strain on transmission bus.",
+    "targetHazard": "grid_brownout",
+    "resourceCostsPerTick": {
+      "energy": 3
+    },
+    "metricBenefitsPerTick": {
+      "power": 4
+    },
+    "sideEffectsPerTick": {
+      "wear": 1.5
+    },
+    "tradeoffSummary": "Reboots the power grid in minutes but accelerates mechanical wear across joints."
+  },
+  {
+    "id": "machine_wilderness.automated_parts_reclamation",
+    "worldId": "machine-wilderness",
+    "name": "Automated Parts Reclamation",
+    "description": "Directs drones to replace worn servomotors, pausing scheduled product assembly lines.",
+    "targetHazard": "servo_fatigue",
+    "resourceCostsPerTick": {
+      "worker_capacity": 2
+    },
+    "metricBenefitsPerTick": {
+      "wear": -3
+    },
+    "sideEffectsPerTick": {
+      "backlog": 2
+    },
+    "tradeoffSummary": "Drastically lowers machine wear by halting normal manufacturing throughput."
+  }
+] as const;
 
 export const machineWildernessFeatureModule = new StandardWorldFeatureModule({
   worldId: 'machine-wilderness',
@@ -247,4 +365,7 @@ export const machineWildernessFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: MACHINE_WILDERNESS_EMERGENCIES,
+  restorationLayers: MACHINE_WILDERNESS_RESTORATION_LAYERS,
+  policies: MACHINE_WILDERNESS_POLICIES,
 });

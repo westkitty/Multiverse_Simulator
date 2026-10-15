@@ -1,9 +1,12 @@
 import {
   DisclosureContext,
   DisclosureLevel,
+  EmergencyState,
   HazardEvaluationResult,
+  PolicyDefinition,
   VisibleEntitySummary,
   VisibleFeatureState,
+  VisualRestorationSnapshot,
 } from './contracts';
 
 /**
@@ -65,6 +68,9 @@ export function createBaseVisibleState(
   disclosedEntities: VisibleEntitySummary[] = [],
   hazards?: HazardEvaluationResult,
   budgetBalances?: Record<string, number>,
+  emergencies?: EmergencyState[],
+  visualRestoration?: VisualRestorationSnapshot,
+  activePolicies?: PolicyDefinition[],
 ): VisibleFeatureState {
   return {
     worldId,
@@ -74,5 +80,8 @@ export function createBaseVisibleState(
     disclosedEntities,
     hazards,
     budgetBalances,
+    emergencies,
+    visualRestoration,
+    activePolicies,
   };
 }

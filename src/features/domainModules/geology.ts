@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const GEOLOGY_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const GEOLOGY_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Magma intrusion shears cables and melts buried seismic monitoring sensors',
   },
 ];
+
+
+export const GEOLOGY_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "geology.fault_shear",
+    "worldId": "geology",
+    "name": "Crustal Rupture & Telemetry Severance",
+    "description": "Critical tectonic shear snapping deep geophone arrays and fracturing shafts.",
+    "triggerMetric": "meanTectonicStressMpa",
+    "triggerOperator": ">",
+    "precursorThreshold": 65,
+    "activeThreshold": 85,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "geology.action.fault_grouting"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "monitoredCellsPct": 3,
+        "meanMagmaPressureMpa": 2
+      },
+      "budgetDrainPerTick": {
+        "reinforcement": 1
+      },
+      "secondaryHazardNodeId": "magma_rupture",
+      "description": "Subterranean quakes sever telemetry cables and open magma conduits."
+    }
+  }
+] as const;
+
+export const GEOLOGY_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "fault_reinforcement",
+    "name": "Fault Grouting & Rockbolting",
+    "metricKey": "meanTectonicStressMpa",
+    "baselineValue": 95,
+    "targetValue": 20,
+    "visualElements": {
+      "materialColor": "#6d4c41",
+      "accentHex": "#a1887f",
+      "activeMeshes": [
+        "fractured_stratum",
+        "anchored_rockbolt_cluster",
+        "hydraulic_stabilization_buttress",
+        "grout_reinforced_monolith"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Gaping fault fractures shedding ceiling rock into deep shafts.",
+      "stabilizing": "High-tensile rockbolts secure shifting tectonic plates.",
+      "restoring": "Pressurized epoxy grout fills microscopic fracture planes.",
+      "flourishing": "Monolithic stabilized bedrock with zero microseismic slip."
+    }
+  },
+  {
+    "id": "seismic_monitoring",
+    "name": "Deep Borehole Telemetry",
+    "metricKey": "monitoredCellsPct",
+    "baselineValue": 10,
+    "targetValue": 95,
+    "visualElements": {
+      "materialColor": "#3949ab",
+      "accentHex": "#7986cb",
+      "activeMeshes": [
+        "severed_cable_trunk",
+        "repaired_borehole_geophone",
+        "triangulated_sensor_array",
+        "sub_crustal_deep_tomograph"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Blank seismographs and severed downhole sensor fiber.",
+      "stabilizing": "Telemetry repeaters spliced along accessible tunnels.",
+      "restoring": "Multi-axis geophones recording real-time acoustic emissions.",
+      "flourishing": "Complete sub-crustal tomography mapping planetary mantle flow."
+    }
+  }
+] as const;
+
+export const GEOLOGY_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "geology.hydraulic_fault_lubrication",
+    "worldId": "geology",
+    "name": "Hydraulic Fault Lubrication",
+    "description": "Injects high-pressure fluid into fault gouge to release slip aseismically, shaking nearby sensors.",
+    "targetHazard": "tectonic_accumulation",
+    "resourceCostsPerTick": {
+      "bore_capacity": 3
+    },
+    "metricBenefitsPerTick": {
+      "meanTectonicStressMpa": -4
+    },
+    "sideEffectsPerTick": {
+      "monitoredCellsPct": -2
+    },
+    "tradeoffSummary": "Relieves catastrophic fault pressure at the cost of temporary sensor blinding."
+  },
+  {
+    "id": "geology.subterranean_strut_reinforcement",
+    "worldId": "geology",
+    "name": "Subterranean Strut Reinforcement",
+    "description": "Braces monitoring caverns with heavy alloy, transferring stress onto surrounding rock.",
+    "targetHazard": "sensor_severance",
+    "resourceCostsPerTick": {
+      "reinforcement": 3
+    },
+    "metricBenefitsPerTick": {
+      "monitoredCellsPct": 3.5
+    },
+    "sideEffectsPerTick": {
+      "meanTectonicStressMpa": 1
+    },
+    "tradeoffSummary": "Protects deep geophone equipment while elevating surrounding rock stress."
+  }
+] as const;
 
 export const geologyFeatureModule = new StandardWorldFeatureModule({
   worldId: 'geology',
@@ -247,4 +365,7 @@ export const geologyFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: GEOLOGY_EMERGENCIES,
+  restorationLayers: GEOLOGY_RESTORATION_LAYERS,
+  policies: GEOLOGY_POLICIES,
 });

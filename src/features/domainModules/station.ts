@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const STATION_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const STATION_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Severe hypoxia induces crew incapacitation and module abandonment',
   },
 ];
+
+
+export const STATION_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "station.hull_depressurization",
+    "worldId": "station",
+    "name": "Rapid Hull Depressurization",
+    "description": "Breached seals evacuate oxygen and cause secondary electrical fires.",
+    "triggerMetric": "meanPressureKpa",
+    "triggerOperator": "<",
+    "precursorThreshold": 80,
+    "activeThreshold": 50,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "station.action.compartment_sealing"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "o2ReserveMoles": 50,
+        "meanCrewHealth": 1.5
+      },
+      "budgetDrainPerTick": {
+        "emergency_o2": 2
+      },
+      "secondaryHazardNodeId": "oxygen_depletion",
+      "description": "Escaping atmosphere starves compartments and drains emergency life support."
+    }
+  }
+] as const;
+
+export const STATION_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "pressure_bulkheads",
+    "name": "Bulkhead Pressure Integrity",
+    "metricKey": "meanPressureKpa",
+    "baselineValue": 40,
+    "targetValue": 101.3,
+    "visualElements": {
+      "materialColor": "#455a64",
+      "accentHex": "#90a4ae",
+      "activeMeshes": [
+        "breached_frame",
+        "clamped_seal",
+        "welded_plate",
+        "pressurized_chamber"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Buckled frames venting atmosphere into vacuum.",
+      "stabilizing": "Temporary emergency clamps arrest major pressure drops.",
+      "restoring": "Robotic welders secure heavy airtight plates.",
+      "flourishing": "Pristine habitat ring with certified atmospheric seal."
+    }
+  },
+  {
+    "id": "illumination_grid",
+    "name": "Station Compartment Illumination",
+    "metricKey": "meanCrewHealth",
+    "baselineValue": 20,
+    "targetValue": 100,
+    "visualElements": {
+      "materialColor": "#fbc02d",
+      "accentHex": "#fff59d",
+      "activeMeshes": [
+        "emergency_red_beacon",
+        "flickering_corridor",
+        "primary_hall_lighting",
+        "biosphere_illumination"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Strobe red emergency claxons and blackened corridors.",
+      "stabilizing": "Low-voltage auxiliary lighting restored along transit spine.",
+      "restoring": "Full daytime simulation lighting engaged in primary rings.",
+      "flourishing": "Warm, radiant full-spectrum illumination across all sectors."
+    }
+  }
+] as const;
+
+export const STATION_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "station.bulkhead_airlock_containment",
+    "worldId": "station",
+    "name": "Bulkhead Airlock Containment",
+    "description": "Pressurizes critical habitats with reserve O2 while placing severe draw on power.",
+    "targetHazard": "pressure_leak",
+    "resourceCostsPerTick": {
+      "emergency_o2": 3
+    },
+    "metricBenefitsPerTick": {
+      "meanPressureKpa": 3.5
+    },
+    "sideEffectsPerTick": {
+      "meanCrewHealth": -0.5
+    },
+    "tradeoffSummary": "Rapid pressure recovery at high emergency oxygen burn, causing spatial disorientation."
+  },
+  {
+    "id": "station.auxiliary_scrubber_overdrive",
+    "worldId": "station",
+    "name": "Auxiliary Scrubber Overdrive",
+    "description": "Boosts breathable reserves by running chemical scrubbers at continuous maximum duty.",
+    "targetHazard": "oxygen_depletion",
+    "resourceCostsPerTick": {
+      "scrubbers": 2
+    },
+    "metricBenefitsPerTick": {
+      "o2ReserveMoles": 60
+    },
+    "sideEffectsPerTick": {
+      "meanPressureKpa": -0.5
+    },
+    "tradeoffSummary": "Cleans toxic air rapidly but vents small amounts of pressurization gas."
+  }
+] as const;
 
 export const stationFeatureModule = new StandardWorldFeatureModule({
   worldId: 'station',
@@ -247,4 +365,7 @@ export const stationFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: STATION_EMERGENCIES,
+  restorationLayers: STATION_RESTORATION_LAYERS,
+  policies: STATION_POLICIES,
 });

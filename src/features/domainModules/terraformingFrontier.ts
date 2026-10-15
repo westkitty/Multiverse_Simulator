@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const TERRAFORMING_FRONTIER_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const TERRAFORMING_FRONTIER_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Sterile soil kills pioneer plants, shutting down atmospheric oxygen production',
   },
 ];
+
+
+export const TERRAFORMING_FRONTIER_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "terraforming_frontier.biosphere_blight",
+    "worldId": "terraforming-frontier",
+    "name": "Pioneer Biome Atmospheric Blight",
+    "description": "Rapid pressure drop and subsoil toxicity destroying pioneer lichens.",
+    "triggerMetric": "pressure",
+    "triggerOperator": "<",
+    "precursorThreshold": 35,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "terraforming_frontier.action.enrichment"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "soil": 2,
+        "oxygen": 1.5
+      },
+      "budgetDrainPerTick": {
+        "reagents": 1
+      },
+      "secondaryHazardNodeId": "subsoil_sterilization",
+      "description": "Unshielded biosphere withers in hard radiation and toxic frost."
+    }
+  }
+] as const;
+
+export const TERRAFORMING_FRONTIER_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "pioneer_forests",
+    "name": "Boreal Pine Colonization",
+    "metricKey": "soil",
+    "baselineValue": 15,
+    "targetValue": 85,
+    "visualElements": {
+      "materialColor": "#388e3c",
+      "accentHex": "#66bb6a",
+      "activeMeshes": [
+        "sterile_permafrost_gravel",
+        "algal_crust_patch",
+        "subpolar_shrub_tundra",
+        "dense_coniferous_taiga"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Frozen, lifeless iron regolith scorched by cosmic rays.",
+      "stabilizing": "Hardy engineered lichen carpets bind surface dust.",
+      "restoring": "Dwarf birch and hardy alder scrubs carpet the slopes.",
+      "flourishing": "Towering green taiga forest producing rich organic loam."
+    }
+  },
+  {
+    "id": "atmospheric_containment",
+    "name": "Atmospheric Seal & Pressure",
+    "metricKey": "pressure",
+    "baselineValue": 15,
+    "targetValue": 95,
+    "visualElements": {
+      "materialColor": "#81d4fa",
+      "accentHex": "#b3e5fc",
+      "activeMeshes": [
+        "frosted_cracked_pane",
+        "pressurized_air_lock",
+        "self_healing_polymer_membrane",
+        "open_skylight_atrium"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Thin, whistling wisp of vacuum and sub-zero CO2 gale.",
+      "stabilizing": "Bioreactor vents emit dense nitrogen blankets across lowlands.",
+      "restoring": "Thickening atmosphere supports liquid surface water.",
+      "flourishing": "Breathable, temperate atmosphere under a blue alien sky."
+    }
+  }
+] as const;
+
+export const TERRAFORMING_FRONTIER_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "terraforming_frontier.atmospheric_reagent_burn",
+    "worldId": "terraforming-frontier",
+    "name": "Atmospheric Reagent Burn",
+    "description": "Releases greenhouse gas reagents to thicken atmosphere, temporarily depleting free oxygen.",
+    "targetHazard": "dome_depressurization",
+    "resourceCostsPerTick": {
+      "reagents": 3
+    },
+    "metricBenefitsPerTick": {
+      "pressure": 3.5
+    },
+    "sideEffectsPerTick": {
+      "oxygen": -1
+    },
+    "tradeoffSummary": "Rapidly builds atmospheric pressure while consuming precious free oxygen."
+  },
+  {
+    "id": "terraforming_frontier.mycorrhizal_bio_inoculation",
+    "worldId": "terraforming-frontier",
+    "name": "Mycorrhizal Bio-Inoculation",
+    "description": "Inoculates mineral regolith with fungal spores to accelerate soil genesis at modest gas consumption.",
+    "targetHazard": "subsoil_sterilization",
+    "resourceCostsPerTick": {
+      "bio_stock": 2
+    },
+    "metricBenefitsPerTick": {
+      "soil": 3
+    },
+    "sideEffectsPerTick": {
+      "pressure": -0.5
+    },
+    "tradeoffSummary": "Converts sterile crushed basalt into fertile topsoil, consuming trace nitrogen gases."
+  }
+] as const;
 
 export const terraformingFrontierFeatureModule = new StandardWorldFeatureModule({
   worldId: 'terraforming-frontier',
@@ -247,4 +365,7 @@ export const terraformingFrontierFeatureModule = new StandardWorldFeatureModule(
       "fuelCost": 1
     }
   ],
+  emergencies: TERRAFORMING_FRONTIER_EMERGENCIES,
+  restorationLayers: TERRAFORMING_FRONTIER_RESTORATION_LAYERS,
+  policies: TERRAFORMING_FRONTIER_POLICIES,
 });

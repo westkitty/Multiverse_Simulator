@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const OCEAN_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const OCEAN_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Acidic water inhibits shell formation and causes planktonic collapse',
   },
 ];
+
+
+export const OCEAN_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "ocean.abyssal_hypoxia",
+    "worldId": "ocean",
+    "name": "Abyssal Hypoxia Deadzone Cascade",
+    "description": "Surface deoxygenation plunging benthic trenches into anoxic die-offs.",
+    "triggerMetric": "meanSurfaceOxygenMgL",
+    "triggerOperator": "<",
+    "precursorThreshold": 5,
+    "activeThreshold": 3,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "ocean.action.aeration"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "meanCarbonatePh": 0.05,
+        "meanSurfaceNutrientsUmol": 2
+      },
+      "budgetDrainPerTick": {
+        "oxygenation_capacity": 1
+      },
+      "secondaryHazardNodeId": "carbonate_acidification",
+      "description": "Deadzone expansion acidifies the water column and chokes pelagic life."
+    }
+  }
+] as const;
+
+export const OCEAN_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "bioluminescent_reef",
+    "name": "Bioluminescent Reef Vitality",
+    "metricKey": "meanSurfaceOxygenMgL",
+    "baselineValue": 2,
+    "targetValue": 9,
+    "visualElements": {
+      "materialColor": "#00bcd4",
+      "accentHex": "#80deea",
+      "activeMeshes": [
+        "bleached_coral",
+        "algal_turf",
+        "glowing_anemone",
+        "vibrant_atoll"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Ghostly white bleached coral skeletons covered in gray slime.",
+      "stabilizing": "Fluorescent polyps spark to life along the outer reef crest.",
+      "restoring": "Luminous branching corals illuminate the ocean floor.",
+      "flourishing": "Kaleidoscopic underwater garden teeming with glowing pelagic fauna."
+    }
+  },
+  {
+    "id": "water_clarity",
+    "name": "Pelagic Water Clarity",
+    "metricKey": "meanCarbonatePh",
+    "baselineValue": 7.4,
+    "targetValue": 8.3,
+    "visualElements": {
+      "materialColor": "#00838f",
+      "accentHex": "#4dd0e1",
+      "activeMeshes": [
+        "turbid_silt",
+        "filtered_shallows",
+        "clear_photic_zone",
+        "crystalline_abyss"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Opaque, acidic murky water choked with decomposing detritus.",
+      "stabilizing": "Filter feeders reduce surface turbidity in sheltered bays.",
+      "restoring": "Sunlight penetrates deep into the photic zone.",
+      "flourishing": "Crystal-clear sapphire depths with pristine visibility."
+    }
+  }
+] as const;
+
+export const OCEAN_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "ocean.deep_sea_oxygen_venting",
+    "worldId": "ocean",
+    "name": "Deep-Sea Oxygen Venting",
+    "description": "Injects gaseous oxygen directly into the thermocline, causing mild localized acidification.",
+    "targetHazard": "hypoxic_deadzone",
+    "resourceCostsPerTick": {
+      "oxygenation_capacity": 3
+    },
+    "metricBenefitsPerTick": {
+      "meanSurfaceOxygenMgL": 0.35
+    },
+    "sideEffectsPerTick": {
+      "meanCarbonatePh": -0.02
+    },
+    "tradeoffSummary": "Prevents massive fish die-offs while slightly increasing water acidity."
+  },
+  {
+    "id": "ocean.macroalgae_nutrient_pulse",
+    "worldId": "ocean",
+    "name": "Macroalgae Nutrient Pulse",
+    "description": "Feeds calcifying kelp forests to stabilize pH, temporarily absorbing dissolved O2.",
+    "targetHazard": "carbonate_acidification",
+    "resourceCostsPerTick": {
+      "nutrient_reserve": 2
+    },
+    "metricBenefitsPerTick": {
+      "meanCarbonatePh": 0.04
+    },
+    "sideEffectsPerTick": {
+      "meanSurfaceOxygenMgL": -0.1
+    },
+    "tradeoffSummary": "Rebuilds coral calcification integrity at the cost of oxygen draw."
+  }
+] as const;
 
 export const oceanFeatureModule = new StandardWorldFeatureModule({
   worldId: 'ocean',
@@ -247,4 +365,7 @@ export const oceanFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: OCEAN_EMERGENCIES,
+  restorationLayers: OCEAN_RESTORATION_LAYERS,
+  policies: OCEAN_POLICIES,
 });

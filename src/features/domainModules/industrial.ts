@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const INDUSTRIAL_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const INDUSTRIAL_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Lack of ore causes blast furnaces to starve, cool, and freeze',
   },
 ];
+
+
+export const INDUSTRIAL_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "industrial.furnace_starvation",
+    "worldId": "industrial",
+    "name": "Smelter Starvation & Foundry Stall",
+    "description": "Raw ore supply disruption causing blast furnace freeze-ups.",
+    "triggerMetric": "totalRawOreStock",
+    "triggerOperator": "<",
+    "precursorThreshold": 50,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "industrial.action.haulage_surge"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "extractionOutputRate": 1.5,
+        "unfulfilledDemandBacklog": 5
+      },
+      "budgetDrainPerTick": {
+        "freight_fuel": 1
+      },
+      "secondaryHazardNodeId": "inventory_starvation",
+      "description": "Crucibles cool and seize, creating massive backlogs in machinery manufacturing."
+    }
+  }
+] as const;
+
+export const INDUSTRIAL_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "conveyor_networks",
+    "name": "Freight Conveyor Infrastructure",
+    "metricKey": "totalRawOreStock",
+    "baselineValue": 15,
+    "targetValue": 150,
+    "visualElements": {
+      "materialColor": "#e64a19",
+      "accentHex": "#ff8a65",
+      "activeMeshes": [
+        "seized_rollers",
+        "repaired_beltway",
+        "high_speed_gantry",
+        "automated_ore_monorail"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Torn rubber belts and stalled rusty conveyor chutes.",
+      "stabilizing": "Drive motors replaced and high-tension chains re-linked.",
+      "restoring": "Continuous iron ore streams pouring into processing hoppers.",
+      "flourishing": "Roaring multi-tiered conveyor networks feeding industrial crucibles."
+    }
+  },
+  {
+    "id": "blast_furnace_hearths",
+    "name": "Blast Furnace Foundry Hearth",
+    "metricKey": "extractionOutputRate",
+    "baselineValue": 2,
+    "targetValue": 25,
+    "visualElements": {
+      "materialColor": "#f4511e",
+      "accentHex": "#ff7043",
+      "activeMeshes": [
+        "cold_slag_crucible",
+        "preheating_tuyere",
+        "molten_iron_tap",
+        "continuous_smelting_cascade"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Dark, cold slag crucibles choked with solid metal.",
+      "stabilizing": "Preheating blowers reignite oxygen blast tuyeres.",
+      "restoring": "Glowing streams of molten pig iron filling casting molds.",
+      "flourishing": "Blinding volcanic cascade of high-grade alloy production."
+    }
+  }
+] as const;
+
+export const INDUSTRIAL_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "industrial.priority_freight_convoy",
+    "worldId": "industrial",
+    "name": "Priority Freight Convoy",
+    "description": "Rushes heavy fuel haulers to restock bins, wearing out local excavation equipment.",
+    "targetHazard": "freight_stoppage",
+    "resourceCostsPerTick": {
+      "freight_fuel": 3
+    },
+    "metricBenefitsPerTick": {
+      "totalRawOreStock": 8
+    },
+    "sideEffectsPerTick": {
+      "extractionOutputRate": -0.8
+    },
+    "tradeoffSummary": "Rapidly restocks empty blast furnaces but causes excessive mechanical wear."
+  },
+  {
+    "id": "industrial.spares_cannibalization_overdrive",
+    "worldId": "industrial",
+    "name": "Spares Cannibalization Overdrive",
+    "description": "Repairs primary drillheads using spare assemblies, burning ore reserves faster.",
+    "targetHazard": "inventory_starvation",
+    "resourceCostsPerTick": {
+      "spares": 2
+    },
+    "metricBenefitsPerTick": {
+      "extractionOutputRate": 2.5
+    },
+    "sideEffectsPerTick": {
+      "totalRawOreStock": -2
+    },
+    "tradeoffSummary": "Maintains assembly speed by burning through existing raw materials."
+  }
+] as const;
 
 export const industrialFeatureModule = new StandardWorldFeatureModule({
   worldId: 'industrial',
@@ -250,4 +368,7 @@ export const industrialFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: INDUSTRIAL_EMERGENCIES,
+  restorationLayers: INDUSTRIAL_RESTORATION_LAYERS,
+  policies: INDUSTRIAL_POLICIES,
 });

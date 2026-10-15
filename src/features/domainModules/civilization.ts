@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const CIVILIZATION_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const CIVILIZATION_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Food scarcity undermines civic cohesion and maintenance labor',
   },
 ];
+
+
+export const CIVILIZATION_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "civilization.urban_desiccation",
+    "worldId": "civilization",
+    "name": "Urban Desiccation & Civic Fracture",
+    "description": "Water reserve depletion causing crop failure and civil disorder.",
+    "triggerMetric": "totalWaterStock",
+    "triggerOperator": "<",
+    "precursorThreshold": 100,
+    "activeThreshold": 40,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "civilization.action.rationing"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "totalFoodStock": 3,
+        "meanWaterworksLevel": 0.2
+      },
+      "budgetDrainPerTick": {
+        "cistern_inventory": 2
+      },
+      "secondaryHazardNodeId": "food_scarcity",
+      "description": "Empty cisterns destroy irrigated harvest and trigger rioting."
+    }
+  }
+] as const;
+
+export const CIVILIZATION_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "canal_aqueducts",
+    "name": "Canal & Aqueduct Restoration",
+    "metricKey": "totalWaterStock",
+    "baselineValue": 30,
+    "targetValue": 200,
+    "visualElements": {
+      "materialColor": "#0288d1",
+      "accentHex": "#4fc3f7",
+      "activeMeshes": [
+        "dry_brick_bed",
+        "trickling_sluice",
+        "filled_canal",
+        "marble_aqueduct_network"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Clogged and cracked masonry canals filled with dust.",
+      "stabilizing": "Dredged sluices channel mountain meltwater into towns.",
+      "restoring": "Stone aqueducts flow with cool fresh water to public fountains.",
+      "flourishing": "Majestic stepped waterfalls and full tiered water basins."
+    }
+  },
+  {
+    "id": "civic_monuments",
+    "name": "Civic Infrastructure & Monuments",
+    "metricKey": "meanWaterworksLevel",
+    "baselineValue": 1,
+    "targetValue": 10,
+    "visualElements": {
+      "materialColor": "#8d6e63",
+      "accentHex": "#bcaaa4",
+      "activeMeshes": [
+        "eroded_ruin",
+        "rebuilt_foundation",
+        "standing_colonnade",
+        "ornate_plaza"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Crumbling arches and abandoned market squares.",
+      "stabilizing": "Scaffolding and fresh mortar shore up ancient walls.",
+      "restoring": "Reconstructed civic halls buzzing with public trade.",
+      "flourishing": "Gleaming marble porticos and grand celebratory courtyards."
+    }
+  }
+] as const;
+
+export const CIVILIZATION_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "civilization.cistern_rationing_mandate",
+    "worldId": "civilization",
+    "name": "Cistern Rationing Mandate",
+    "description": "Enforces strict water quotas to preserve aquifers, suppressing irrigated crop yield.",
+    "targetHazard": "water_shortage",
+    "resourceCostsPerTick": {
+      "cistern_inventory": 2
+    },
+    "metricBenefitsPerTick": {
+      "totalWaterStock": 5
+    },
+    "sideEffectsPerTick": {
+      "totalFoodStock": -1.5
+    },
+    "tradeoffSummary": "Conserves regional water tables while cutting harvest output."
+  },
+  {
+    "id": "civilization.emergency_granary_distribution",
+    "worldId": "civilization",
+    "name": "Emergency Granary Distribution",
+    "description": "Distributes reserve food stocks freely, increasing municipal water demand.",
+    "targetHazard": "food_scarcity",
+    "resourceCostsPerTick": {
+      "grain": 3
+    },
+    "metricBenefitsPerTick": {
+      "totalFoodStock": 6
+    },
+    "sideEffectsPerTick": {
+      "totalWaterStock": -2
+    },
+    "tradeoffSummary": "Feeds starving populations at the expense of accelerated water depletion."
+  }
+] as const;
 
 export const civilizationFeatureModule = new StandardWorldFeatureModule({
   worldId: 'civilization',
@@ -249,4 +367,7 @@ export const civilizationFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: CIVILIZATION_EMERGENCIES,
+  restorationLayers: CIVILIZATION_RESTORATION_LAYERS,
+  policies: CIVILIZATION_POLICIES,
 });

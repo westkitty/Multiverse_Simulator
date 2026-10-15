@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const SIGNAL_EXPANSE_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const SIGNAL_EXPANSE_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Phase misalignment drops array gain below the threshold needed to lock onto the signal',
   },
 ];
+
+
+export const SIGNAL_EXPANSE_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "signal_expanse.carrier_jamming",
+    "worldId": "signal-expanse",
+    "name": "Ionospheric Jamming & Telemetry Blackout",
+    "description": "Atmospheric interference saturating parabolic dishes with blind static.",
+    "triggerMetric": "noise",
+    "triggerOperator": ">",
+    "precursorThreshold": 65,
+    "activeThreshold": 85,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "signal_expanse.action.dish_alignment"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "coverage": 2.5,
+        "signal": 2
+      },
+      "budgetDrainPerTick": {
+        "calibration_power": 1
+      },
+      "secondaryHazardNodeId": "dish_misalignment",
+      "description": "High noise floor severs inter-dish phasing and loses celestial targets."
+    }
+  }
+] as const;
+
+export const SIGNAL_EXPANSE_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "dish_interferometer",
+    "name": "Interferometer Dish Phasing",
+    "metricKey": "signal",
+    "baselineValue": 10,
+    "targetValue": 85,
+    "visualElements": {
+      "materialColor": "#5c6bc0",
+      "accentHex": "#9fa8da",
+      "activeMeshes": [
+        "de-phased_mesh_reflector",
+        "mechanically_steered_horn",
+        "cryogenic_receiver_hub",
+        "superconducting_interferometer_baseline"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Divergent, warped wire-mesh dishes pointing randomly at the ground.",
+      "stabilizing": "Actuators synchronize azimuth drives toward polar transit points.",
+      "restoring": "Precision parabolic antennas locked on coherent deep-space frequencies.",
+      "flourishing": "Flawlessly phased kilometer-scale radio telescope network."
+    }
+  },
+  {
+    "id": "subcarrier_noise_filter",
+    "name": "Subcarrier Noise Floor Reduction",
+    "metricKey": "noise",
+    "baselineValue": 90,
+    "targetValue": 15,
+    "visualElements": {
+      "materialColor": "#26c6da",
+      "accentHex": "#80deea",
+      "activeMeshes": [
+        "static_snow",
+        "subcarrier_frequency_lock",
+        "comb_filter_demodulator",
+        "pure_carrier_sine_wave"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Hissing static and blinding RF interference obscuring all data.",
+      "stabilizing": "Digital notch filters cancel out local ionospheric harmonics.",
+      "restoring": "Clear, filtered pulse streams resolving celestial signals.",
+      "flourishing": "Ultra-quiet cryogenic baseline receiving crisp interstellar transmissions."
+    }
+  }
+] as const;
+
+export const SIGNAL_EXPANSE_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "signal_expanse.narrowband_cryogenic_filtering",
+    "worldId": "signal-expanse",
+    "name": "Narrowband Cryogenic Filtering",
+    "description": "Chills receiver front-ends with liquid helium to cut thermal noise, narrowing beam reception angle.",
+    "targetHazard": "atmospheric_flutter",
+    "resourceCostsPerTick": {
+      "calibration_power": 3
+    },
+    "metricBenefitsPerTick": {
+      "noise": -3.5
+    },
+    "sideEffectsPerTick": {
+      "coverage": -1
+    },
+    "tradeoffSummary": "Eliminates radio noise floor completely while slightly narrowing the sky search area."
+  },
+  {
+    "id": "signal_expanse.multi_baseline_interferometric_mesh",
+    "worldId": "signal-expanse",
+    "name": "Multi-Baseline Interferometric Mesh",
+    "description": "Cross-correlates distant auxiliary antennas, introducing slight quantization jitter.",
+    "targetHazard": "telemetry_loss",
+    "resourceCostsPerTick": {
+      "relay_parts": 2
+    },
+    "metricBenefitsPerTick": {
+      "coverage": 3.5
+    },
+    "sideEffectsPerTick": {
+      "noise": 1
+    },
+    "tradeoffSummary": "Expands observable sky coverage rapidly while adding minor correlation noise."
+  }
+] as const;
 
 export const signalExpanseFeatureModule = new StandardWorldFeatureModule({
   worldId: 'signal-expanse',
@@ -247,4 +365,7 @@ export const signalExpanseFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: SIGNAL_EXPANSE_EMERGENCIES,
+  restorationLayers: SIGNAL_EXPANSE_RESTORATION_LAYERS,
+  policies: SIGNAL_EXPANSE_POLICIES,
 });

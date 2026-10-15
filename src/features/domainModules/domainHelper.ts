@@ -4,6 +4,8 @@ import {
   BudgetResourceConfig,
   CostPreview,
   CourierState,
+  EmergencyDefinition,
+  EmergencyManager,
   FacilityDefinition,
   FacilityManager,
   FeatureCapability,
@@ -13,8 +15,12 @@ import {
   HazardNode,
   LogisticsNetwork,
   LogisticsRouteEdge,
+  PolicyDefinition,
+  PolicyManager,
+  RestorationLayerDefinition,
   ScientificBudgetLedger,
   ValidatedAction,
+  VisualRestorationManager,
   WorldFeatureModule,
 } from '../contracts';
 import { createBaseVisibleState } from '../projections';
@@ -64,6 +70,23 @@ export const STANDARD_G2_CAPABILITIES: readonly FeatureCapability[] = [
   },
 ];
 
+export const STANDARD_G3_CAPABILITIES: readonly FeatureCapability[] = [
+  {
+    id: 'emergency.mitigate',
+    featureId: 'P006',
+    name: 'Mitigate Cascading Emergency',
+    description: 'Apply targeted intervention to contain or de-escalate an active emergency.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'policy.enact',
+    featureId: 'P017',
+    name: 'Enact Strategic Policy',
+    description: 'Adopt an authored tradeoff policy balancing resource burn against domain stability.',
+    minRulesVersion: 1,
+  },
+];
+
 export interface DomainModuleConfig {
   readonly worldId: string;
   readonly capabilities: readonly FeatureCapability[];
@@ -81,6 +104,9 @@ export interface DomainModuleConfig {
   }>;
   readonly initialCouriers?: readonly CourierState[];
   readonly initialRoutes?: readonly LogisticsRouteEdge[];
+  readonly emergencies?: readonly EmergencyDefinition[];
+  readonly restorationLayers?: readonly RestorationLayerDefinition[];
+  readonly policies?: readonly PolicyDefinition[];
 }
 
 export class StandardWorldFeatureModule implements WorldFeatureModule {
@@ -91,16 +117,19 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
   readonly budgetLedger: ScientificBudgetLedger;
   readonly logisticsNetwork: LogisticsNetwork;
   readonly facilityManager: FacilityManager;
+  readonly emergencyManager: EmergencyManager;
+  readonly visualRestorationManager: VisualRestorationManager;
+  readonly policyManager: PolicyManager;
   private readonly config: DomainModuleConfig;
 
   constructor(config: DomainModuleConfig) {
     this.worldId = config.worldId;
     this.config = config;
 
-    // Combine custom and standard G2 capabilities
+    // Combine custom and standard G2/G3 capabilities
     const existingCapIds = new Set(config.capabilities.map((c) => c.id));
     const mergedCaps = [...config.capabilities];
-    for (const stdCap of STANDARD_G2_CAPABILITIES) {
+    for (const stdCap of [...STANDARD_G2_CAPABILITIES, ...STANDARD_G3_CAPABILITIES]) {
       if (!existingCapIds.has(stdCap.id)) {
         mergedCaps.push(stdCap);
       }
@@ -137,6 +166,30 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     if (config.facilityDefinitions) {
       for (const f of config.facilityDefinitions) {
         this.facilityManager.registerDefinition(f);
+      }
+    }
+
+    // Initialize emergency manager
+    this.emergencyManager = new EmergencyManager(config.worldId);
+    if (config.emergencies) {
+      for (const e of config.emergencies) {
+        this.emergencyManager.registerEmergency(e);
+      }
+    }
+
+    // Initialize visual restoration manager
+    this.visualRestorationManager = new VisualRestorationManager(config.worldId);
+    if (config.restorationLayers) {
+      for (const l of config.restorationLayers) {
+        this.visualRestorationManager.registerLayer(l);
+      }
+    }
+
+    // Initialize policy manager
+    this.policyManager = new PolicyManager(config.worldId);
+    if (config.policies) {
+      for (const p of config.policies) {
+        this.policyManager.registerPolicy(p);
       }
     }
   }
@@ -228,6 +281,38 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
           capabilityId: cap.id,
           payload: { ...payload, siteId, resource },
           targetSiteId: siteId,
+        },
+      };
+    }
+
+    // P006: Emergency Mitigation
+    if (cap.id === 'emergency.mitigate') {
+      const emergencyId = String(
+        payload.emergencyId ?? this.emergencyManager.getAllDefinitions()[0]?.id ?? 'default_emergency',
+      );
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P006',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { ...payload, emergencyId },
+        },
+      };
+    }
+
+    // P017: Policy Enactment
+    if (cap.id === 'policy.enact') {
+      const policyId = String(
+        payload.policyId ?? this.policyManager.getAllPolicies()[0]?.id ?? 'default_policy',
+      );
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P017',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { ...payload, policyId },
         },
       };
     }
@@ -497,6 +582,74 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       };
     }
 
+    // Handle P006 Emergency Mitigation
+    if (action.capabilityId === 'emergency.mitigate') {
+      const emergencyId = String(payload.emergencyId);
+      const effectiveness = typeof payload.effectiveness === 'number' ? payload.effectiveness : 1.0;
+      const res = this.emergencyManager.mitigateEmergency(emergencyId, ctx.tick, effectiveness);
+
+      if (!res.success) {
+        return {
+          actionId: `${action.capabilityId}-${ctx.tick}`,
+          worldId: this.worldId,
+          tick: ctx.tick,
+          executedAtTick: ctx.tick,
+          status: 'rejected',
+          rejectionReason: res.reason,
+          debits: [],
+          deltas: [],
+          eventsEmitted: [],
+        };
+      }
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.emergency_mitigated`,
+        severity: 'info',
+        title: `Emergency Mitigated: ${emergencyId}`,
+        description: `Applied targeted mitigation to ${emergencyId} on ${this.worldId} (stage: ${res.newStage}).`,
+        sourceSystem: 'emergency-manager',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P017 Policy Enactment
+    if (action.capabilityId === 'policy.enact') {
+      const policyId = String(payload.policyId);
+      const policy = this.policyManager.getPolicy(policyId);
+      const policyName = policy ? policy.name : policyId;
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.policy_enacted`,
+        severity: 'info',
+        title: `Policy Enacted: ${policyName}`,
+        description: `Enacted strategic policy ${policyName} on ${this.worldId}.`,
+        sourceSystem: 'policy-manager',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
     // Standard priced action execution
     const debits = this.config.actionCosts[action.capabilityId] ?? [];
     const tx = this.budgetLedger.applyTransaction(action.capabilityId, debits, [], ctx.tick);
@@ -577,6 +730,26 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
         }
       },
     });
+
+    // Step emergencies
+    const numericMetrics: Record<string, number> = {};
+    for (const [k, v] of Object.entries(ctx.state)) {
+      if (typeof v === 'number') {
+        numericMetrics[k] = v;
+      }
+    }
+    this.emergencyManager.stepEmergencies(ctx.tick, numericMetrics, {
+      applyMetricDelta: (metric, delta) => {
+        if (typeof ctx.state[metric] === 'number') {
+          ctx.state[metric] = Math.max(
+            0,
+            Math.round(((ctx.state[metric] as number) + delta) * 100) / 100,
+          );
+        }
+      },
+      budgetLedger: this.budgetLedger,
+      hazardGraph: this.hazardGraph,
+    });
   }
 
   projectVisibleState(
@@ -593,6 +766,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     }
     const hazards = this.evaluateHazards(numericMetrics, 0);
     const budgetBalances = this.budgetLedger.getAllBalances();
+    const emergencies = this.emergencyManager.getAllStates();
+    const visualRestoration = this.visualRestorationManager.evaluate(numericMetrics);
+    const activePolicies = this.policyManager.getAllPolicies();
 
     return createBaseVisibleState(
       this.worldId,
@@ -602,6 +778,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       [],
       hazards,
       budgetBalances,
+      emergencies,
+      visualRestoration,
+      activePolicies,
     );
   }
 }

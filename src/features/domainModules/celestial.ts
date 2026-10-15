@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const CELESTIAL_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const CELESTIAL_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Intense thermal flux degrades orbital station radiators and habitability',
   },
 ];
+
+
+export const CELESTIAL_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "celestial.orbital_destabilization",
+    "worldId": "celestial",
+    "name": "Orbital Resonance Destabilization",
+    "description": "Eccentric orbital drift increasing solar radiation and thermal shock.",
+    "triggerMetric": "meanEccentricity",
+    "triggerOperator": ">",
+    "precursorThreshold": 0.08,
+    "activeThreshold": 0.15,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "celestial.action.thruster_burn"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "meanHabitabilityIndex": 0.05,
+        "meanTerrestrialTempK": 2
+      },
+      "budgetDrainPerTick": {
+        "propellant": 2
+      },
+      "secondaryHazardNodeId": "solar_flux_surge",
+      "description": "Severe elliptical drift threatens catastrophic atmospheric boil-off."
+    }
+  }
+] as const;
+
+export const CELESTIAL_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "orbital_concentricity",
+    "name": "Orbital Path Concentricity",
+    "metricKey": "meanEccentricity",
+    "baselineValue": 0.25,
+    "targetValue": 0.01,
+    "visualElements": {
+      "materialColor": "#7e57c2",
+      "accentHex": "#b39ddb",
+      "activeMeshes": [
+        "decaying_spiral",
+        "eccentric_ellipse",
+        "corrected_trajectory",
+        "circular_keplerian_orbit"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Chaotic oscillating trajectory dipping perilously close to periastron.",
+      "stabilizing": "Automated burn vectors dampen orbital oscillation.",
+      "restoring": "Predictable, stable elliptical path across stellar plane.",
+      "flourishing": "Flawlessly circular Keplerian orbit delivering uniform insolation."
+    }
+  },
+  {
+    "id": "radiator_panels",
+    "name": "Thermal Radiator Arrays",
+    "metricKey": "meanHabitabilityIndex",
+    "baselineValue": 0.2,
+    "targetValue": 0.95,
+    "visualElements": {
+      "materialColor": "#26a69a",
+      "accentHex": "#80cbc4",
+      "activeMeshes": [
+        "scorched_plating",
+        "deployable_baffle",
+        "glowing_coolant_fin",
+        "balanced_heat_shield"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Blistered heat shields radiating uncontrolled thermal spikes.",
+      "stabilizing": "Coolant lines flushed and purged of vapor locks.",
+      "restoring": "Deployable radiant fins dissipate stellar excess into deep space.",
+      "flourishing": "Optimal thermal shielding shielding living habitats year-round."
+    }
+  }
+] as const;
+
+export const CELESTIAL_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "celestial.reaction_thruster_stationkeeping",
+    "worldId": "celestial",
+    "name": "Reaction Thruster Stationkeeping",
+    "description": "Burns reaction mass to circularize orbits, venting combustion products across instrument fields.",
+    "targetHazard": "orbital_drift",
+    "resourceCostsPerTick": {
+      "propellant": 3
+    },
+    "metricBenefitsPerTick": {
+      "meanEccentricity": -0.015
+    },
+    "sideEffectsPerTick": {
+      "meanHabitabilityIndex": -0.02
+    },
+    "tradeoffSummary": "Direct orbital stabilization at high propellant burn, clouding telescope visibility."
+  },
+  {
+    "id": "celestial.thermal_shutter_orientation",
+    "worldId": "celestial",
+    "name": "Thermal Shutter Orientation",
+    "description": "Angles sunshields against extreme stellar flux, incurring minor orbital perturbation.",
+    "targetHazard": "solar_flux_surge",
+    "resourceCostsPerTick": {
+      "thermal_protection": 2
+    },
+    "metricBenefitsPerTick": {
+      "meanHabitabilityIndex": 0.04
+    },
+    "sideEffectsPerTick": {
+      "meanEccentricity": 0.005
+    },
+    "tradeoffSummary": "Mitigates deadly radiation spikes while imparting slight solar sail drift."
+  }
+] as const;
 
 export const celestialFeatureModule = new StandardWorldFeatureModule({
   worldId: 'celestial',
@@ -247,4 +365,7 @@ export const celestialFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: CELESTIAL_EMERGENCIES,
+  restorationLayers: CELESTIAL_RESTORATION_LAYERS,
+  policies: CELESTIAL_POLICIES,
 });

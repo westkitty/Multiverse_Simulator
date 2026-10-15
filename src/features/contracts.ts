@@ -12,9 +12,9 @@ import type {
 } from './budgetLedger';
 import type { LogisticsNetwork } from './logisticsWeb';
 import type { FacilityManager } from './facilitySystem';
-import type { EmergencyManager } from './emergencySystem';
-import type { VisualRestorationManager } from './visualRestoration';
-import type { PolicyManager } from './policyTrial';
+import type { EmergencyManager, EmergencyState } from './emergencySystem';
+import type { VisualRestorationManager, VisualRestorationSnapshot } from './visualRestoration';
+import type { PolicyDefinition, PolicyManager } from './policyTrial';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
@@ -123,6 +123,9 @@ export interface VisibleFeatureState {
   disclosedEntities: VisibleEntitySummary[];
   hazards?: HazardEvaluationResult;
   budgetBalances?: Record<string, number>;
+  emergencies?: EmergencyState[];
+  visualRestoration?: VisualRestorationSnapshot;
+  activePolicies?: PolicyDefinition[];
 }
 
 export interface WorldFeatureModule<

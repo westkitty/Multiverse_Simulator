@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const HOLLOW_DEEP_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const HOLLOW_DEEP_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Acidic gas pockets and water saturation weaken load-bearing rock pillars',
   },
 ];
+
+
+export const HOLLOW_DEEP_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "hollow_deep.chasm_subsidence",
+    "worldId": "hollow-deep",
+    "name": "Cavern Aquifer Surge & Roof Collapse",
+    "description": "Pressurized aquifer breaching limestone vaults and drowning lower galleries.",
+    "triggerMetric": "water",
+    "triggerOperator": ">",
+    "precursorThreshold": 65,
+    "activeThreshold": 85,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "hollow_deep.action.bracing"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "stress": 2.5,
+        "gas": 1.5
+      },
+      "budgetDrainPerTick": {
+        "bracing": 1
+      },
+      "secondaryHazardNodeId": "pillar_crush",
+      "description": "Waterlogged ceilings buckle under hydrostatic load, releasing toxic damp."
+    }
+  }
+] as const;
+
+export const HOLLOW_DEEP_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "cavern_buttresses",
+    "name": "Cathedral Pillar Buttresses",
+    "metricKey": "stress",
+    "baselineValue": 90,
+    "targetValue": 15,
+    "visualElements": {
+      "materialColor": "#5d4037",
+      "accentHex": "#8d6e63",
+      "activeMeshes": [
+        "spalling_limestone_roof",
+        "timber_cribbing_post",
+        "reinforced_arch_strut",
+        "impenetrable_granite_colonnade"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Shearing stalactites and groaning stone pillars on the verge of collapse.",
+      "stabilizing": "Heavy timber cribbing erected to halt immediate roof settling.",
+      "restoring": "Arched masonry buttresses distribute overburden weight safely.",
+      "flourishing": "Majestic, indestructible subterranean vault supported by soaring colonnades."
+    }
+  },
+  {
+    "id": "siphon_drainage",
+    "name": "Subterranean Siphon Drainage",
+    "metricKey": "water",
+    "baselineValue": 90,
+    "targetValue": 20,
+    "visualElements": {
+      "materialColor": "#00acc1",
+      "accentHex": "#4dd0e1",
+      "activeMeshes": [
+        "submerged_tunnels",
+        "rotary_slurry_pump",
+        "gravity_siphon_conduit",
+        "dry_paved_catacomb_way"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Murky subterranean floods completely submerging historic pathways.",
+      "stabilizing": "High-volume pumps clear access through high water traps.",
+      "restoring": "Continuous gravity siphons direct drainage into abyssal sumps.",
+      "flourishing": "Dry, echoing paved walkways throughout the monumental underground cavern."
+    }
+  }
+] as const;
+
+export const HOLLOW_DEEP_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "hollow_deep.methane_vent_flaring",
+    "worldId": "hollow-deep",
+    "name": "Methane Vent Flaring",
+    "description": "Ignites gas pockets to reduce explosion risk, causing thermal spalling in ceiling stone.",
+    "targetHazard": "choke_damp_accumulation",
+    "resourceCostsPerTick": {
+      "vent_energy": 3
+    },
+    "metricBenefitsPerTick": {
+      "gas": -3.5
+    },
+    "sideEffectsPerTick": {
+      "stress": 1
+    },
+    "tradeoffSummary": "Safely purges explosive gas at the cost of inducing thermal stress fractures in rock."
+  },
+  {
+    "id": "hollow_deep.heavy_hydraulic_underpinning",
+    "worldId": "hollow-deep",
+    "name": "Heavy Hydraulic Underpinning",
+    "description": "Jacks heavy steel pillars beneath unstable spans, disturbing subterranean water veins.",
+    "targetHazard": "pillar_crush",
+    "resourceCostsPerTick": {
+      "bracing": 3
+    },
+    "metricBenefitsPerTick": {
+      "stress": -4
+    },
+    "sideEffectsPerTick": {
+      "water": 1.5
+    },
+    "tradeoffSummary": "Stops cavern roof collapses while puncturing minor water-bearing strata."
+  }
+] as const;
 
 export const hollowDeepFeatureModule = new StandardWorldFeatureModule({
   worldId: 'hollow-deep',
@@ -247,4 +365,7 @@ export const hollowDeepFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: HOLLOW_DEEP_EMERGENCIES,
+  restorationLayers: HOLLOW_DEEP_RESTORATION_LAYERS,
+  policies: HOLLOW_DEEP_POLICIES,
 });

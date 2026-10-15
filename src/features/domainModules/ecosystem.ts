@@ -1,5 +1,8 @@
 import {
+  EmergencyDefinition,
   FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition,
   HazardDependencyGraph,
   HazardLink,
   HazardNode,
@@ -233,6 +236,122 @@ export const ECOSYSTEM_ROUTES = [
   },
 ];
 
+
+export const ECOSYSTEM_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "ecosystem.watershed_collapse",
+    "worldId": "ecosystem",
+    "name": "Watershed Collapse & Nutrient Runaway",
+    "description": "Critical moisture loss causing rapid soil salinization and canopy collapse.",
+    "triggerMetric": "moisture",
+    "triggerOperator": "<",
+    "precursorThreshold": 35,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "ecosystem.action.habitat_corridors",
+      "ecosystem.action.nutrient_balancing"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "biomass": 1.5,
+        "nutrients": 1
+      },
+      "budgetDrainPerTick": {
+        "water_stores": 1
+      },
+      "secondaryHazardNodeId": "nutrient_runaway",
+      "description": "Runaway drying decimates living biomass and drains emergency water stores."
+    }
+  }
+] as const;
+
+export const ECOSYSTEM_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "wetland_channels",
+    "name": "Wetland Channel Connectivity",
+    "metricKey": "moisture",
+    "baselineValue": 15,
+    "targetValue": 80,
+    "visualElements": {
+      "materialColor": "#1976d2",
+      "accentHex": "#64b5f6",
+      "activeMeshes": [
+        "dry_marsh_bed",
+        "shallow_rill",
+        "connected_creek",
+        "deep_water_lagoon"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Cracked, parched mud beds with no surface water.",
+      "stabilizing": "Trickling seepages connect isolated pools.",
+      "restoring": "Braided channels flow continuously across the flood basin.",
+      "flourishing": "Deep open lagoons surrounded by lush reed beds."
+    }
+  },
+  {
+    "id": "forest_canopy",
+    "name": "Dead Canopy Regrowth",
+    "metricKey": "biomass",
+    "baselineValue": 10,
+    "targetValue": 90,
+    "visualElements": {
+      "materialColor": "#2e7d32",
+      "accentHex": "#81c784",
+      "activeMeshes": [
+        "charred_stumps",
+        "sapling_groundcover",
+        "mature_oak_groves",
+        "ancient_canopy"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Dead gray canopy and bare scorched soil.",
+      "stabilizing": "Hardy pioneer moss and scrub begin anchoring the soil.",
+      "restoring": "Vibrant green sapling thickets shade the understory.",
+      "flourishing": "Towering cathedral forest with thick, interlocking canopy."
+    }
+  }
+] as const;
+
+export const ECOSYSTEM_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "ecosystem.emergency_aquifer_recharge",
+    "worldId": "ecosystem",
+    "name": "Emergency Aquifer Recharge",
+    "description": "Forces high-pressure water stores into deep subterranean aquifers.",
+    "targetHazard": "watershed_drought",
+    "resourceCostsPerTick": {
+      "water_stores": 3
+    },
+    "metricBenefitsPerTick": {
+      "moisture": 2.2
+    },
+    "sideEffectsPerTick": {
+      "nutrients": 0.8
+    },
+    "tradeoffSummary": "Rapid moisture recovery at heavy water store burn, causing mineral leaching."
+  },
+  {
+    "id": "ecosystem.controlled_marsh_mulching",
+    "worldId": "ecosystem",
+    "name": "Controlled Marsh Mulching",
+    "description": "Spreads protective biological seed matting to reduce surface evaporation.",
+    "targetHazard": "watershed_drought",
+    "resourceCostsPerTick": {
+      "seed_stocks": 2
+    },
+    "metricBenefitsPerTick": {
+      "moisture": 0.8
+    },
+    "sideEffectsPerTick": {
+      "biomass": 0.3
+    },
+    "tradeoffSummary": "Conserves water stores and prevents erosion, but consumes precious seed stock."
+  }
+] as const;
+
 export const ECOSYSTEM_CONFIG = {
   worldId: 'ecosystem',
   capabilities: ECOSYSTEM_CAPABILITIES,
@@ -250,6 +369,9 @@ export const ECOSYSTEM_CONFIG = {
   initialDepots: ECOSYSTEM_DEPOTS,
   initialCouriers: ECOSYSTEM_COURIERS,
   initialRoutes: ECOSYSTEM_ROUTES,
+  emergencies: ECOSYSTEM_EMERGENCIES,
+  restorationLayers: ECOSYSTEM_RESTORATION_LAYERS,
+  policies: ECOSYSTEM_POLICIES,
 };
 
 export class EcosystemFeatureModule extends StandardWorldFeatureModule {

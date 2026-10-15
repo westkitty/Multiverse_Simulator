@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const TIMEWORN_EMPIRE_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const TIMEWORN_EMPIRE_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Exposed surface ruins collapse into subterranean vaults, destroying buried archives',
   },
 ];
+
+
+export const TIMEWORN_EMPIRE_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "timeworn_empire.archaeological_scour",
+    "worldId": "timeworn-empire",
+    "name": "Sandstorm Scour & Archive Loss",
+    "description": "Fierce desert abrasion grinding away irreplaceable historic bas-reliefs.",
+    "triggerMetric": "erosion",
+    "triggerOperator": ">",
+    "precursorThreshold": 65,
+    "activeThreshold": 85,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "timeworn_empire.action.preservation"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "exposure": 2,
+        "burial": 1.5
+      },
+      "budgetDrainPerTick": {
+        "conservation_materials": 1
+      },
+      "secondaryHazardNodeId": "monument_exposure",
+      "description": "Centuries of recorded history sandblasted into illegible dust."
+    }
+  }
+] as const;
+
+export const TIMEWORN_EMPIRE_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "monumental_colonnades",
+    "name": "Imperial Monument Restoration",
+    "metricKey": "erosion",
+    "baselineValue": 95,
+    "targetValue": 15,
+    "visualElements": {
+      "materialColor": "#d4e157",
+      "accentHex": "#e6ee9c",
+      "activeMeshes": [
+        "weathered_pedestal",
+        "scaffolded_entablature",
+        "re-erected_fluted_column",
+        "pristine_imperial_propylon"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Wind-scoured stubs and toppled limestone entablatures buried in scree.",
+      "stabilizing": "Protective windbreak scaffolding wraps fragile column drums.",
+      "restoring": "Re-erected triumphal porticos stand against the desert horizon.",
+      "flourishing": "Flawlessly conserved imperial monuments crowned with golden capitals."
+    }
+  },
+  {
+    "id": "epigraphic_archives",
+    "name": "Epigraphic Library Conservation",
+    "metricKey": "exposure",
+    "baselineValue": 90,
+    "targetValue": 20,
+    "visualElements": {
+      "materialColor": "#c0ca33",
+      "accentHex": "#dce775",
+      "activeMeshes": [
+        "pulverized_tablets",
+        "chemical_mortar_consolidation",
+        "sheltered_scriptorium",
+        "deciphered_stele_hall"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Flaking inscriptions and cracked tablets exposed to scorching sun.",
+      "stabilizing": "Chemical consolidants arrest crumbling plaster and lime.",
+      "restoring": "Enclosed archival pavilions shield ancient stelae from sand.",
+      "flourishing": "Illuminated hall of inscriptions completely deciphered and preserved."
+    }
+  }
+] as const;
+
+export const TIMEWORN_EMPIRE_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "timeworn_empire.chemical_silicate_consolidation",
+    "worldId": "timeworn-empire",
+    "name": "Chemical Silicate Consolidation",
+    "description": "Sprays silicate binders to arrest masonry crumble, chemically discoloring ancient inscriptions.",
+    "targetHazard": "sandstorm_scour",
+    "resourceCostsPerTick": {
+      "conservation_materials": 3
+    },
+    "metricBenefitsPerTick": {
+      "erosion": -3.5
+    },
+    "sideEffectsPerTick": {
+      "exposure": 1
+    },
+    "tradeoffSummary": "Haults stone erosion completely but leaves a modern protective glaze over artifacts."
+  },
+  {
+    "id": "timeworn_empire.protective_sand_berm_deposition",
+    "worldId": "timeworn-empire",
+    "name": "Protective Earthen Berm Burial",
+    "description": "Bulldozes protective earth dikes over delicate frescoes, restricting excavation access.",
+    "targetHazard": "monument_exposure",
+    "resourceCostsPerTick": {
+      "excavation_capacity": 2
+    },
+    "metricBenefitsPerTick": {
+      "exposure": -3
+    },
+    "sideEffectsPerTick": {
+      "burial": 2.5
+    },
+    "tradeoffSummary": "Shields priceless reliefs from weather while temporarily sealing them under sand."
+  }
+] as const;
 
 export const timewornEmpireFeatureModule = new StandardWorldFeatureModule({
   worldId: 'timeworn-empire',
@@ -247,4 +365,7 @@ export const timewornEmpireFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: TIMEWORN_EMPIRE_EMERGENCIES,
+  restorationLayers: TIMEWORN_EMPIRE_RESTORATION_LAYERS,
+  policies: TIMEWORN_EMPIRE_POLICIES,
 });

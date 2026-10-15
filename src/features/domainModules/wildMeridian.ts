@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const WILD_MERIDIAN_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const WILD_MERIDIAN_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Fragmented vegetation denies herbivores adequate forage, triggering starvation',
   },
 ];
+
+
+export const WILD_MERIDIAN_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "wild_meridian.savanna_desertification",
+    "worldId": "wild-meridian",
+    "name": "Savanna Drought & Herd Fragmentation",
+    "description": "Dry season waterhole depletion driving native herds into starvation.",
+    "triggerMetric": "water",
+    "triggerOperator": "<",
+    "precursorThreshold": 35,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "wild_meridian.action.waterhole_dredging"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "vegetation": 1.8,
+        "wildlife": 1.2
+      },
+      "budgetDrainPerTick": {
+        "stored_water": 1
+      },
+      "secondaryHazardNodeId": "canopy_fragmentation",
+      "description": "Desiccated grassland causes herd stampedes and brush fires."
+    }
+  }
+] as const;
+
+export const WILD_MERIDIAN_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "riparian_corridors",
+    "name": "Riparian River Corridor",
+    "metricKey": "water",
+    "baselineValue": 15,
+    "targetValue": 85,
+    "visualElements": {
+      "materialColor": "#43a047",
+      "accentHex": "#81c784",
+      "activeMeshes": [
+        "sunbaked_wash",
+        "willow_shoot_hedgerow",
+        "meandering_riverine_forest",
+        "permanent_oxbow_wetland"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Cracked white riverbed littered with bleached driftwood.",
+      "stabilizing": "Willows and sedge grass anchor the restored banks.",
+      "restoring": "Perennial stream connecting deep watering holes.",
+      "flourishing": "Lush riparian gallery forest sheltering rich biodiversity."
+    }
+  },
+  {
+    "id": "wildlife_pastures",
+    "name": "Native Herd Grazing Grounds",
+    "metricKey": "wildlife",
+    "baselineValue": 10,
+    "targetValue": 80,
+    "visualElements": {
+      "materialColor": "#7cb342",
+      "accentHex": "#aed581",
+      "activeMeshes": [
+        "bleached_skeletons",
+        "fenced_recovery_paddock",
+        "migrating_antelope_herd",
+        "thriving_bison_reserve"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Eroded dust bowl with no animal sightings.",
+      "stabilizing": "Small breeding herds return to protected watering enclosures.",
+      "restoring": "Vibrant migrations moving along ancestral paths.",
+      "flourishing": "Vast savanna teeming with thousands of roaming wild ungulates."
+    }
+  }
+] as const;
+
+export const WILD_MERIDIAN_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "wild_meridian.solar_well_groundwater_pumping",
+    "worldId": "wild-meridian",
+    "name": "Solar Well Groundwater Pumping",
+    "description": "Runs solar pumps to fill water troughs, eroding surrounding pasture from intense grazing.",
+    "targetHazard": "watershed_depletion",
+    "resourceCostsPerTick": {
+      "stored_water": 2
+    },
+    "metricBenefitsPerTick": {
+      "water": 2.4
+    },
+    "sideEffectsPerTick": {
+      "vegetation": -0.5
+    },
+    "tradeoffSummary": "Guarantees animal drinking water but trampled vegetation surrounds wells."
+  },
+  {
+    "id": "wild_meridian.rotational_grazing_enclosure",
+    "worldId": "wild-meridian",
+    "name": "Rotational Grazing Enclosure",
+    "description": "Fences off denuded steppe to permit grass recovery, temporarily restricting wild herds.",
+    "targetHazard": "canopy_fragmentation",
+    "resourceCostsPerTick": {
+      "field_energy": 2
+    },
+    "metricBenefitsPerTick": {
+      "vegetation": 2
+    },
+    "sideEffectsPerTick": {
+      "wildlife": -0.8
+    },
+    "tradeoffSummary": "Restores deep native grassland root systems while temporarily limiting herd grazing area."
+  }
+] as const;
 
 export const wildMeridianFeatureModule = new StandardWorldFeatureModule({
   worldId: 'wild-meridian',
@@ -247,4 +365,7 @@ export const wildMeridianFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: WILD_MERIDIAN_EMERGENCIES,
+  restorationLayers: WILD_MERIDIAN_RESTORATION_LAYERS,
+  policies: WILD_MERIDIAN_POLICIES,
 });

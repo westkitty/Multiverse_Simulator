@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const ATMOSPHERE_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const ATMOSPHERE_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Violent pressure drops cause runaway thermal heating and sensor blackout',
   },
 ];
+
+
+export const ATMOSPHERE_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "atmosphere.vortex_collapse",
+    "worldId": "atmosphere",
+    "name": "Stratospheric Vortex Collapse",
+    "description": "Moisture divergence creates violent thermal turbulence and blinding dust fronts.",
+    "triggerMetric": "meanHumidityPct",
+    "triggerOperator": "<",
+    "precursorThreshold": 35,
+    "activeThreshold": 20,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "atmosphere.action.cloud_seeding"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "meanPressureHpa": 5,
+        "meanTemperatureC": 1.2
+      },
+      "budgetDrainPerTick": {
+        "reagents": 1
+      },
+      "secondaryHazardNodeId": "storm_instability",
+      "description": "Atmospheric instability buffets sensor masts and boils off moisture."
+    }
+  }
+] as const;
+
+export const ATMOSPHERE_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "cloud_bands",
+    "name": "Cloud Band Stratification",
+    "metricKey": "meanHumidityPct",
+    "baselineValue": 15,
+    "targetValue": 70,
+    "visualElements": {
+      "materialColor": "#78909c",
+      "accentHex": "#b0bec5",
+      "activeMeshes": [
+        "thin_haze",
+        "scattered_cirrus",
+        "dense_cumulus",
+        "stable_vapor_belt"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Torn, chaotic wisps of dry atmospheric smog.",
+      "stabilizing": "Layered cirrus sheets shield lower zones from solar glare.",
+      "restoring": "Moist cumulus decks roll across the planetary horizon.",
+      "flourishing": "Majestic, balanced cloud belts delivering rhythmic rainfall."
+    }
+  },
+  {
+    "id": "platform_corrosion",
+    "name": "Aerostat Weathering & Stabilization",
+    "metricKey": "meanTemperatureC",
+    "baselineValue": 45,
+    "targetValue": 15,
+    "visualElements": {
+      "materialColor": "#ff7043",
+      "accentHex": "#ffab91",
+      "activeMeshes": [
+        "weathered_spire",
+        "thermal_coating",
+        "aerodynamic_baffle",
+        "climate_array"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Charred, overheated sensor towers and peeling thermal tiles.",
+      "stabilizing": "Active coolant pumps bring outer hull temperatures down.",
+      "restoring": "Reflective ceramic panels deflect harsh stratospheric heat.",
+      "flourishing": "Calm, stabilized aerostat platforms gliding in thermal equilibrium."
+    }
+  }
+] as const;
+
+export const ATMOSPHERE_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "atmosphere.aerosol_seeding_injection",
+    "worldId": "atmosphere",
+    "name": "Aerosol Seeding Injection",
+    "description": "Catalyzes moisture coalescence with chemical seeding, elevating local turbulence.",
+    "targetHazard": "moisture_loss",
+    "resourceCostsPerTick": {
+      "reagents": 3
+    },
+    "metricBenefitsPerTick": {
+      "meanHumidityPct": 2.5
+    },
+    "sideEffectsPerTick": {
+      "meanPressureHpa": 3
+    },
+    "tradeoffSummary": "Condenses atmospheric vapor quickly while spiking local barometric pressure."
+  },
+  {
+    "id": "atmosphere.high_altitude_shelter_pressurization",
+    "worldId": "atmosphere",
+    "name": "Gondola Shelter Pressurization",
+    "description": "Heats observation gondolas at the expense of regional vapor condensation.",
+    "targetHazard": "monitoring_blindness",
+    "resourceCostsPerTick": {
+      "sensor_power": 2
+    },
+    "metricBenefitsPerTick": {
+      "meanTemperatureC": -1.5
+    },
+    "sideEffectsPerTick": {
+      "meanHumidityPct": -0.8
+    },
+    "tradeoffSummary": "Stabilizes habitability temperatures while stripping ambient humidity."
+  }
+] as const;
 
 export const atmosphereFeatureModule = new StandardWorldFeatureModule({
   worldId: 'atmosphere',
@@ -247,4 +365,7 @@ export const atmosphereFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: ATMOSPHERE_EMERGENCIES,
+  restorationLayers: ATMOSPHERE_RESTORATION_LAYERS,
+  policies: ATMOSPHERE_POLICIES,
 });

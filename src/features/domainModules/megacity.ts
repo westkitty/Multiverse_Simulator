@@ -1,4 +1,7 @@
-import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { EmergencyDefinition,
+  FeatureCapability,
+  PolicyDefinition,
+  RestorationLayerDefinition, HazardLink, HazardNode } from '../contracts';
 import { StandardWorldFeatureModule } from './domainHelper';
 
 export const MEGACITY_CAPABILITIES: readonly FeatureCapability[] = [
@@ -116,6 +119,121 @@ export const MEGACITY_HAZARD_LINKS: readonly HazardLink[] = [
     description: 'Toxic urban flooding submerges thoroughfares and severs neighborhood transit',
   },
 ];
+
+
+export const MEGACITY_EMERGENCIES: readonly EmergencyDefinition[] = [
+  {
+    "id": "megacity.grid_collapse",
+    "worldId": "megacity",
+    "name": "Cascading District Power & Pumping Collapse",
+    "description": "Substation trip disabling stormwater drainage and isolating sectors.",
+    "triggerMetric": "cityLivabilityIndex",
+    "triggerOperator": "<",
+    "precursorThreshold": 45,
+    "activeThreshold": 25,
+    "escalateDelayTicks": 4,
+    "containmentActionIds": [
+      "megacity.action.substation_restart"
+    ],
+    "consequences": {
+      "metricPenaltiesPerTick": {
+        "totalHousingCapacityK": 5,
+        "meanPollutionAqi": 4
+      },
+      "budgetDrainPerTick": {
+        "district_fuel": 2
+      },
+      "secondaryHazardNodeId": "drainage_pump_failure",
+      "description": "Submerged electrical vaults trigger blackouts and displace thousands."
+    }
+  }
+] as const;
+
+export const MEGACITY_RESTORATION_LAYERS: readonly RestorationLayerDefinition[] = [
+  {
+    "id": "transit_corridors",
+    "name": "Transit Corridor Drainage",
+    "metricKey": "cityLivabilityIndex",
+    "baselineValue": 20,
+    "targetValue": 85,
+    "visualElements": {
+      "materialColor": "#ffb300",
+      "accentHex": "#ffe082",
+      "activeMeshes": [
+        "gridlocked_debris",
+        "cleared_expressway",
+        "maglev_elevated_line",
+        "automated_transit_artery"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Flooded subterranean tracks and impassable drowned highways.",
+      "stabilizing": "High-capacity pump trucks clear major tunnel choke points.",
+      "restoring": "Automated maglev shuttles resume regular commuter schedules.",
+      "flourishing": "Silent, hyper-connected transit arteries humming across city tiers."
+    }
+  },
+  {
+    "id": "facade_illumination",
+    "name": "Arcology Facade Illumination",
+    "metricKey": "totalHousingCapacityK",
+    "baselineValue": 50,
+    "targetValue": 200,
+    "visualElements": {
+      "materialColor": "#00e676",
+      "accentHex": "#b9f6ca",
+      "activeMeshes": [
+        "darkened_spires",
+        "isolated_emergency_clusters",
+        "glowing_facade_grid",
+        "pulsing_cybernetic_megalopolis"
+      ]
+    },
+    "stageDescriptions": {
+      "degraded": "Pitch-black monolithic skyscrapers towering in darkness.",
+      "stabilizing": "Emergency generators restore light to primary residential lobbies.",
+      "restoring": "Luminescent facade panels glow across mid-level tiers.",
+      "flourishing": "Dazzling neon megalopolis vibrant with life and activity."
+    }
+  }
+] as const;
+
+export const MEGACITY_POLICIES: readonly PolicyDefinition[] = [
+  {
+    "id": "megacity.backup_generator_substation_fueling",
+    "worldId": "megacity",
+    "name": "Backup Generator Substation Fueling",
+    "description": "Fires diesel turbine generators to power arcologies, spiking regional smog.",
+    "targetHazard": "substation_blackout",
+    "resourceCostsPerTick": {
+      "district_fuel": 3
+    },
+    "metricBenefitsPerTick": {
+      "cityLivabilityIndex": 3.5
+    },
+    "sideEffectsPerTick": {
+      "meanPollutionAqi": 5
+    },
+    "tradeoffSummary": "Rapid power restoration at heavy fuel expenditure, generating heavy air pollution."
+  },
+  {
+    "id": "megacity.subway_sluice_pump_override",
+    "worldId": "megacity",
+    "name": "Subway Sluice Pump Override",
+    "description": "Forces drainage pumps beyond rated duty cycles to save flooded housing sectors.",
+    "targetHazard": "drainage_pump_failure",
+    "resourceCostsPerTick": {
+      "spare_parts": 2
+    },
+    "metricBenefitsPerTick": {
+      "totalHousingCapacityK": 6
+    },
+    "sideEffectsPerTick": {
+      "cityLivabilityIndex": -1
+    },
+    "tradeoffSummary": "Saves flooded apartments while straining municipal mechanical components."
+  }
+] as const;
 
 export const megacityFeatureModule = new StandardWorldFeatureModule({
   worldId: 'megacity',
@@ -247,4 +365,7 @@ export const megacityFeatureModule = new StandardWorldFeatureModule({
       "fuelCost": 1
     }
   ],
+  emergencies: MEGACITY_EMERGENCIES,
+  restorationLayers: MEGACITY_RESTORATION_LAYERS,
+  policies: MEGACITY_POLICIES,
 });
