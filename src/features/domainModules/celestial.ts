@@ -153,4 +153,98 @@ export const celestialFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['meanEccentricity', 'meanTerrestrialTempK', 'meanHabitabilityIndex'],
+  facilityDefinitions: [
+    {
+      "typeId": "transit_beacon",
+      "worldId": "celestial",
+      "name": "Orbital Transit Beacon",
+      "description": "Deep-space navigation and telemetry beacon correcting orbital drift.",
+      "buildMaterialsCost": [
+        {
+          "resource": "propellant",
+          "amount": 10
+        },
+        {
+          "resource": "orbital_hardware",
+          "amount": 4
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "propellant",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "orbitalStabilityIndex",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "radiation_shield",
+      "worldId": "celestial",
+      "name": "Magnetic Radiation Shield",
+      "description": "Deflects coronal mass ejections and stabilizes incident flux tolerance.",
+      "buildMaterialsCost": [
+        {
+          "resource": "thermal_protection",
+          "amount": 6
+        },
+        {
+          "resource": "propellant",
+          "amount": 8
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "propellant",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "fluxTolerancePct",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-probe-dock",
+      "capacity": 100,
+      "inventory": {
+        "propellant": 40,
+        "orbital_hardware": 15,
+        "thermal_protection": 20
+      }
+    },
+    {
+      "siteId": "site-observatory",
+      "capacity": 100,
+      "inventory": {
+        "propellant": 20,
+        "orbital_hardware": 10,
+        "thermal_protection": 10
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-celestial-1",
+      "name": "Orbital Tug Pod",
+      "carrierType": "orbital_pod",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-probe-dock",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-probe-dock",
+      "toSiteId": "site-observatory",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

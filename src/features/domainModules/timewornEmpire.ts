@@ -153,4 +153,98 @@ export const timewornEmpireFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['erosion', 'exposure', 'burial'],
+  facilityDefinitions: [
+    {
+      "typeId": "strata_shelter",
+      "worldId": "timeworn-empire",
+      "name": "Archaeological Strata Shelter",
+      "description": "Canopy structure protecting ancient limestone foundations from erosion.",
+      "buildMaterialsCost": [
+        {
+          "resource": "conservation_materials",
+          "amount": 8
+        },
+        {
+          "resource": "crew_time",
+          "amount": 10
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "conservation_materials",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "foundationHealth",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "field_conservation_workshop",
+      "worldId": "timeworn-empire",
+      "name": "Field Epigraphy Workshop",
+      "description": "On-site laboratory for stabilizing crumbling masonry inscriptions.",
+      "buildMaterialsCost": [
+        {
+          "resource": "excavation_capacity",
+          "amount": 6
+        },
+        {
+          "resource": "conservation_materials",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "conservation_materials",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "preservationScore",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-foundation",
+      "capacity": 100,
+      "inventory": {
+        "conservation_materials": 30,
+        "crew_time": 40,
+        "excavation_capacity": 20
+      }
+    },
+    {
+      "siteId": "site-terrace",
+      "capacity": 100,
+      "inventory": {
+        "conservation_materials": 20,
+        "crew_time": 20,
+        "excavation_capacity": 10
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-empire-1",
+      "name": "Terrace Supply Transport",
+      "carrierType": "ground_rover",
+      "capacity": 35,
+      "speed": 1,
+      "location": "site-foundation",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-foundation",
+      "toSiteId": "site-terrace",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

@@ -153,4 +153,98 @@ export const wildMeridianFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['water', 'vegetation', 'wildlife'],
+  facilityDefinitions: [
+    {
+      "typeId": "migration_refuge",
+      "worldId": "wild-meridian",
+      "name": "Riparian Migration Refuge",
+      "description": "Protected wildlife sanctuary safeguarding endangered migratory corridors.",
+      "buildMaterialsCost": [
+        {
+          "resource": "stored_water",
+          "amount": 8
+        },
+        {
+          "resource": "seed_stock",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "stored_water",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "faunaIntegrity",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "waterway_restoration",
+      "worldId": "wild-meridian",
+      "name": "Restored Valley Waterway",
+      "description": "Engineered culverts and flow channels sustaining perennial stream flow.",
+      "buildMaterialsCost": [
+        {
+          "resource": "field_energy",
+          "amount": 8
+        },
+        {
+          "resource": "stored_water",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "field_energy",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "streamFlow",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-refuge",
+      "capacity": 100,
+      "inventory": {
+        "stored_water": 30,
+        "seed_stock": 25,
+        "field_energy": 35
+      }
+    },
+    {
+      "siteId": "site-pass",
+      "capacity": 100,
+      "inventory": {
+        "stored_water": 20,
+        "seed_stock": 15,
+        "field_energy": 25
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-meridian-1",
+      "name": "Valley Scout Rover",
+      "carrierType": "ground_rover",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-refuge",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-refuge",
+      "toSiteId": "site-pass",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

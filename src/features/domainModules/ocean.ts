@@ -153,4 +153,98 @@ export const oceanFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['meanSurfaceOxygenMgL', 'meanCarbonatePh', 'meanSurfaceNutrientsUmol'],
+  facilityDefinitions: [
+    {
+      "typeId": "oxygenation_module",
+      "worldId": "ocean",
+      "name": "Benthic Oxygenation Module",
+      "description": "Aerates hypoxic dead zones and elevates dissolved oxygen levels.",
+      "buildMaterialsCost": [
+        {
+          "resource": "oxygenation_capacity",
+          "amount": 5
+        },
+        {
+          "resource": "rov_power",
+          "amount": 10
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "rov_power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "dissolvedOxygenMgL",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "reef_nursery",
+      "worldId": "ocean",
+      "name": "Benthic Reef Nursery",
+      "description": "Nurtures coral micro-colonies and accelerates benthic structural health.",
+      "buildMaterialsCost": [
+        {
+          "resource": "nutrient_reserve",
+          "amount": 6
+        },
+        {
+          "resource": "rov_power",
+          "amount": 8
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "nutrient_reserve",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "coralBenthicHealth",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-rov-dock",
+      "capacity": 100,
+      "inventory": {
+        "oxygenation_capacity": 25,
+        "nutrient_reserve": 30,
+        "rov_power": 50
+      }
+    },
+    {
+      "siteId": "site-deep-reef",
+      "capacity": 100,
+      "inventory": {
+        "oxygenation_capacity": 15,
+        "nutrient_reserve": 20,
+        "rov_power": 30
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-ocean-1",
+      "name": "Submersible Crawler 1",
+      "carrierType": "sub_crawler",
+      "capacity": 35,
+      "speed": 1,
+      "location": "site-rov-dock",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 60
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-rov-dock",
+      "toSiteId": "site-deep-reef",
+      "travelTicks": 3,
+      "fuelCost": 1
+    }
+  ],
 });

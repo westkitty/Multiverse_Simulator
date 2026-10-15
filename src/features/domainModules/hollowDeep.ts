@@ -153,4 +153,98 @@ export const hollowDeepFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['water', 'gas', 'stress'],
+  facilityDefinitions: [
+    {
+      "typeId": "gas_vent",
+      "worldId": "hollow-deep",
+      "name": "Subterranean Gas Vent Chimney",
+      "description": "Exhausts hazardous pockets of methane and toxic volcanic gas.",
+      "buildMaterialsCost": [
+        {
+          "resource": "vent_energy",
+          "amount": 8
+        },
+        {
+          "resource": "bracing",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "vent_energy",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "airQuality",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "aquifer_pump",
+      "worldId": "hollow-deep",
+      "name": "Cavern Aquifer Drainage Pump",
+      "description": "Drains floodwaters from unstable chambers to maintain tunnel integrity.",
+      "buildMaterialsCost": [
+        {
+          "resource": "water_reserve",
+          "amount": 6
+        },
+        {
+          "resource": "bracing",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "bracing",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "strataStability",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-cavern",
+      "capacity": 100,
+      "inventory": {
+        "bracing": 25,
+        "vent_energy": 30,
+        "water_reserve": 20
+      }
+    },
+    {
+      "siteId": "site-cathedral",
+      "capacity": 100,
+      "inventory": {
+        "bracing": 15,
+        "vent_energy": 20,
+        "water_reserve": 10
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-hollow-1",
+      "name": "Subterranean Mine Cart",
+      "carrierType": "sub_crawler",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-cavern",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 40
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-cavern",
+      "toSiteId": "site-cathedral",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

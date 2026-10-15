@@ -153,4 +153,98 @@ export const geologyFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['meanTectonicStressMpa', 'meanMagmaPressureMpa', 'monitoredCellsPct'],
+  facilityDefinitions: [
+    {
+      "typeId": "fault_brace",
+      "worldId": "geology",
+      "name": "Hydraulic Fault-Line Brace",
+      "description": "High-tensile hydraulic struts bracing tectonic fissures against collapse.",
+      "buildMaterialsCost": [
+        {
+          "resource": "reinforcement",
+          "amount": 6
+        },
+        {
+          "resource": "bore_capacity",
+          "amount": 4
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "reinforcement",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "infrastructureIntegrity",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "seismic_sensor_array",
+      "worldId": "geology",
+      "name": "Deep Borehole Seismic Array",
+      "description": "Subterranean geophone network monitoring acoustic precursor pulses.",
+      "buildMaterialsCost": [
+        {
+          "resource": "sensors",
+          "amount": 5
+        },
+        {
+          "resource": "reinforcement",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "sensors",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "tectonicRelief",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-mine",
+      "capacity": 100,
+      "inventory": {
+        "reinforcement": 25,
+        "bore_capacity": 20,
+        "sensors": 15
+      }
+    },
+    {
+      "siteId": "site-array",
+      "capacity": 100,
+      "inventory": {
+        "reinforcement": 15,
+        "bore_capacity": 10,
+        "sensors": 10
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-geo-1",
+      "name": "Mountain Transport Hauler",
+      "carrierType": "field_hauler",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-mine",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 40
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-mine",
+      "toSiteId": "site-array",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

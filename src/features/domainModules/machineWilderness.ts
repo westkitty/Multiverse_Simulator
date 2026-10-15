@@ -153,4 +153,98 @@ export const machineWildernessFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['power', 'wear', 'backlog'],
+  facilityDefinitions: [
+    {
+      "typeId": "power_relay",
+      "worldId": "machine-wilderness",
+      "name": "Automated Micro-Grid Relay",
+      "description": "High-bandwidth inductive power node sustaining autonomous drone swarms.",
+      "buildMaterialsCost": [
+        {
+          "resource": "energy",
+          "amount": 10
+        },
+        {
+          "resource": "recovered_parts",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "energy",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "gridConnectivityPct",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "maintenance_swarm_hub",
+      "worldId": "machine-wilderness",
+      "name": "Autonomous Swarm Hub",
+      "description": "Central recharge and fabrication nest deploying repair micro-drones.",
+      "buildMaterialsCost": [
+        {
+          "resource": "worker_capacity",
+          "amount": 6
+        },
+        {
+          "resource": "recovered_parts",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "worker_capacity",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "clusterHealth",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-relay",
+      "capacity": 100,
+      "inventory": {
+        "recovered_parts": 30,
+        "energy": 40,
+        "worker_capacity": 25
+      }
+    },
+    {
+      "siteId": "site-swarm",
+      "capacity": 100,
+      "inventory": {
+        "recovered_parts": 20,
+        "energy": 20,
+        "worker_capacity": 15
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-swarm-1",
+      "name": "Autonomous Swarm Courier",
+      "carrierType": "sky_drone",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-relay",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-relay",
+      "toSiteId": "site-swarm",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

@@ -153,4 +153,98 @@ export const signalExpanseFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['noise', 'coverage', 'signal'],
+  facilityDefinitions: [
+    {
+      "typeId": "signal_relay",
+      "worldId": "signal-expanse",
+      "name": "Interstellar Signal Relay",
+      "description": "Phased microwave array amplifying faint deep-space radio telemetry.",
+      "buildMaterialsCost": [
+        {
+          "resource": "calibration_power",
+          "amount": 10
+        },
+        {
+          "resource": "relay_parts",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "calibration_power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "carrierGainDb",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "interferometer",
+      "worldId": "signal-expanse",
+      "name": "Sub-Millimeter Interferometer",
+      "description": "Cryogenically cooled antenna array resolving fine spatial harmonics.",
+      "buildMaterialsCost": [
+        {
+          "resource": "processing_capacity",
+          "amount": 8
+        },
+        {
+          "resource": "relay_parts",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "processing_capacity",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "interferometryBaselineKm",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-array",
+      "capacity": 100,
+      "inventory": {
+        "calibration_power": 40,
+        "relay_parts": 25,
+        "processing_capacity": 30
+      }
+    },
+    {
+      "siteId": "site-receiver",
+      "capacity": 100,
+      "inventory": {
+        "calibration_power": 20,
+        "relay_parts": 15,
+        "processing_capacity": 20
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-signal-1",
+      "name": "Expanse Data Drone",
+      "carrierType": "sky_drone",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-array",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-array",
+      "toSiteId": "site-receiver",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

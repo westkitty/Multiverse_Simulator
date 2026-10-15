@@ -155,4 +155,98 @@ export const civilizationFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['totalWaterStock', 'totalFoodStock', 'meanWaterworksLevel'],
+  facilityDefinitions: [
+    {
+      "typeId": "waterworks",
+      "worldId": "civilization",
+      "name": "Municipal Waterworks",
+      "description": "Engineered aqueducts and reservoirs sustaining civic water reserves.",
+      "buildMaterialsCost": [
+        {
+          "resource": "cistern_inventory",
+          "amount": 6
+        },
+        {
+          "resource": "repair_materials",
+          "amount": 4
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "repair_materials",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "waterStock",
+      "benefitDeltaPerTick": 25
+    },
+    {
+      "typeId": "river_crossing",
+      "worldId": "civilization",
+      "name": "Fortified River Crossing",
+      "description": "Secures trade routes and stabilizes settlement logistics.",
+      "buildMaterialsCost": [
+        {
+          "resource": "grain",
+          "amount": 8
+        },
+        {
+          "resource": "repair_materials",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "grain",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "stabilityIndex",
+      "benefitDeltaPerTick": 2
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-cistern",
+      "capacity": 100,
+      "inventory": {
+        "cistern_inventory": 30,
+        "grain": 40,
+        "repair_materials": 25
+      }
+    },
+    {
+      "siteId": "site-river",
+      "capacity": 100,
+      "inventory": {
+        "cistern_inventory": 20,
+        "grain": 20,
+        "repair_materials": 15
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-civ-1",
+      "name": "River Barge Courier",
+      "carrierType": "field_hauler",
+      "capacity": 40,
+      "speed": 1,
+      "location": "site-cistern",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-cistern",
+      "toSiteId": "site-river",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

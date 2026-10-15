@@ -1,17 +1,11 @@
 import {
-  ActionExecutionReceipt,
-  ActionValidationResult,
-  CostPreview,
   FeatureCapability,
   HazardDependencyGraph,
-  HazardEvaluationResult,
   HazardLink,
   HazardNode,
   ScientificBudgetLedger,
-  ValidatedAction,
-  WorldFeatureModule,
 } from '../contracts';
-import { createBaseVisibleState } from '../projections';
+import { StandardWorldFeatureModule } from './domainHelper';
 
 export const ECOSYSTEM_CAPABILITIES: readonly FeatureCapability[] = [
   {
@@ -171,153 +165,96 @@ const ACTION_DELTAS: Record<string, Array<{ field: string; delta: number; unit: 
   ],
 };
 
-export class EcosystemFeatureModule implements WorldFeatureModule {
-  readonly worldId = 'ecosystem';
-  readonly rulesVersion = 1;
-  readonly capabilities = ECOSYSTEM_CAPABILITIES;
-  readonly hazardGraph = createEcosystemHazardGraph();
-  readonly budgetLedger = createEcosystemBudgetLedger();
+export const ECOSYSTEM_FACILITY_DEFINITIONS = [
+  {
+    typeId: 'wetland_pump',
+    worldId: 'ecosystem',
+    name: 'Wetland Hydration Pump',
+    description: 'Restores hydraulic gradient across dried wetland sectors.',
+    buildMaterialsCost: [
+      { resource: 'water_stores', amount: 5 },
+      { resource: 'supplies', amount: 4 },
+    ],
+    buildTicks: 3,
+    upkeepCost: [{ resource: 'supplies', amount: 1 }],
+    benefitMetric: 'moisture',
+    benefitDeltaPerTick: 1.5,
+  },
+  {
+    typeId: 'seed_nursery',
+    worldId: 'ecosystem',
+    name: 'Seed Propagation Nursery',
+    description: 'Propagates drought-tolerant flora to restore lost biomass.',
+    buildMaterialsCost: [
+      { resource: 'seed_stocks', amount: 5 },
+      { resource: 'water_stores', amount: 4 },
+    ],
+    buildTicks: 4,
+    upkeepCost: [{ resource: 'water_stores', amount: 1 }],
+    benefitMetric: 'biomass',
+    benefitDeltaPerTick: 2.0,
+  },
+] as const;
 
-  previewCost(capabilityId: string): CostPreview {
-    const debits = ACTION_COSTS[capabilityId] ?? [];
-    return this.budgetLedger.previewDebit(debits);
-  }
+export const ECOSYSTEM_DEPOTS = [
+  {
+    siteId: 'depot-nursery',
+    capacity: 100,
+    inventory: { supplies: 25, water_stores: 30, seed_stocks: 20 },
+  },
+  {
+    siteId: 'depot-wetland',
+    capacity: 100,
+    inventory: { supplies: 15, water_stores: 20, seed_stocks: 10 },
+  },
+] as const;
 
-  evaluateHazards(
-    metrics: Record<string, number>,
-    tick: number,
-  ): HazardEvaluationResult {
-    return this.hazardGraph.evaluate(metrics, tick);
-  }
+export const ECOSYSTEM_COURIERS = [
+  {
+    id: 'courier-eco-1',
+    name: 'Wetland Rover 1',
+    carrierType: 'ground_rover' as const,
+    capacity: 30,
+    speed: 1,
+    location: 'depot-nursery',
+    currentCargo: {},
+    status: 'idle' as const,
+    condition: 100,
+    fuel: 50,
+  },
+];
 
-  validateAction(raw: unknown, _state: Readonly<Record<string, unknown>>): ActionValidationResult {
-    if (!raw || typeof raw !== 'object') {
-      return { valid: false, error: 'Malformed action payload' };
-    }
-    const r = raw as Record<string, unknown>;
-    const cap = ECOSYSTEM_CAPABILITIES.find((c) => c.id === r.capabilityId);
-    if (!cap) {
-      return {
-        valid: false,
-        error: `Capability ${String(r.capabilityId)} not supported on world ecosystem`,
-      };
-    }
+export const ECOSYSTEM_ROUTES = [
+  {
+    fromSiteId: 'depot-nursery',
+    toSiteId: 'depot-wetland',
+    travelTicks: 2,
+    fuelCost: 1,
+  },
+];
 
-    const preview = this.previewCost(cap.id);
-    if (!preview.feasible) {
-      const shortfallMsg = preview.shortfalls
-        .map((s) => `${s.resource}: need ${s.required}, have ${s.available}`)
-        .join(', ');
-      return {
-        valid: false,
-        error: `Insufficient budget for ${cap.id}: ${shortfallMsg}`,
-      };
-    }
+export const ECOSYSTEM_CONFIG = {
+  worldId: 'ecosystem',
+  capabilities: ECOSYSTEM_CAPABILITIES,
+  hazardNodes: ECOSYSTEM_HAZARD_NODES,
+  hazardLinks: ECOSYSTEM_HAZARD_LINKS,
+  initialBudget: {
+    supplies: { balance: 40, capacity: 100, replenishmentRate: 0.5 },
+    water_stores: { balance: 50, capacity: 100, replenishmentRate: 1.0 },
+    seed_stocks: { balance: 30, capacity: 60, replenishmentRate: 0.2 },
+  },
+  actionCosts: ACTION_COSTS,
+  actionDeltas: ACTION_DELTAS,
+  metricKeys: ['moisture', 'nutrients', 'biomass'],
+  facilityDefinitions: ECOSYSTEM_FACILITY_DEFINITIONS,
+  initialDepots: ECOSYSTEM_DEPOTS,
+  initialCouriers: ECOSYSTEM_COURIERS,
+  initialRoutes: ECOSYSTEM_ROUTES,
+};
 
-    return {
-      valid: true,
-      action: {
-        actionFamily: cap.featureId,
-        worldId: 'ecosystem',
-        capabilityId: cap.id,
-        payload: (r.payload as Record<string, unknown>) ?? {},
-        cost: cap.costResource ? { resource: cap.costResource, amount: 2 } : undefined,
-      },
-    };
-  }
-
-  applyAction(
-    state: Record<string, unknown>,
-    action: ValidatedAction,
-    ctx: { tick: number; emitEvent: (e: any) => any },
-  ): ActionExecutionReceipt {
-    const debits = ACTION_COSTS[action.capabilityId] ?? [];
-    const tx = this.budgetLedger.applyTransaction(action.capabilityId, debits, [], ctx.tick);
-
-    if (tx.status === 'rejected') {
-      return {
-        actionId: `${action.capabilityId}-${ctx.tick}`,
-        worldId: 'ecosystem',
-        tick: ctx.tick,
-        executedAtTick: ctx.tick,
-        status: 'rejected',
-        rejectionReason: tx.rejectionReason,
-        debits: [],
-        deltas: [],
-        eventsEmitted: [],
-      };
-    }
-
-    // Apply native deltas to state
-    const plannedDeltas = ACTION_DELTAS[action.capabilityId] ?? [];
-    const executedDeltas: Array<{
-      field: string;
-      before: number | string;
-      after: number | string;
-      unit?: string;
-    }> = [];
-
-    for (const d of plannedDeltas) {
-      const before = typeof state[d.field] === 'number' ? (state[d.field] as number) : 0;
-      const after = Math.max(0, Math.round((before + d.delta) * 100) / 100);
-      state[d.field] = after;
-      executedDeltas.push({ field: d.field, before, after, unit: d.unit });
-    }
-
-    const event = ctx.emitEvent({
-      type: 'ecosystem.action_executed',
-      severity: 'info',
-      title: `${action.capabilityId} Executed`,
-      description: `Executed ${action.capabilityId} at tick ${ctx.tick}.`,
-      sourceSystem: 'feature-module',
-      payload: action.payload,
-      deltas: executedDeltas.map((ed) => ({
-        metricOrField: ed.field,
-        before: ed.before as number,
-        after: ed.after as number,
-        unit: ed.unit,
-      })),
-      causalLinkType: 'direct',
-      causalExplanation: `Applied priced intervention ${action.capabilityId}`,
-    });
-
-    return {
-      actionId: `${action.capabilityId}-${ctx.tick}`,
-      worldId: 'ecosystem',
-      tick: ctx.tick,
-      executedAtTick: ctx.tick,
-      status: 'success',
-      debits: [...tx.debitsApplied],
-      deltas: executedDeltas,
-      eventsEmitted: [event.id],
-    };
-  }
-
-  projectVisibleState(
-    state: Readonly<Record<string, unknown>>,
-    _viewer: unknown,
-  ) {
-    const metricKeys = ['moisture', 'nutrients', 'biomass'];
-    const metrics: Record<string, number | string> = {};
-    const numericMetrics: Record<string, number> = {};
-    for (const k of metricKeys) {
-      if (k in state && typeof state[k] === 'number') {
-        metrics[k] = state[k] as number;
-        numericMetrics[k] = state[k] as number;
-      }
-    }
-    const hazards = this.evaluateHazards(numericMetrics, 0);
-    const budgetBalances = this.budgetLedger.getAllBalances();
-
-    return createBaseVisibleState(
-      'ecosystem',
-      1,
-      ECOSYSTEM_CAPABILITIES.map((c) => c.id),
-      metrics,
-      [],
-      hazards,
-      budgetBalances,
-    );
+export class EcosystemFeatureModule extends StandardWorldFeatureModule {
+  constructor() {
+    super(ECOSYSTEM_CONFIG);
   }
 }
 

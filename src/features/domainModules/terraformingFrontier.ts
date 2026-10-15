@@ -153,4 +153,98 @@ export const terraformingFrontierFeatureModule = new StandardWorldFeatureModule(
     ],
   },
   metricKeys: ['pressure', 'soil', 'oxygen'],
+  facilityDefinitions: [
+    {
+      "typeId": "biosphere_dome",
+      "worldId": "terraforming-frontier",
+      "name": "Pressurized Biosphere Dome",
+      "description": "Inflatable habitat dome sustaining closed-loop ecology on alien regolith.",
+      "buildMaterialsCost": [
+        {
+          "resource": "reagents",
+          "amount": 8
+        },
+        {
+          "resource": "energy",
+          "amount": 10
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "energy",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "domePressureKpa",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "atmosphere_regulator",
+      "worldId": "terraforming-frontier",
+      "name": "Frontier Atmosphere Regulator",
+      "description": "Enzymatic bioreactor scrubbing toxic carbon and converting free oxygen.",
+      "buildMaterialsCost": [
+        {
+          "resource": "bio_stock",
+          "amount": 6
+        },
+        {
+          "resource": "reagents",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "reagents",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "o2ConcentrationPct",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-dome",
+      "capacity": 100,
+      "inventory": {
+        "reagents": 30,
+        "bio_stock": 25,
+        "energy": 35
+      }
+    },
+    {
+      "siteId": "site-crater",
+      "capacity": 100,
+      "inventory": {
+        "reagents": 20,
+        "bio_stock": 15,
+        "energy": 25
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-frontier-1",
+      "name": "Frontier Crawler Rover",
+      "carrierType": "ground_rover",
+      "capacity": 35,
+      "speed": 1,
+      "location": "site-dome",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-dome",
+      "toSiteId": "site-crater",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

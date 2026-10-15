@@ -154,4 +154,100 @@ export const industrialFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['unfulfilledDemandBacklog', 'totalRawOreStock', 'extractionOutputRate'],
+  facilityDefinitions: [
+    {
+      "typeId": "freight_depot",
+      "worldId": "industrial",
+      "name": "Automated Freight Terminal",
+      "description": "Coordinates raw materials routing to prevent inventory starvation.",
+      "buildMaterialsCost": [
+        {
+          "resource": "ore",
+          "amount": 12
+        },
+        {
+          "resource": "spares",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "spares",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "equipmentHealth",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "production_buffer",
+      "worldId": "industrial",
+      "name": "Finished Goods Logistics Buffer",
+      "description": "Buffers intermediate output and balances manufacturing cycle throughput.",
+      "buildMaterialsCost": [
+        {
+          "resource": "processed_goods",
+          "amount": 8
+        },
+        {
+          "resource": "freight_fuel",
+          "amount": 8
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "freight_fuel",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "outputInventory",
+      "benefitDeltaPerTick": 25
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-assembly",
+      "capacity": 100,
+      "inventory": {
+        "ore": 50,
+        "processed_goods": 25,
+        "freight_fuel": 35,
+        "spares": 20
+      }
+    },
+    {
+      "siteId": "site-dispatch",
+      "capacity": 100,
+      "inventory": {
+        "ore": 30,
+        "processed_goods": 15,
+        "freight_fuel": 25,
+        "spares": 10
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-ind-1",
+      "name": "Industrial Rail Train",
+      "carrierType": "crawler_train",
+      "capacity": 50,
+      "speed": 1,
+      "location": "site-assembly",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 60
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-assembly",
+      "toSiteId": "site-dispatch",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

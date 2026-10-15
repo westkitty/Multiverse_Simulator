@@ -153,4 +153,98 @@ export const megacityFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['totalHousingCapacityK', 'meanPollutionAqi', 'cityLivabilityIndex'],
+  facilityDefinitions: [
+    {
+      "typeId": "substation",
+      "worldId": "megacity",
+      "name": "District Utility Substation",
+      "description": "High-voltage grid substation stabilizing metropolitan energy networks.",
+      "buildMaterialsCost": [
+        {
+          "resource": "district_fuel",
+          "amount": 8
+        },
+        {
+          "resource": "spare_parts",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "district_fuel",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "infrastructureHealth",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "water_pump",
+      "worldId": "megacity",
+      "name": "Municipal Water Conduit Pump",
+      "description": "Restores hydraulic pressure across subterranean water utility lines.",
+      "buildMaterialsCost": [
+        {
+          "resource": "municipal_stock",
+          "amount": 10
+        },
+        {
+          "resource": "spare_parts",
+          "amount": 5
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "spare_parts",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "waterHeadPressure",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-utility",
+      "capacity": 100,
+      "inventory": {
+        "district_fuel": 30,
+        "spare_parts": 25,
+        "municipal_stock": 40
+      }
+    },
+    {
+      "siteId": "site-blackout",
+      "capacity": 100,
+      "inventory": {
+        "district_fuel": 20,
+        "spare_parts": 15,
+        "municipal_stock": 20
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-city-1",
+      "name": "District Freight Hauler",
+      "carrierType": "field_hauler",
+      "capacity": 40,
+      "speed": 1,
+      "location": "site-utility",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 50
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-utility",
+      "toSiteId": "site-blackout",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

@@ -153,4 +153,98 @@ export const atmosphereFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['meanHumidityPct', 'meanPressureHpa', 'meanTemperatureC'],
+  facilityDefinitions: [
+    {
+      "typeId": "storm_observation_array",
+      "worldId": "atmosphere",
+      "name": "Storm Observation Array",
+      "description": "High-altitude sensor array tracking hurricane formation and storm fronts.",
+      "buildMaterialsCost": [
+        {
+          "resource": "sensor_power",
+          "amount": 8
+        },
+        {
+          "resource": "reagents",
+          "amount": 4
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "sensor_power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "soilMoisturePct",
+      "benefitDeltaPerTick": 2
+    },
+    {
+      "typeId": "rain_collector",
+      "worldId": "atmosphere",
+      "name": "Atmospheric Rain Collector",
+      "description": "Precipitation harvesting rig providing moisture buffers against storm fronts.",
+      "buildMaterialsCost": [
+        {
+          "resource": "shelters",
+          "amount": 5
+        },
+        {
+          "resource": "sensor_power",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "sensor_power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "humidityRatio",
+      "benefitDeltaPerTick": 1.5
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-shelter",
+      "capacity": 100,
+      "inventory": {
+        "sensor_power": 30,
+        "reagents": 20,
+        "shelters": 15
+      }
+    },
+    {
+      "siteId": "site-ridge",
+      "capacity": 100,
+      "inventory": {
+        "sensor_power": 20,
+        "reagents": 10,
+        "shelters": 5
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-atmo-1",
+      "name": "Atmospheric Drone 1",
+      "carrierType": "sky_drone",
+      "capacity": 25,
+      "speed": 1,
+      "location": "site-shelter",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 40
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-shelter",
+      "toSiteId": "site-ridge",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });

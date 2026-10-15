@@ -153,4 +153,98 @@ export const stationFeatureModule = new StandardWorldFeatureModule({
     ],
   },
   metricKeys: ['meanPressureKpa', 'o2ReserveMoles', 'meanCrewHealth'],
+  facilityDefinitions: [
+    {
+      "typeId": "life_support_scrubber",
+      "worldId": "station",
+      "name": "Life-Support Atmospheric Scrubber",
+      "description": "Circulates and purifies habitat air, restoring oxygen reserves.",
+      "buildMaterialsCost": [
+        {
+          "resource": "scrubbers",
+          "amount": 4
+        },
+        {
+          "resource": "power",
+          "amount": 8
+        }
+      ],
+      "buildTicks": 3,
+      "upkeepCost": [
+        {
+          "resource": "power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "o2ReserveMoles",
+      "benefitDeltaPerTick": 25
+    },
+    {
+      "typeId": "pressure_bulkhead",
+      "worldId": "station",
+      "name": "Reinforced Pressure Bulkhead",
+      "description": "Seals structural breaches and sustains compartment pressure.",
+      "buildMaterialsCost": [
+        {
+          "resource": "emergency_o2",
+          "amount": 5
+        },
+        {
+          "resource": "power",
+          "amount": 6
+        }
+      ],
+      "buildTicks": 4,
+      "upkeepCost": [
+        {
+          "resource": "power",
+          "amount": 1
+        }
+      ],
+      "benefitMetric": "meanPressureKpa",
+      "benefitDeltaPerTick": 2
+    }
+  ],
+  initialDepots: [
+    {
+      "siteId": "site-airlock",
+      "capacity": 100,
+      "inventory": {
+        "scrubbers": 15,
+        "power": 40,
+        "emergency_o2": 25
+      }
+    },
+    {
+      "siteId": "site-habitation",
+      "capacity": 100,
+      "inventory": {
+        "scrubbers": 5,
+        "power": 60,
+        "emergency_o2": 25
+      }
+    }
+  ],
+  initialCouriers: [
+    {
+      "id": "courier-station-1",
+      "name": "Ring Transport Rail",
+      "carrierType": "crawler_train",
+      "capacity": 30,
+      "speed": 1,
+      "location": "site-airlock",
+      "currentCargo": {},
+      "status": "idle",
+      "condition": 100,
+      "fuel": 40
+    }
+  ],
+  initialRoutes: [
+    {
+      "fromSiteId": "site-airlock",
+      "toSiteId": "site-habitation",
+      "travelTicks": 2,
+      "fuelCost": 1
+    }
+  ],
 });
