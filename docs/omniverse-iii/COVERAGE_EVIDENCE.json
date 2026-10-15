@@ -51,16 +51,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around wetland pump and seed nursery using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed wetland pump and seed nursery with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -209,16 +233,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around life-support scrubber and pressure bulkhead using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed life-support scrubber and pressure bulkhead with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -367,16 +415,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around waterworks and river crossing using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed waterworks and river crossing with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -525,16 +597,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around storm observation array and rain collector using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed storm observation array and rain collector with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -683,16 +779,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around oxygenation module and reef nursery using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed oxygenation module and reef nursery with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -841,16 +961,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around transit beacon and radiation shield using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed transit beacon and radiation shield with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -999,16 +1143,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around substation, pumps and transit link using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed substation, pumps and transit link with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1157,16 +1325,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around freight depot and production buffer using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed freight depot and production buffer with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1315,16 +1507,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around fault brace and seismic sensor array using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed fault brace and seismic sensor array with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1473,16 +1689,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around migration refuge and waterway restoration using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed migration refuge and waterway restoration with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1631,16 +1871,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around gas vent, aquifer pump and tunnel brace using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed gas vent, aquifer pump and tunnel brace with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1789,16 +2053,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around strata shelter and field conservation workshop using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed strata shelter and field conservation workshop with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -1947,16 +2235,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around biosphere dome and atmosphere regulator using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed biosphere dome and atmosphere regulator with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -2105,16 +2417,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around power relay and maintenance swarm hub using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed power relay and maintenance swarm hub with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
@@ -2263,16 +2599,40 @@
         ]
       },
       "P004": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Account for transport, depots, capacity and failure around signal relay and interferometer using real domain routes.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P005": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Build and operate a branch-owned costed signal relay and interferometer with timed construction and wear.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G2",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG2.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG2.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "69e34b9bf23e6eaa6268907ed11e1b2f253c4729",
+            "verifiedAt": "2026-10-15T08:10:00Z"
+          }
+        ]
       },
       "P006": {
         "status": "PLANNED",
