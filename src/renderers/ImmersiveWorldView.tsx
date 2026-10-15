@@ -274,7 +274,11 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const down = (event: KeyboardEvent) => {
       const explorer = host.closest('[aria-label="Immersive 3D world explorer"]');
       if (!explorer?.contains(document.activeElement)) return;
-      if (['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName)) return;
+      // Movement keys belong to the canvas, never to focusable UI controls.
+      // Otherwise Space prevents native button activation (including this
+      // explorer's own accessible navigation and action buttons).
+      const focused = event.target instanceof HTMLElement ? event.target : null;
+      if (focused?.closest('input, textarea, select, button, a[href], summary, [role="button"], [role="tab"]')) return;
       const value = keyToMovement(event.key);
       if (value) { actions.current.add(value); event.preventDefault(); }
       if (event.key.toLowerCase() === 'e') {
@@ -506,6 +510,9 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const actionButton = (label: string, movement: Movement) => (
     <button type="button" aria-label={label} onPointerDown={event => { event.preventDefault(); actions.current.add(movement); (event.currentTarget as HTMLButtonElement).setPointerCapture(event.pointerId); }}
       onPointerUp={() => actions.current.delete(movement)} onPointerCancel={() => actions.current.delete(movement)} onLostPointerCapture={() => actions.current.delete(movement)}
+      onKeyDown={event => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); actions.current.add(movement); } }}
+      onKeyUp={event => { if (event.key === ' ' || event.key === 'Enter') { event.preventDefault(); actions.current.delete(movement); } }}
+      onBlur={() => actions.current.delete(movement)}
       style={{ minWidth: 52, minHeight: 52, background: '#172534d9', border: '1px solid #729aa9', color: 'white', borderRadius: 8, touchAction: 'none', fontSize: 22 }}>
       {label}
     </button>
