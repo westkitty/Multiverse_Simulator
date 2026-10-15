@@ -229,3 +229,13 @@ Publication requires a new coding session and authorized Pages configuration: **
 - Added pure 15-world/hidden-information/bearing geometry tests and actual-browser assertions for guide controls and real native-repair-driven beacon changes. Contract: `docs/acceptance/FIELD_BEARING_AND_NATIVE_BEACONS.md`.
 - Protected: all fifteen plugins, kernel/RNG, native travel and resources, research history, archives/IndexedDB, command bus, hazard 70, science, 3D movement, keyboard/mobile interaction, reduced motion and GitHub Pages. No dependency, save migration, or new authoritative state.
 - **Status on authoring: IMPLEMENTED-UNVERIFIED candidate.** Exact-head CI including historic oracles, full 15-world acceptance, production browser suite and independent post-merge Pages smoke is not yet proven for this branch. Hardware FPS and semantic-content expansion remain open. Do not claim a released uplift from code presence alone.
+
+## 2026-10-14 — Stylized AAA visual finishing candidate on isolated PR #20 base
+
+- Exact base f535d067c04102f7aa4deae1c026aee4d3b4bfe9 (PR #20); branch visual/aaa-art-direction-20261014 on BigMac. main and PR #20 were not edited.
+- Implemented visual-only instanced architectural silhouettes, per-native-site accents, contact shading, skyline facade lighting, environment-specific motes, vertex-tone terrain and balanced scene lighting for all 15 worlds. Native expedition, science, RNG, physics and save formats unchanged.
+- First-person play surface now appears before optional science panels, with scoped premium HUD, reticle, fullscreen control, touch and keyboard focus styles. Observatory native world palettes synchronized.
+- Existing scene RAF owns bounded particles and scene lifecycle; adaptive lite/full visual geometry tiers; reduced-motion disables motes. New scripts/qa-visual-capture.mjs and src/test/immersiveArtPass.test.ts preserve a repeatable art contract.
+- 15 worlds A–O verified in actual Chromium software-WebGL with nonempty art, positive facade details and render draw calls. World screenshots are on the BigMac under Projects/AAA_Visual_QA, outside the repo.
+- Fresh checkout initially lacked historical ZIP fixtures and produced 24 historical missing-file failures; restored original nine fixtures from pinned historical commit and reconstructed 15 Atlas state-equivalent archives with matching independent oracles; all 24 historical tests then passed. Local run also encountered two timeout tests; separate isolation is underway. No unconditional full-release claim.
+- Contract: docs/acceptance/AAA_VISUAL_FINISHING_PASS_2026-10-14.md. Hardware GPU/thermal certification and independent public deployment remain unverified.

@@ -182,6 +182,7 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
       <div><span className="atlas-kicker">LIVE FIELD RECONNAISSANCE / TICK {kernel.tick}</span><h1>{kernel.plugin.name}</h1><p>{state.regions.length} simulated regions · {atlas.sites.length} persistent sites · {Object.values(exploration.sites).filter(s => s.firstVisitedTick !== null).length} visited</p></div>
       <div className="immersive-game-actions"><button type="button" onClick={() => store.toggleRunning()}>{store.isRunning ? 'Pause world' : 'Run world'}</button><button type="button" onClick={() => store.stepActiveRun(1)}>Step one tick</button><button type="button" onClick={() => { setImmersive(false); store.setActiveTab('atlas'); }}>Open Atlas & field records</button></div>
     </div>
+    <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
     {protocol && <section aria-label="World field protocol" className="atlas-panel" style={{ marginBottom: 12, padding: '12px 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
         <h2 style={{ margin: 0, fontSize: 17 }}>{protocol.title}</h2>
@@ -248,7 +249,6 @@ const AtlasSession: React.FC<{ initialImmersive: boolean }> = ({ initialImmersiv
         {experimentMessage && <p role="status" data-testid="native-intervention-feedback" style={{ marginBottom: 0 }}>{experimentMessage}</p>}
       </details>
     </section>
-    <ImmersiveWorldView atlas={atlas} exploration={exploration} regions={state.regions} runId={kernel.runId} onSelectSite={selectSite} onSiteAction={(id, kind) => action(kind, undefined, id)} actors={projectImmersiveActors(state)} onAdvanceTime={() => store.stepActiveRun(1)} onReturnToAtlas={() => { setImmersive(false); store.setActiveTab('atlas'); }} reducedMotion={store.preferences.reducedMotion} />
     <p className="immersive-game-disclaimer">Local movement is visual reconnaissance. Expedition routing, resources, discovery, and historical evidence remain governed by the underlying simulation.</p>
   </section>;
   return <section className="atlas-workbench" aria-label="Living World Atlas" style={{ '--atlas-accent': kernel.plugin.accentColor } as React.CSSProperties}>

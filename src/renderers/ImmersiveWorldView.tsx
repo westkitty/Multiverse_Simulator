@@ -8,6 +8,8 @@ import { ImmersiveActorMarker, ImmersiveLayout, makeImmersiveLayout, movementBas
 import { addImmersiveScenery, addImmersiveFlora } from './immersiveScenery';
 import { addImmersiveAtmosphere } from './immersiveAtmosphere';
 import { addImmersiveTerrain, terrainHeight } from './immersiveTerrain';
+import { addImmersiveArtPass, chooseImmersiveArtTier } from './immersiveArtPass';
+import { addImmersiveFacadeDetails } from './immersiveFacadeDetails';
 
 interface Props {
   atlas: ExplorationAtlas;
@@ -99,6 +101,26 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     return value;
   }, [atlas, exploration, regions, layoutSignature]);
   const sceneHost = useRef<HTMLDivElement>(null);
+  const immersiveRoot = useRef<HTMLElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  useEffect(() => {
+    const update = () => setIsFullscreen(document.fullscreenElement === immersiveRoot.current);
+    document.addEventListener('fullscreenchange', update);
+    return () => document.removeEventListener('fullscreenchange', update);
+  }, []);
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement === immersiveRoot.current) {
+        await document.exitFullscreen();
+      } else if (immersiveRoot.current?.requestFullscreen) {
+        await immersiveRoot.current.requestFullscreen();
+      } else {
+        setInteractionResult('This browser does not support immersive fullscreen.');
+      }
+    } catch {
+      setInteractionResult('Fullscreen was denied; the regular 3D view remains playable.');
+    }
+  };
   const actions = useRef(new Set<Movement>());
   const view = useRef({ yaw: -.5, pitch: -.12 });
   const player = useRef({ x: layout.spawn.x, y: 2.2, z: layout.spawn.z });
@@ -184,10 +206,19 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       return;
     }
     setWebglFailed(false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    // Quality tier is a presentation budget, never a gameplay or physics mode.
+    const device = navigator as Navigator & { deviceMemory?: number };
+    const artTier = chooseImmersiveArtTier({
+      viewportWidth: host.clientWidth || 960,
+      devicePixelRatio: window.devicePixelRatio || 1,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      deviceMemory: device.deviceMemory,
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, artTier === 'lite' ? 1 : 1.45));
     renderer.setSize(Math.max(1, host.clientWidth), Math.max(1, host.clientHeight));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.06;
     host.appendChild(renderer.domElement);
     const scene = new THREE.Scene();
     const profile = layout.profile;
@@ -200,14 +231,20 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       const c = new THREE.Color(profile.sky);
       return (c.r + c.g + c.b) / 3;
     })();
-    scene.add(new THREE.HemisphereLight(profile.horizon, profile.ground, 1.9 + (1 - skyLuma) * 1.1));
-    const sun = new THREE.DirectionalLight(profile.celestialColor, 1.9);
+    scene.add(new THREE.HemisphereLight(profile.horizon, profile.ground, 1.45 + (1 - skyLuma) * .8));
+    const sun = new THREE.DirectionalLight(profile.celestialColor, 2.15);
     sun.position.set(50, 85, 15);
     scene.add(sun);
+    const rimLight = new THREE.DirectionalLight(profile.accent, artTier === 'lite' ? .48 : .76);
+    rimLight.position.set(-54, 30, -38);
+    scene.add(rimLight);
+    if(skyLuma < .2)scene.add(new THREE.AmbientLight(0xcad8ed, artTier === 'lite' ? .38 : .5));
     const camera = new THREE.PerspectiveCamera(73, 1, .1, 1200);
     const atmosphere = addImmersiveAtmosphere(scene, profile, layout.extent, visualSeed);
     const terrain = addImmersiveTerrain(scene, profile, layout.extent, visualSeed);
-    const mainMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(profile.horizon).lerp(new THREE.Color(profile.ground), .6), roughness: .82, metalness: .12 });
+    const artPass = addImmersiveArtPass(scene, layout, visualSeed, artTier, !!reducedMotion);
+    const facades = addImmersiveFacadeDetails(scene, layout, artTier);
+    const mainMaterial = new THREE.MeshStandardMaterial({ color: new THREE.Color(profile.horizon).lerp(new THREE.Color(profile.ground), .38).lerp(new THREE.Color(0xffffff), skyLuma < .2 ? .14 : .045), roughness: .82, metalness: .12 });
     const accentMaterial = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: .48, emissive: profile.accent, emissiveIntensity: .24 });
     const unknownMaterial = new THREE.MeshStandardMaterial({ color: 0x7c8795, roughness: .78, metalness: .22 });
     const resolvedMaterial = new THREE.MeshStandardMaterial({ color: 0xffe2a2, emissive: 0xc18b31, emissiveIntensity: .52, roughness: .38 });
@@ -337,6 +374,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       // Clamp long frames (slow devices/software rasterizers) to a still-
       // playable catch-up step; collision radii bound any tunneling risk.
       const dt = Math.min(.1, Math.max(0, (time - lastTime) / 1000));
+      artPass.update(time / 1000);
       lastTime = time;
       const orientation = view.current;
       const p = player.current;
@@ -449,6 +487,10 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       if (time - lastDiagnostics >= 1000) {
         lastDiagnostics = time;
         pointer.dataset.drawCalls = String(renderer.info.render.calls);
+        pointer.dataset.artTier = artTier;
+        pointer.dataset.facadeDetails = String(facades.count);
+        pointer.dataset.artMotifs = String(scene.getObjectByName('aaa-architectural-silhouettes') instanceof THREE.InstancedMesh
+          ? (scene.getObjectByName('aaa-architectural-silhouettes') as THREE.InstancedMesh).count : 0);
         pointer.dataset.worldSites = String(layout.points.length);
         pointer.dataset.simulatedActors = String(actorMeshes.count);
         pointer.dataset.serviceBeacons = String([...beacons.values()]
@@ -484,14 +526,13 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       pointer.removeEventListener('webglcontextrestored', onRestored);
       actions.current.clear();
       scene.traverse(node => {
-        const mesh = node as THREE.Mesh;
-        if (mesh.isMesh) {
-          mesh.geometry.dispose();
+        if (node instanceof THREE.Mesh || node instanceof THREE.Points || node instanceof THREE.Line) {
+          node.geometry.dispose();
         }
         if (node instanceof THREE.InstancedMesh) node.dispose();
       });
       [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, unsafeMaterial, criticalMaterial, serviceMaterial, actorMaterial,
-        ...scenery.materials, ...flora.materials, ...atmosphere.materials, ...terrain.materials,
+        ...scenery.materials, ...flora.materials, ...artPass.materials, ...facades.materials, ...atmosphere.materials, ...terrain.materials,
       ].forEach(m => m.dispose());
       atmosphere.textures.forEach(texture => texture.dispose());
       renderer.dispose();
@@ -518,13 +559,14 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     </button>
   );
   return (
-    <section aria-label="Immersive 3D world explorer" style={{ position:'relative', minHeight:'min(82dvh,960px)', height:'min(82dvh,960px)', background:'#080d17', border:'1px solid #395565', overflow:'hidden', borderRadius:8 }}>
+    <section ref={immersiveRoot} className="aaa-gameplay-viewport" aria-label="Immersive 3D world explorer"  style={{ position:'relative', minHeight:'min(82dvh,960px)', height:'min(82dvh,960px)', background:'#080d17', border:'1px solid #395565', overflow:'hidden', borderRadius:8, '--aaa-accent':'#'+layout.profile.accent.toString(16).padStart(6,'0') } as React.CSSProperties}>
       <div ref={sceneHost} aria-label="Three.js playable universe" style={{ position:'absolute', inset:0 }} />
+      <div aria-hidden="true" className="aaa-frame-vignette" />
       {webglFailed && <div role="alert" style={{ position:'absolute', inset:0, display:'grid', placeContent:'center', padding:24, background:'#101a27', color:'white' }}>3D rendering is unavailable on this device. Return to the fully accessible Atlas for exploration and simulation controls.</div>}
-      <div style={{ position:'absolute', left:12, top:12, right:12, display:'flex', justifyContent:'space-between', gap:8, pointerEvents:'none' }}>
-        <div style={{ background:'#07111ad9', padding:'9px 12px', color:'#e1f2f9', maxWidth:'70%', borderLeft:'3px solid #89c7d4' }}>
+      <div className="aaa-gameplay-hud" style={{ position:'absolute', left:12, top:12, right:12, display:'flex', justifyContent:'space-between', gap:8, pointerEvents:'none' }}>
+        <div className="aaa-hud-panel" style={{ background:'linear-gradient(112deg,#081621ef,#10283ddc)', padding:'10px 14px', color:'#e1f2f9', maxWidth:'70%', borderLeft:'3px solid var(--aaa-accent)' }}>
           <strong>{atlas.worldId.replace(/-/g, ' ').toUpperCase()} · 3D EXPLORATION</strong>
-          <small style={{ display:'block', color:'#bdd0dc' }}>{layout.profile.description}</small>
+          <small className="aaa-hud-description" style={{ display:'block', color:'#bdd0dc' }}>{layout.profile.description}</small>
           <small style={{ display:'block', color:'#bdd0dc' }}>{layout.points.length} mapped places · {actors.length} simulated field units</small>
           <small style={{ display:'block', color:'#bdd0dc' }}>{readout}</small>
           <div role="group" aria-label="Visual field bearing" data-testid="field-bearing-guide"
@@ -556,17 +598,20 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         </div>
         <div style={{ background:'#07111ad9', padding:8, font:'11px monospace', color:'#d2ecf0' }}>X {location.x} / Z {location.z}</div>
       </div>
-      <div aria-hidden="true" style={{ position:'absolute', left:'50%', top:'50%', transform:'translate(-50%,-50%)', color:'white', textShadow:'0 1px 3px black', fontSize:22, pointerEvents:'none' }}>+</div>
-      <div style={{ position:'absolute', bottom:12, left:12, display:'grid', gap:5 }}>
+      <div aria-hidden="true" className="aaa-camera-reticle"><span /></div>
+      <div className="aaa-movement-controls" style={{ position:'absolute', bottom:12, left:12, display:'grid', gap:5 }}>
         <div style={{ display:'flex', justifyContent:'center' }}>{actionButton('Forward', 'forward')}</div>
         <div style={{ display:'flex', gap:5 }}>{actionButton('Left', 'left')}{actionButton('Back', 'back')}{actionButton('Right', 'right')}</div>
       </div>
-      <div style={{ position:'absolute', bottom:12, right:12, display:'grid', gap:6, justifyItems:'end' }}>
+      <div className="aaa-action-controls" style={{ position:'absolute', bottom:12, right:12, display:'grid', gap:6, justifyItems:'end' }}>
         {layout.profile.movement === 'fly' && <div style={{ display:'flex', gap:6 }}>{actionButton('Ascend', 'up')}{actionButton('Descend', 'down')}</div>}
         <button type="button" disabled={!target} onClick={() => { if (target) { setInspectedSiteId(target); setInteractionResult(''); } }} style={{ minHeight:44, padding:'9px 14px', background:target?'#b6e6e7':'#26313d', color:'#061217', border:0, borderRadius:6, fontWeight:700 }}>Inspect nearby</button>
+        <button type="button" aria-label="Toggle 3D fullscreen" onClick={toggleFullscreen} style={{ minHeight:44, padding:'9px 14px', background:'#162b3add', color:'#e7faff', border:'1px solid var(--aaa-accent)', borderRadius:6 }}>
+          {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+        </button>
         <button type="button" onClick={onReturnToAtlas} style={{ minHeight:44, padding:'9px 14px', background:'#091825db', color:'white', border:'1px solid #789bab', borderRadius:6 }}>Return to Atlas</button>
       </div>
-      {inspected && <aside aria-label="Nearby site investigation" style={{ position:'absolute', top:115, right:12, width:'min(350px,calc(100% - 24px))', maxHeight:'calc(100% - 235px)', overflowY:'auto', background:'#0b1824f2', border:'1px solid #81b6c5', padding:14, color:'#effaff', boxShadow:'0 14px 48px #0009', borderRadius:8 }}>
+      {inspected && <aside className="aaa-investigation-panel" aria-label="Nearby site investigation" style={{ position:'absolute', top:115, right:12, width:'min(350px,calc(100% - 24px))', maxHeight:'calc(100% - 235px)', overflowY:'auto', background:'#0b1824f2', border:'1px solid #81b6c5', padding:14, color:'#effaff', boxShadow:'0 14px 48px #0009', borderRadius:8 }}>
         <div style={{ display:'flex', justifyContent:'space-between', gap:8, alignItems:'center' }}><strong>{observed?.label ?? 'Unidentified contact'}</strong><button type="button" aria-label="Close nearby site investigation" onClick={() => setInspectedSiteId(null)} style={{ background:'#273f52', color:'white', border:0, padding:'6px 11px' }}>×</button></div>
         <p style={{ fontSize:12, color:'#b9d2df', margin:'7px 0' }}>Region {inspected.regionId} · {stage}</p>
         <p style={{ fontSize:13 }}>{observed?.description ?? 'An unclassified field contact. Your instruments have not identified its origin.'}</p>
