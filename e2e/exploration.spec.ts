@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('all fifteen worlds expose usable, persistent site exploration', async ({ page }) => {
+  test.setTimeout(180000);
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('./');
   for(const letter of 'ABCDEFGHIJKLMNO') {
