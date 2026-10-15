@@ -134,3 +134,41 @@ Gate G3 introduces:
 ### Consequences
 - **Positive**: True cascading crisis dynamics; transparent environmental recovery; rigorous three-arm policy trade-off evaluations.
 - **Negative / Constraints**: Crises demand timely resource and intervention commitments; ignoring precursors leads to compounding multi-system degradation.
+
+## ADR 0005: 45 Distinct Native Action Families and Calibrated Scientific Instruments Engine
+
+### Status
+Accepted (Wave G4 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G4 introduces:
+1. P001 (Fifteen Universes, Fifteen Distinct Systems / 45 Action Families):
+   - Rather than generic resource transfers or rebranded buttons, each of the 15 universes possesses exactly 3 distinct native action families (45 total across the multiverse).
+   - Each action family requires explicit read sets, write sets, typed prerequisites, finite audited resource costs, domain-native state mutations with exact units, decision implications, and dynamic contextual help.
+2. Core P010 (A Scientist's Hands / Scientific Instruments):
+   - In-world scientific measurements are physical interventions, not UI telemetry leaks.
+   - Instruments (environmental samplers, structural probes, spectral/signal analyzers) feature physical channels, operating ranges, calibration wear/drift, energy/supply sampling costs, and calibration restoration.
+   - Samples return provenance-stamped `SampleObservation` records containing channel, raw value, calibrated value, measurement unit, confidence score, tick, device class, calibration level, and audited debits.
+
+### Decision
+1. **NativeActionRegistry (`src/features/nativeActions.ts`)**:
+   - Stores discriminated `NativeActionFamilyDefinition` instances.
+   - Enforces condition validation on read set metrics (`<`, `>`, `<=`, `>=`, `==`) before permitting execution.
+   - Atomically debits scientific budgets via `ScientificBudgetLedger` and applies bounded deltas to world state. Any prerequisite failure or budget shortfall triggers complete atomic rollback without partial state mutation.
+2. **ScientificInstrument & ScientificInstrumentManager (`src/features/scientificInstruments.ts`)**:
+   - Models physical in-world devices with multi-channel telemetry.
+   - Validates target site discovery (`isDisclosed`), proximity constraints (`maxRangeMeters`), and sampling resource costs.
+   - Applies deterministic noise and confidence degradation based on instrument calibration state; provides atomic calibration restoration.
+   - Maintains bounded historical observation buffer for cross-referencing and verification.
+3. **Seam Integration (`src/features/domainModules/domainHelper.ts`)**:
+   - `StandardWorldFeatureModule` exposes standard G4 capabilities `instrument.sample` and `instrument.calibrate`.
+   - Incorporates `instrumentManager` and `actionRegistry` into world modules, validating and applying actions atomically and projecting instruments and observations into `VisibleFeatureState`.
+4. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, native action preconditions, instrument samplers, and sampling costs remain inactive, ensuring zero drift for legacy archives.
+
+### Consequences
+- **Positive**: 45 authentic, mechanically differentiated gameplay actions; rigorous physical instrument sampling replacing passive telemetry; complete auditability of scientific measurements.
+- **Negative / Constraints**: Scientists must position expeditions within range of disclosed sites and maintain instrument calibration to acquire high-confidence scientific observations.

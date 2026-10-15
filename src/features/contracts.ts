@@ -15,6 +15,8 @@ import type { FacilityManager } from './facilitySystem';
 import type { EmergencyManager, EmergencyState } from './emergencySystem';
 import type { VisualRestorationManager, VisualRestorationSnapshot } from './visualRestoration';
 import type { PolicyDefinition, PolicyManager } from './policyTrial';
+import type { ScientificInstrumentManager, SampleObservation, ScientificInstrumentConfig } from './scientificInstruments';
+import type { NativeActionRegistry, NativeActionFamilyDefinition } from './nativeActions';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
@@ -23,6 +25,8 @@ export * from './facilitySystem';
 export * from './emergencySystem';
 export * from './visualRestoration';
 export * from './policyTrial';
+export * from './scientificInstruments';
+export * from './nativeActions';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -126,6 +130,9 @@ export interface VisibleFeatureState {
   emergencies?: EmergencyState[];
   visualRestoration?: VisualRestorationSnapshot;
   activePolicies?: PolicyDefinition[];
+  instruments?: readonly ScientificInstrumentConfig[];
+  recentObservations?: readonly SampleObservation[];
+  actionFamilies?: readonly NativeActionFamilyDefinition[];
 }
 
 export interface WorldFeatureModule<
@@ -142,6 +149,8 @@ export interface WorldFeatureModule<
   readonly emergencyManager?: EmergencyManager;
   readonly visualRestorationManager?: VisualRestorationManager;
   readonly policyManager?: PolicyManager;
+  readonly instrumentManager?: ScientificInstrumentManager;
+  readonly actionRegistry?: NativeActionRegistry;
 
   validateAction(
     raw: unknown,

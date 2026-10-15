@@ -71,6 +71,9 @@ export function createBaseVisibleState(
   emergencies?: EmergencyState[],
   visualRestoration?: VisualRestorationSnapshot,
   activePolicies?: PolicyDefinition[],
+  instruments?: readonly any[],
+  recentObservations?: readonly any[],
+  actionFamilies?: readonly any[],
 ): VisibleFeatureState {
   return {
     worldId,
@@ -83,5 +86,8 @@ export function createBaseVisibleState(
     emergencies,
     visualRestoration,
     activePolicies,
+    instruments,
+    recentObservations,
+    actionFamilies,
   };
 }

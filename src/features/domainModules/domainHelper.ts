@@ -22,6 +22,10 @@ import {
   ValidatedAction,
   VisualRestorationManager,
   WorldFeatureModule,
+  NativeActionFamilyDefinition,
+  NativeActionRegistry,
+  ScientificInstrumentConfig,
+  ScientificInstrumentManager,
 } from '../contracts';
 import { createBaseVisibleState } from '../projections';
 
@@ -87,6 +91,23 @@ export const STANDARD_G3_CAPABILITIES: readonly FeatureCapability[] = [
   },
 ];
 
+export const STANDARD_G4_CAPABILITIES: readonly FeatureCapability[] = [
+  {
+    id: 'instrument.sample',
+    featureId: 'P010',
+    name: 'Sample Scientific Instrument',
+    description: 'Collect calibrated physical telemetry reading from an in-world instrument.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'instrument.calibrate',
+    featureId: 'P010',
+    name: 'Calibrate Instrument',
+    description: 'Restore measurement precision and sensor calibration to peak accuracy.',
+    minRulesVersion: 1,
+  },
+];
+
 export interface DomainModuleConfig {
   readonly worldId: string;
   readonly capabilities: readonly FeatureCapability[];
@@ -107,6 +128,8 @@ export interface DomainModuleConfig {
   readonly emergencies?: readonly EmergencyDefinition[];
   readonly restorationLayers?: readonly RestorationLayerDefinition[];
   readonly policies?: readonly PolicyDefinition[];
+  readonly instruments?: readonly ScientificInstrumentConfig[];
+  readonly nativeActions?: readonly NativeActionFamilyDefinition[];
 }
 
 export class StandardWorldFeatureModule implements WorldFeatureModule {
@@ -120,16 +143,22 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
   readonly emergencyManager: EmergencyManager;
   readonly visualRestorationManager: VisualRestorationManager;
   readonly policyManager: PolicyManager;
+  readonly instrumentManager: ScientificInstrumentManager;
+  readonly actionRegistry: NativeActionRegistry;
   private readonly config: DomainModuleConfig;
 
   constructor(config: DomainModuleConfig) {
     this.worldId = config.worldId;
     this.config = config;
 
-    // Combine custom and standard G2/G3 capabilities
+    // Combine custom and standard G2/G3/G4 capabilities
     const existingCapIds = new Set(config.capabilities.map((c) => c.id));
     const mergedCaps = [...config.capabilities];
-    for (const stdCap of [...STANDARD_G2_CAPABILITIES, ...STANDARD_G3_CAPABILITIES]) {
+    for (const stdCap of [
+      ...STANDARD_G2_CAPABILITIES,
+      ...STANDARD_G3_CAPABILITIES,
+      ...STANDARD_G4_CAPABILITIES,
+    ]) {
       if (!existingCapIds.has(stdCap.id)) {
         mergedCaps.push(stdCap);
       }
@@ -190,6 +219,22 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     if (config.policies) {
       for (const p of config.policies) {
         this.policyManager.registerPolicy(p);
+      }
+    }
+
+    // Initialize scientific instrument manager
+    this.instrumentManager = new ScientificInstrumentManager(config.worldId);
+    if (config.instruments) {
+      for (const inst of config.instruments) {
+        this.instrumentManager.registerInstrument(inst);
+      }
+    }
+
+    // Initialize native action registry
+    this.actionRegistry = new NativeActionRegistry();
+    if (config.nativeActions) {
+      for (const act of config.nativeActions) {
+        this.actionRegistry.registerAction(act);
       }
     }
   }
@@ -313,6 +358,67 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
           worldId: this.worldId,
           capabilityId: cap.id,
           payload: { ...payload, policyId },
+        },
+      };
+    }
+
+    // P010: Scientific Instrument Actions
+    if (cap.id === 'instrument.sample') {
+      const defaultInst = this.instrumentManager.getAllInstruments()[0];
+      const instrumentId = String(payload.instrumentId ?? defaultInst?.id ?? 'default_instrument');
+      const inst = this.instrumentManager.getInstrument(instrumentId);
+      if (payload.instrumentId && !inst) {
+        return { valid: false, error: `Instrument ${instrumentId} not found on world ${this.worldId}` };
+      }
+      const defaultChannel = inst ? (inst.channels.keys().next().value ?? 'default_channel') : 'default_channel';
+      const channelId = String(payload.channelId ?? defaultChannel);
+      if (inst && payload.channelId && !inst.hasChannel(channelId)) {
+        return { valid: false, error: `Channel ${channelId} not available on instrument ${instrumentId}` };
+      }
+      const siteId = String(payload.siteId ?? 'site-default');
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P010',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { ...payload, instrumentId, channelId, siteId },
+          targetSiteId: siteId,
+        },
+      };
+    }
+
+    if (cap.id === 'instrument.calibrate') {
+      const defaultInst = this.instrumentManager.getAllInstruments()[0];
+      const instrumentId = String(payload.instrumentId ?? defaultInst?.id ?? 'default_instrument');
+      if (payload.instrumentId && !this.instrumentManager.getInstrument(instrumentId)) {
+        return { valid: false, error: `Instrument ${instrumentId} not found on world ${this.worldId}` };
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P010',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { ...payload, instrumentId },
+        },
+      };
+    }
+
+    // P001: Native Action Registry Validation
+    const nativeDef = this.actionRegistry.getAction(cap.id);
+    if (nativeDef) {
+      const res = this.actionRegistry.validate(cap.id, _state, this.budgetLedger);
+      if (!res.valid) {
+        return { valid: false, error: res.error };
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P001',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload,
         },
       };
     }
@@ -650,6 +756,157 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       };
     }
 
+    // Handle P010 Scientific Instrument Actions
+    if (action.capabilityId === 'instrument.sample') {
+      const instrumentId = String(payload.instrumentId);
+      const channelId = String(payload.channelId);
+      const siteId = String(payload.siteId);
+      const rawVal = typeof state[channelId] === 'number' ? (state[channelId] as number) : 50;
+      const res = this.instrumentManager.sample(
+        instrumentId,
+        {
+          channelId,
+          siteId,
+          tick: ctx.tick,
+          rawMetricValue: rawVal,
+          distanceMeters: typeof payload.distanceMeters === 'number' ? payload.distanceMeters : 10,
+          isDisclosed: payload.isDisclosed !== false,
+        },
+        this.budgetLedger,
+      );
+
+      if (!res.success || !res.observation) {
+        return {
+          actionId: `${action.capabilityId}-${ctx.tick}`,
+          worldId: this.worldId,
+          tick: ctx.tick,
+          executedAtTick: ctx.tick,
+          status: 'rejected',
+          rejectionReason: res.reason,
+          debits: [],
+          deltas: [],
+          eventsEmitted: [],
+        };
+      }
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.instrument_sampled`,
+        severity: 'info',
+        title: `Instrument Sampled: ${channelId}`,
+        description: `Sampled ${channelId} (${res.observation.calibratedValue} ${res.observation.unit}) at ${siteId} via ${instrumentId}.`,
+        sourceSystem: 'scientific-instruments',
+        payload: {
+          observationId: res.observation.id,
+          instrumentId,
+          channelId,
+          calibratedValue: res.observation.calibratedValue,
+          unit: res.observation.unit,
+          confidence: res.observation.confidence,
+        },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: res.observation.provenance.costPaid ? [...res.observation.provenance.costPaid] : [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'instrument.calibrate') {
+      const instrumentId = String(payload.instrumentId);
+      const res = this.instrumentManager.calibrate(instrumentId, ctx.tick, this.budgetLedger);
+
+      if (!res.success) {
+        return {
+          actionId: `${action.capabilityId}-${ctx.tick}`,
+          worldId: this.worldId,
+          tick: ctx.tick,
+          executedAtTick: ctx.tick,
+          status: 'rejected',
+          rejectionReason: res.reason,
+          debits: [],
+          deltas: [],
+          eventsEmitted: [],
+        };
+      }
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.instrument_calibrated`,
+        severity: 'info',
+        title: `Instrument Calibrated: ${instrumentId}`,
+        description: `Calibrated ${instrumentId} from ${res.previousLevel} to ${res.newLevel}.`,
+        sourceSystem: 'scientific-instruments',
+        payload: { instrumentId, previousLevel: res.previousLevel, newLevel: res.newLevel },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P001 Native Action Execution
+    const nativeDef = this.actionRegistry.getAction(action.capabilityId);
+    if (nativeDef) {
+      const res = this.actionRegistry.execute(action.capabilityId, state, ctx.tick, this.budgetLedger);
+      if (!res.success) {
+        return {
+          actionId: `${action.capabilityId}-${ctx.tick}`,
+          worldId: this.worldId,
+          tick: ctx.tick,
+          executedAtTick: ctx.tick,
+          status: 'rejected',
+          rejectionReason: res.reason,
+          debits: [],
+          deltas: [],
+          eventsEmitted: [],
+        };
+      }
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.action_executed`,
+        severity: 'info',
+        title: `${nativeDef.name} Executed`,
+        description: `Executed ${nativeDef.name} on ${this.worldId} at tick ${ctx.tick}. Decision: ${nativeDef.decisionImplication}`,
+        sourceSystem: 'native-actions',
+        payload: action.payload,
+        deltas: res.deltas.map((ed) => ({
+          metricOrField: ed.field,
+          before: ed.before,
+          after: ed.after,
+          unit: ed.unit,
+        })),
+        causalLinkType: 'direct',
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [...res.debits],
+        deltas: res.deltas.map((d) => ({
+          field: d.field,
+          before: d.before,
+          after: d.after,
+          unit: d.unit,
+        })),
+        eventsEmitted: [event.id],
+      };
+    }
+
     // Standard priced action execution
     const debits = this.config.actionCosts[action.capabilityId] ?? [];
     const tx = this.budgetLedger.applyTransaction(action.capabilityId, debits, [], ctx.tick);
@@ -769,6 +1026,19 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     const emergencies = this.emergencyManager.getAllStates();
     const visualRestoration = this.visualRestorationManager.evaluate(numericMetrics);
     const activePolicies = this.policyManager.getAllPolicies();
+    const instruments = this.instrumentManager.getAllInstruments().map((inst) => ({
+      id: inst.id,
+      worldId: inst.worldId,
+      name: inst.name,
+      description: inst.description,
+      deviceClass: inst.deviceClass,
+      channels: Array.from(inst.channels.values()),
+      sampleCost: [...inst.sampleCost],
+      calibrationCost: [...inst.calibrationCost],
+      maxRangeMeters: inst.maxRangeMeters,
+    }));
+    const recentObservations = this.instrumentManager.getRecentObservations();
+    const actionFamilies = this.actionRegistry.getAllActions();
 
     return createBaseVisibleState(
       this.worldId,
@@ -781,6 +1051,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       emergencies,
       visualRestoration,
       activePolicies,
+      instruments,
+      recentObservations,
+      actionFamilies,
     );
   }
 }
