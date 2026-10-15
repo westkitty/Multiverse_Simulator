@@ -22,6 +22,8 @@ import type { CrewManager, CrewMemberSummary } from './crewSpecializations';
 import type { SignatureDestinationManager, DestinationMissionState } from './signatureDestinations';
 import type { HistoricalEraManager, HistoricalEraDefinition } from './historicalEras';
 import type { ActorMemoryManager, ActorMemoryRecord, MonumentRecord } from './actorMemory';
+import type { HypothesisInvestigationManager, CausalHypothesisDefinition, HypothesisTrialExecution } from './hypothesisInvestigations';
+import type { DivergenceTheaterManager, BranchDiffSnapshot } from './divergenceTheater';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
@@ -37,6 +39,8 @@ export * from './crewSpecializations';
 export * from './signatureDestinations';
 export * from './historicalEras';
 export * from './actorMemory';
+export * from './hypothesisInvestigations';
+export * from './divergenceTheater';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -149,6 +153,9 @@ export interface VisibleFeatureState {
   currentEra?: HistoricalEraDefinition;
   memorializedActors?: readonly ActorMemoryRecord[];
   monuments?: readonly MonumentRecord[];
+  hypotheses?: readonly CausalHypothesisDefinition[];
+  activeInvestigations?: readonly HypothesisTrialExecution[];
+  branchDiff?: BranchDiffSnapshot;
 }
 
 export interface WorldFeatureModule<
@@ -172,6 +179,8 @@ export interface WorldFeatureModule<
   readonly destinationManager?: SignatureDestinationManager;
   readonly eraManager?: HistoricalEraManager;
   readonly actorMemoryManager?: ActorMemoryManager;
+  readonly hypothesisManager?: HypothesisInvestigationManager;
+  readonly divergenceManager?: DivergenceTheaterManager;
 
   validateAction(
     raw: unknown,

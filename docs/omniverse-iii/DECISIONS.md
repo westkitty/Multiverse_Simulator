@@ -261,3 +261,43 @@ Gate G6 introduces:
 ### Consequences
 - **Positive**: Rich multi-stage narrative journeys at signature landmarks; dynamic macro-scale era transitions with tangible physical simulation shifts; persistent civic recognition of player and crew accomplishments.
 - **Negative / Constraints**: Physical regime modifiers in late-stage eras demand higher resource stewardship and resilience planning from players.
+
+## ADR 0008: Controlled Hypothesis Investigations and Synchronized Divergence Theater
+
+### Status
+Accepted (Wave G7 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G7 introduces:
+1. Extended P013 (The Causality Detective):
+   - Formal scientific hypothesis testing requiring explicit predictions (expected direction: increase/decrease/stabilize, threshold effect size) and identified observable metrics.
+   - Paired control-vs-treatment trials executing with identical seeds, starting checkpoints, and duration ticks.
+   - Authoritative causal effect calculation, confidence scoring, and explicit confound disclosures (e.g. concurrent external hazard spikes, resource exhaustion).
+2. P014 (The Divergence Theater):
+   - Synchronized, spatially legible comparison of divergent timeline branches.
+   - Common `BranchDiffSnapshot` capturing origin checkpoints, simulation ticks, state hashes, site condition deltas, metric shifts, resource inventories, and crew status differences.
+   - Mismatched origin or tick warnings preventing false causal attribution.
+   - Temporal timeline scrubbing strictly constrained to verified historical checkpoints without synthetic history interpolation.
+
+### Decision
+1. **HypothesisInvestigationManager (`src/features/hypothesisInvestigations.ts`)**:
+   - Manages authored `CausalHypothesisDefinition` entries and records `HypothesisTrialExecution` receipts.
+   - Evaluates hypothesis status (`UNTESTED`, `TESTING`, `SUPPORTED`, `REFUTED`, `INCONCLUSIVE`) based on empirical effect size against prediction thresholds.
+   - Detects and discloses external confounds, downgrading confidence scores accordingly.
+2. **DivergenceTheaterManager (`src/features/divergenceTheater.ts`)**:
+   - Generates authenticated `BranchDiffSnapshot` comparisons from baseline and treated branch states.
+   - Flags mismatched origins or ticks with prominent warning notices.
+   - Supports timeline scrubbing only where authenticated historical checkpoints exist.
+3. **Seam Integration (`src/features/domainModules/domainHelper.ts`)**:
+   - Exposes standard G7 capabilities: `hypothesis.test`, `hypothesis.evaluate`, `divergence.compare`, `divergence.scrub`.
+   - Initializes hypothesis and divergence managers in `StandardWorldFeatureModule`.
+   - Projects active hypotheses, investigation trials, and divergence branch diffs into `VisibleFeatureState`.
+4. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, hypothesis investigation and divergence theater subsystems remain inactive, ensuring zero drift for legacy archives.
+
+### Consequences
+- **Positive**: Rigorous experimental methodology with paired control comparisons; honest confound warnings; spatially accurate divergence inspection across timeline branches.
+- **Negative / Constraints**: True causal attribution requires controlled conditions with matched seeds and checkpoints; mismatched comparisons produce explicit confound warnings.

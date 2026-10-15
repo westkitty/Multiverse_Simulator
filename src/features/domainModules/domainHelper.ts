@@ -40,6 +40,10 @@ import {
   ActorMemoryRecord,
   ActorMemoryManager,
   MonumentRecord,
+  CausalHypothesisDefinition,
+  HypothesisInvestigationManager,
+  DivergenceTheaterManager,
+  BranchDiffSnapshot,
 } from '../contracts';
 import { createBaseVisibleState } from '../projections';
 
@@ -173,6 +177,57 @@ export function createDefaultActorsAndMonuments(worldId: string): {
     ],
   };
 }
+
+export function createDefaultHypotheses(worldId: string): readonly CausalHypothesisDefinition[] {
+  const capWorld = worldId.charAt(0).toUpperCase() + worldId.slice(1);
+  return [
+    {
+      id: `${worldId}.hypothesis.core_stabilization`,
+      worldId,
+      title: `${capWorld} Core Equilibrium Hypothesis`,
+      premise: `Priced interventions at primary nodes will reduce active hazard drift and stabilize baseline metrics on ${capWorld}.`,
+      targetActionFamily: 'P001',
+      observableMetrics: ['stability'],
+      prediction: {
+        metric: 'stability',
+        expectedDirection: 'increase',
+        minimumExpectedDelta: 5.0,
+      },
+      confoundRisks: [
+        'Concurrent external hazard spikes during survey sweeps.',
+        'Resource budget starvation constraining intervention duration.',
+      ],
+    },
+  ];
+}
+
+export function createDefaultDivergenceSnapshot(worldId: string): BranchDiffSnapshot {
+  return {
+    id: `diff-${worldId}-baseline-init`,
+    sourceRunId: `run-${worldId}-primary`,
+    originCheckpointId: `cp-${worldId}-origin`,
+    worldId,
+    tick: 0,
+    rulesVersion: 1,
+    baselineHash: '0000000000000000',
+    treatmentHash: '0000000000000000',
+    metricDiffs: [
+      {
+        metricId: 'stability',
+        label: 'Stability',
+        baselineValue: 50,
+        treatmentValue: 50,
+        absoluteDiff: 0,
+        percentDiff: 0,
+      },
+    ],
+    siteDiffs: [],
+    inventoryDiffs: {},
+    crewDiffs: [],
+    temporalScrubbingAvailable: true,
+  };
+}
+
 
 export const STANDARD_G2_CAPABILITIES: readonly FeatureCapability[] = [
   {
@@ -322,6 +377,37 @@ export const STANDARD_G6_CAPABILITIES: readonly FeatureCapability[] = [
   },
 ];
 
+export const STANDARD_G7_CAPABILITIES: readonly FeatureCapability[] = [
+  {
+    id: 'hypothesis.test',
+    featureId: 'P013',
+    name: 'Execute Hypothesis Trial',
+    description: 'Conduct paired control vs treatment simulation trial to verify causal effect.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'hypothesis.evaluate',
+    featureId: 'P013',
+    name: 'Evaluate Causal Findings',
+    description: 'Assess statistical confidence, effect size, and confound warnings for an investigation.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'divergence.compare',
+    featureId: 'P014',
+    name: 'Compare Divergent Realities',
+    description: 'Generate synchronized spatial and metric diff between baseline and treated timeline branches.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'divergence.scrub',
+    featureId: 'P014',
+    name: 'Scrub Divergence Timeline',
+    description: 'Temporally scrub comparison snapshot to an authenticated historical checkpoint.',
+    minRulesVersion: 1,
+  },
+];
+
 export interface DomainModuleConfig {
   readonly worldId: string;
   readonly capabilities: readonly FeatureCapability[];
@@ -350,6 +436,8 @@ export interface DomainModuleConfig {
   readonly historicalEras?: readonly [HistoricalEraDefinition, HistoricalEraDefinition, HistoricalEraDefinition];
   readonly initialActors?: readonly ActorMemoryRecord[];
   readonly initialMonuments?: readonly MonumentRecord[];
+  readonly hypotheses?: readonly CausalHypothesisDefinition[];
+  readonly initialBranchDiff?: BranchDiffSnapshot;
 }
 
 export class StandardWorldFeatureModule implements WorldFeatureModule {
@@ -370,6 +458,8 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
   readonly destinationManager: SignatureDestinationManager;
   readonly eraManager: HistoricalEraManager;
   readonly actorMemoryManager: ActorMemoryManager;
+  readonly hypothesisManager: HypothesisInvestigationManager;
+  readonly divergenceManager: DivergenceTheaterManager;
   private readonly config: DomainModuleConfig;
 
   constructor(config: DomainModuleConfig) {
@@ -386,6 +476,7 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       ...STANDARD_G4_CAPABILITIES,
       ...STANDARD_G5_CAPABILITIES,
       ...STANDARD_G6_CAPABILITIES,
+      ...STANDARD_G7_CAPABILITIES,
     ]) {
       if (!existingCapIds.has(stdCap.id)) {
         mergedCaps.push(stdCap);
@@ -534,6 +625,18 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       config.worldId,
       config.initialActors ?? defaultMemory.actors,
       config.initialMonuments ?? defaultMemory.monuments,
+    );
+
+    // Initialize P013 Hypothesis Investigation Manager
+    this.hypothesisManager = new HypothesisInvestigationManager(
+      config.worldId,
+      config.hypotheses ?? createDefaultHypotheses(config.worldId),
+    );
+
+    // Initialize P014 Divergence Theater Manager
+    this.divergenceManager = new DivergenceTheaterManager(
+      config.worldId,
+      config.initialBranchDiff ?? createDefaultDivergenceSnapshot(config.worldId),
     );
   }
 
@@ -865,6 +968,98 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
           worldId: this.worldId,
           capabilityId: cap.id,
           payload: { title, siteId, inscription },
+        },
+      };
+    }
+
+    // P013: Hypothesis Actions
+    if (cap.id === 'hypothesis.test') {
+      const defaultHypo = this.hypothesisManager.getAllHypotheses()[0];
+      const hypothesisId = String(payload.hypothesisId ?? defaultHypo?.id ?? `${this.worldId}.hypothesis.core_stabilization`);
+      const seed = Number(payload.seed ?? 42);
+      const startTick = Number(payload.startTick ?? 0);
+      const durationTicks = Number(payload.durationTicks ?? 50);
+      const baselineFinalHash = String(payload.baselineFinalHash ?? 'hash-base-0');
+      const treatmentFinalHash = String(payload.treatmentFinalHash ?? 'hash-treat-0');
+      const baselineStartVal = Number(payload.baselineStartVal ?? 50);
+      const baselineEndVal = Number(payload.baselineEndVal ?? 48);
+      const treatmentStartVal = Number(payload.treatmentStartVal ?? 50);
+      const treatmentEndVal = Number(payload.treatmentEndVal ?? 62);
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P013',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: {
+            hypothesisId,
+            seed,
+            startTick,
+            durationTicks,
+            baselineFinalHash,
+            treatmentFinalHash,
+            baselineStartVal,
+            baselineEndVal,
+            treatmentStartVal,
+            treatmentEndVal,
+            externalHazardSpikeDetected: Boolean(payload.externalHazardSpikeDetected),
+            resourceExhaustionDetected: Boolean(payload.resourceExhaustionDetected),
+          },
+        },
+      };
+    }
+
+    if (cap.id === 'hypothesis.evaluate') {
+      const defaultHypo = this.hypothesisManager.getAllHypotheses()[0];
+      const hypothesisId = String(payload.hypothesisId ?? defaultHypo?.id ?? `${this.worldId}.hypothesis.core_stabilization`);
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P013',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { hypothesisId },
+        },
+      };
+    }
+
+    // P014: Divergence Actions
+    if (cap.id === 'divergence.compare') {
+      const originCheckpointId = String(payload.originCheckpointId ?? `cp-${this.worldId}-origin`);
+      const baselineHash = String(payload.baselineHash ?? 'hash-base-0');
+      const treatmentHash = String(payload.treatmentHash ?? 'hash-treat-0');
+      const baselineMetrics = (payload.baselineMetrics as Record<string, number>) ?? { stability: 50 };
+      const treatmentMetrics = (payload.treatmentMetrics as Record<string, number>) ?? { stability: 65 };
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P014',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: {
+            originCheckpointId,
+            baselineHash,
+            treatmentHash,
+            baselineMetrics,
+            treatmentMetrics,
+            baselineSites: payload.baselineSites,
+            treatmentSites: payload.treatmentSites,
+            mismatchedOrigin: Boolean(payload.mismatchedOrigin),
+            mismatchedTick: Boolean(payload.mismatchedTick),
+          },
+        },
+      };
+    }
+
+    if (cap.id === 'divergence.scrub') {
+      const targetTick = Number(payload.targetTick ?? 0);
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P014',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { targetTick },
         },
       };
     }
@@ -1598,6 +1793,136 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       };
     }
 
+    // Handle P013 Hypothesis Commands
+    if (action.capabilityId === 'hypothesis.test') {
+      const hypothesisId = String(payload.hypothesisId);
+      const trial = this.hypothesisManager.recordTrialResult(hypothesisId, {
+        seed: Number(payload.seed ?? 42),
+        startTick: Number(payload.startTick ?? 0),
+        durationTicks: Number(payload.durationTicks ?? 50),
+        baselineFinalHash: String(payload.baselineFinalHash ?? 'hash-base-0'),
+        treatmentFinalHash: String(payload.treatmentFinalHash ?? 'hash-treat-0'),
+        baselineStartVal: Number(payload.baselineStartVal ?? 50),
+        baselineEndVal: Number(payload.baselineEndVal ?? 48),
+        treatmentStartVal: Number(payload.treatmentStartVal ?? 50),
+        treatmentEndVal: Number(payload.treatmentEndVal ?? 62),
+        externalHazardSpikeDetected: Boolean(payload.externalHazardSpikeDetected),
+        resourceExhaustionDetected: Boolean(payload.resourceExhaustionDetected),
+        tick: ctx.tick,
+      });
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.hypothesis_tested`,
+        severity: 'info',
+        title: `Hypothesis Trial: ${hypothesisId}`,
+        description: `Conducted paired trial for ${hypothesisId} on ${this.worldId}. Outcome: ${trial.outcome} (effect: ${trial.causalEffectSize}).`,
+        sourceSystem: 'hypothesis-investigation',
+        payload: { trial },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'hypothesis.evaluate') {
+      const hypothesisId = String(payload.hypothesisId);
+      const status = this.hypothesisManager.getStatus(hypothesisId);
+      const trials = this.hypothesisManager.getTrialHistory(hypothesisId);
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.hypothesis_evaluated`,
+        severity: 'info',
+        title: `Hypothesis Evaluated: ${hypothesisId}`,
+        description: `Evaluated ${hypothesisId} findings on ${this.worldId}: Status=${status}, Trials=${trials.length}.`,
+        sourceSystem: 'hypothesis-investigation',
+        payload: { hypothesisId, status, trialsCount: trials.length },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P014 Divergence Commands
+    if (action.capabilityId === 'divergence.compare') {
+      const snapshot = this.divergenceManager.computeBranchDiff({
+        sourceRunId: `run-${this.worldId}-${ctx.tick}`,
+        originCheckpointId: String(payload.originCheckpointId ?? `cp-${this.worldId}-origin`),
+        tick: ctx.tick,
+        baselineHash: String(payload.baselineHash ?? 'hash-base-0'),
+        treatmentHash: String(payload.treatmentHash ?? 'hash-treat-0'),
+        baselineMetrics: (payload.baselineMetrics as Record<string, number>) ?? { stability: 50 },
+        treatmentMetrics: (payload.treatmentMetrics as Record<string, number>) ?? { stability: 65 },
+        baselineSites: payload.baselineSites as Record<string, string> | undefined,
+        treatmentSites: payload.treatmentSites as Record<string, string> | undefined,
+        mismatchedOrigin: Boolean(payload.mismatchedOrigin),
+        mismatchedTick: Boolean(payload.mismatchedTick),
+      });
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.divergence_compared`,
+        severity: 'info',
+        title: `Divergence Compared at Tick ${ctx.tick}`,
+        description: `Computed branch diff with ${snapshot.metricDiffs.length} metric diffs and ${snapshot.siteDiffs.length} site diffs on ${this.worldId}.`,
+        sourceSystem: 'divergence-theater',
+        payload: { snapshotId: snapshot.id },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'divergence.scrub') {
+      const targetTick = Number(payload.targetTick ?? 0);
+      const res = this.divergenceManager.scrubTimeline(targetTick);
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.divergence_scrubbed`,
+        severity: res.success ? 'info' : 'warning',
+        title: `Divergence Scrubbed to Tick ${targetTick}`,
+        description: res.success
+          ? `Successfully scrubbed comparison timeline to tick ${targetTick}.`
+          : `Failed timeline scrub: ${res.error}`,
+        sourceSystem: 'divergence-theater',
+        payload: { targetTick, success: res.success },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: res.success ? 'success' : 'rejected',
+        rejectionReason: res.error,
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
     // Handle P001 Native Action Execution
     const nativeDef = this.actionRegistry.getAction(action.capabilityId);
     if (nativeDef) {
@@ -1790,6 +2115,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     const currentEra = this.eraManager.getCurrentEra();
     const memorializedActors = this.actorMemoryManager.getAllActors();
     const monuments = this.actorMemoryManager.getAllMonuments();
+    const hypotheses = this.hypothesisManager.getAllHypotheses();
+    const activeInvestigations = this.hypothesisManager.getTrialHistory();
+    const branchDiff = this.divergenceManager.getActiveSnapshot();
 
     return createBaseVisibleState(
       this.worldId,
@@ -1811,6 +2139,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       currentEra,
       memorializedActors,
       monuments,
+      hypotheses,
+      activeInvestigations,
+      branchDiff,
     );
   }
 }

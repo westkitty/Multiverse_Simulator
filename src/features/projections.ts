@@ -80,6 +80,9 @@ export function createBaseVisibleState(
   currentEra?: any,
   memorializedActors?: readonly any[],
   monuments?: readonly any[],
+  hypotheses?: readonly any[],
+  activeInvestigations?: readonly any[],
+  branchDiff?: any,
 ): VisibleFeatureState {
   return {
     worldId,
@@ -101,5 +104,8 @@ export function createBaseVisibleState(
     currentEra,
     memorializedActors,
     monuments,
+    hypotheses,
+    activeInvestigations,
+    branchDiff,
   };
 }
