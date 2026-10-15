@@ -9,10 +9,22 @@
   "cells": {
     "ecosystem": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: habitat corridors; nutrient balancing; targeted firebreaks.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -135,10 +147,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of moisture / nutrients / biomass with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -227,10 +251,22 @@
     },
     "station": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: pressure sector isolation; scrubber allocation; crew evacuation.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -353,10 +389,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / oxygen reserve / crew health with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -445,10 +493,22 @@
     },
     "civilization": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: water distribution; infrastructure load; crossing reinforcement.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -571,10 +631,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water stock / food stock / civic stability with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -663,10 +735,22 @@
     },
     "atmosphere": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: moisture-front control; instrument deployment; temporary countermeasures.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -789,10 +873,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / temperature / humidity with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -881,10 +977,22 @@
     },
     "ocean": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: upwelling; depth oxygenation; carbonate habitat protection.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -1007,10 +1115,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of dissolved oxygen / pH / nutrients with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -1099,10 +1219,22 @@
     },
     "celestial": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: constrained transfer schedules; orbit circularization; radiation shielding.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -1225,10 +1357,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of eccentricity / incident flux / habitability with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -1317,10 +1461,22 @@
     },
     "megacity": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: power isolation; flood rerouting; transport priority.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -1443,10 +1599,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of infrastructure health / pollution / reachable sites with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -1535,10 +1703,22 @@
     },
     "industrial": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: production balance; emergency freight; waste containment.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -1661,10 +1841,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of inventory / backlog / equipment health with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -1753,10 +1945,22 @@
     },
     "geology": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: pressure venting; fault reinforcement; sensor coverage.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -1879,10 +2083,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of tectonic stress / magma pressure / sensor coverage with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -1971,10 +2187,22 @@
     },
     "wild-meridian": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: migration corridors; watering refuges; ecological disturbance containment.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -2097,10 +2325,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water / vegetation / wildlife with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -2189,10 +2429,22 @@
     },
     "hollow-deep": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: aquifer regulation; gas venting; tunnel reinforcement.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -2315,10 +2567,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of water / gas / stress with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -2407,10 +2671,22 @@
     },
     "timeworn-empire": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: controlled excavation; ruin protection; stratum hypotheses.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -2533,10 +2809,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of burial / erosion / exposure with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -2625,10 +2913,22 @@
     },
     "terraforming-frontier": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: atmospheric control; soil amendment; biome seeding.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -2751,10 +3051,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of pressure / soil / oxygen with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -2843,10 +3155,22 @@
     },
     "machine-wilderness": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: power routing; maintenance swarm scheduling; parts recovery.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -2969,10 +3293,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of power / wear / backlog with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
@@ -3061,10 +3397,22 @@
     },
     "signal-expanse": {
       "P001": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct native action families: array calibration; interference suppression; signal reconstruction.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P002": {
         "status": "VERIFIED_CANDIDATE",
@@ -3187,10 +3535,22 @@
         "receipts": []
       },
       "P010": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Calibrated world-appropriate instrument samples of signal / noise / coverage with unit/tick/provenance.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G4",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG4.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG4.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "fd9e48bfe8eeb3f6b9a4106044e752199b567675",
+            "verifiedAt": "2026-10-15T09:30:00Z"
+          }
+        ]
       },
       "P011": {
         "status": "PLANNED",
