@@ -135,16 +135,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical ecosystem site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at wetland pump and seed nursery.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -377,16 +401,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical station site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at life-support scrubber and pressure bulkhead.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -619,16 +667,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical civilization site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at waterworks and river crossing.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -861,16 +933,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical atmosphere site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at storm observation array and rain collector.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -1103,16 +1199,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical ocean site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at oxygenation module and reef nursery.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -1345,16 +1465,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical celestial site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at transit beacon and radiation shield.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -1587,16 +1731,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical megacity site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at substation, pumps and transit link.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -1829,16 +1997,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical industrial site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at freight depot and production buffer.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -2071,16 +2263,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical geology site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at fault brace and seismic sensor array.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -2313,16 +2529,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical wild-meridian site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at migration refuge and waterway restoration.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -2555,16 +2795,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical hollow-deep site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at gas vent, aquifer pump and tunnel brace.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -2797,16 +3061,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical timeworn-empire site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at strata shelter and field conservation workshop.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -3039,16 +3327,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical terraforming-frontier site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at biosphere dome and atmosphere regulator.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -3281,16 +3593,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical machine-wilderness site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at power relay and maintenance swarm hub.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
@@ -3523,16 +3859,40 @@
         ]
       },
       "P008": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Preserve canonical signal-expanse site IDs through map-to-3D navigation and appropriate spatial topology.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P009": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Assign real actors/remote crews qualified for surveying, logistics and work at signal relay and interferometer.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G5",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG5.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG5.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "1dccb0923f4fdf97ebea51433889f77119888315",
+            "verifiedAt": "2026-10-15T10:10:00Z"
+          }
+        ]
       },
       "P010": {
         "status": "VERIFIED_CANDIDATE",
