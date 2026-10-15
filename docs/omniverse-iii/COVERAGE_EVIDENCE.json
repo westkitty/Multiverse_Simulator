@@ -15,16 +15,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: watershed drought / nutrient runaway.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: water stores, seed stocks and restoration supplies.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -81,10 +105,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about watershed drought / nutrient runaway with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -137,16 +173,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: pressure leakage -> oxygen depletion -> compartment shutdown.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: scrubber cartridges, power and emergency oxygen.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -203,10 +263,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about pressure leakage -> oxygen depletion -> compartment shutdown with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -259,16 +331,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: water shortage -> food scarcity -> civic failure.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: cistern inventory, grain, repair materials.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -325,10 +421,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about water shortage -> food scarcity -> civic failure with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -381,16 +489,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: moisture loss -> storm instability -> monitoring blindness.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: sensor power, atmospheric reagents, shelters.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -447,10 +579,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about moisture loss -> storm instability -> monitoring blindness with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -503,16 +647,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: oxygen depletion -> habitat damage -> ecological feedback.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: oxygenation capacity, nutrient reserve, ROV power.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -569,10 +737,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about oxygen depletion -> habitat damage -> ecological feedback with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -625,16 +805,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: orbital instability -> high flux exposure -> failed transfers.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: propellant, orbital hardware and thermal protection.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -691,10 +895,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about orbital instability -> high flux exposure -> failed transfers with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -747,16 +963,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: power failure -> pumping loss -> flood and isolation.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: district fuel, spare parts, municipal stock.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -813,10 +1053,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about power failure -> pumping loss -> flood and isolation with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -869,16 +1121,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: freight interruption -> inventory scarcity -> factory stoppage.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: ore, processed goods, freight fuel and spares.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -935,10 +1211,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about freight interruption -> inventory scarcity -> factory stoppage with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -991,16 +1279,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: tectonic stress -> rupture -> inaccessible monitoring.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: reinforcement material, bore capacity and sensors.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1057,10 +1369,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about tectonic stress -> rupture -> inaccessible monitoring with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1113,16 +1437,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: drought -> habitat fragmentation -> wildlife decline.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: stored water, native seed stock and field energy.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1179,10 +1527,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about drought -> habitat fragmentation -> wildlife decline with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1235,16 +1595,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: aquifer pressure -> gas buildup -> structural collapse.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: bracing materials, vent energy and water reserve.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1301,10 +1685,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about aquifer pressure -> gas buildup -> structural collapse with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1357,16 +1753,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: erosion -> exposure -> irreversible archaeological loss.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: conservation materials, crew time and excavation capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1423,10 +1843,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about erosion -> exposure -> irreversible archaeological loss with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1479,16 +1911,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: atmospheric deficiency -> poor soil -> biosphere instability.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: atmospheric reagents, biological stock and energy.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1545,10 +2001,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about atmospheric deficiency -> poor soil -> biosphere instability with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1601,16 +2069,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: power failures -> maintenance backlog -> automation collapse.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: recovered parts, energy and worker capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1667,10 +2159,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about power failures -> maintenance backlog -> automation collapse with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",
@@ -1723,16 +2227,40 @@
         "receipts": []
       },
       "P002": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Trace native cascade: interference -> coverage loss -> false/fragmented observations.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P003": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Cost all new scientific interventions against finite, audited sources: calibration power, relay parts and processing capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P004": {
         "status": "PLANNED",
@@ -1789,10 +2317,22 @@
         "receipts": []
       },
       "P013": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Design and run matched evidence-backed hypothesis about interference -> coverage loss -> false/fragmented observations with native observables.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G1",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG1.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG1.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "d9322e217648a8f3a84af219133b612b92654931",
+            "verifiedAt": "2026-10-15T07:35:00Z"
+          }
+        ]
       },
       "P014": {
         "status": "PLANNED",

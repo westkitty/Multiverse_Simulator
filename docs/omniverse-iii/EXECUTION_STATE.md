@@ -3,20 +3,20 @@
 ## Active Workspace Information
 - **Repository Path**: `/Users/andrew/Multiverse_Simulator`
 - **Remote Origin**: `git@github.com:westkitty/Multiverse_Simulator`
-- **Current Branch**: `wave/g0-feature-architecture`
+- **Current Branch**: `wave/g1-catastrophe-conservation`
 - **Baseline Commit (Pinned)**: `b3454bfd735406c4d6ae9aafe612ff4a6f93ab2d`
-- **Current Local HEAD**: `b4d4d5ee92a2e98748b99ab8569e679c6d0cf8fb`
-- **Remote Branch HEAD**: `b4d4d5ee92a2e98748b99ab8569e679c6d0cf8fb` (Verified Match)
+- **Current Local HEAD**: `d9322e217648a8f3a84af219133b612b92654931`
+- **Remote Branch HEAD**: `d9322e217648a8f3a84af219133b612b92654931` (Verified Match)
 
 ## Program Status
-- **Active Gate**: `G0` (Feature Architecture, Compatibility, and Verified Fifteen-World Contracts) -> **VERIFIED COMPLETE**
-- **Active Wave**: `Wave G0` -> **COMPLETE**
+- **Active Gate**: `G1` (Scientific Costs & Catastrophe Causality) -> **VERIFIED COMPLETE**
+- **Active Wave**: `Wave G1` -> **COMPLETE**
 - **Completed Checkpoints**:
-  - `Checkpoint A: SHARED SYSTEMS`: Verified and Committed (`8786b5a`)
-  - `Checkpoint B: FIFTEEN-WORLD INTEGRATION`: Verified and Committed (`8786b5a`)
-  - `Checkpoint C: BROWSER AND REPAIR`: Verified and Committed (`b4d4d5e`)
-  - `Checkpoint D: ACCEPTANCE AND EVIDENCE`: Verified and Certified (This Checkpoint)
-- **Completed Feature IDs**: Baseline G0 Architecture Established across all 15 universes; P001–P020 cell obligations registered and tracked in `docs/omniverse-iii/COVERAGE_EVIDENCE.json`.
+  - `Checkpoint A: SHARED SYSTEMS`: HazardDependencyGraph and ScientificBudgetLedger verified and committed (`2d54b6b`)
+  - `Checkpoint B: FIFTEEN-WORLD INTEGRATION`: 15 domain modules, 3-stage failure chains, finite starting budgets, and 121 unit tests verified and committed (`d9322e2`)
+  - `Checkpoint C: BROWSER AND REPAIR`: Build, dist verification, 26/26 browser journeys, performance, and acceptance certified clean
+  - `Checkpoint D: ACCEPTANCE AND EVIDENCE`: 45 world-feature obligations promoted to `VERIFIED_CANDIDATE` in `COVERAGE_EVIDENCE.json`; Gate G1 certified in `RELEASE_GATES.md`
+- **Completed Feature IDs**: P002 (Anatomy of a Catastrophe), P003 (Conservation Has Teeth), P013 (Causality Detective) verified across all 15 universes concurrently behind `worldRulesVersion: 1`.
 - **Blockers**: None
 
 ## Complete Empirical Verification Evidence (100% Passing)
@@ -24,8 +24,8 @@
 - `npm run fixtures:atlas:verify`: PASSED (15 Atlas state-equivalent archives verified; pre-refuge Atlas command contracts preserved)
 - `npm run typecheck`: PASSED (0 TypeScript errors across entire workspace)
 - `npm run lint`: PASSED (0 ESLint errors across entire workspace)
-- `npm test`: PASSED (34 test files, 216 unit tests passed, including `featureRegistry.test.ts` and `fifteenDomainsG0.test.ts`)
-- `npm run test:performance`: PASSED (6.36 ms median stress tick, well under 15 ms limit; 265 entities stable)
+- `npm test`: PASSED (37 test files, 349 unit tests passed, including `hazardAndBudget.test.ts` and `fifteenDomainsG1.test.ts` 121/121)
+- `npm run test:performance`: PASSED (5.69 ms median stress tick, well under 15 ms limit)
 - `npm run test:acceptance`: PASSED (12/12 long-horizon tests passed: defaultBalance 2000-tick run, semanticAcceptance, historicalArchives)
 - `npm run build`: PASSED (Clean Vite production bundle, zero build errors)
 - `npm run verify:dist`: PASSED (7 HTML assets and module worker resolve under `/Multiverse_Simulator/`)
@@ -54,4 +54,4 @@
 15. `signal-expanse` (Last Transmission)
 
 ## Next Implementation Task
-Advance to **Wave G1**: Scientific costs, catastrophe causality, and initial controlled experiments (P002 / P003 + initial P013) across all 15 universes concurrently.
+Advance to **Wave G2**: Native Logistics & Functional Construction (P004: Living Logistics Web & P005: Build the Things That Save the World) across all 15 universes concurrently.
