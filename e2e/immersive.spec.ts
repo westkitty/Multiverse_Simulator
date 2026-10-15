@@ -15,7 +15,10 @@ test.describe('immersive 3D gameplay', () => {
   const bearing = explorer.getByRole('group', { name: 'Visual field bearing' });
   await expect(bearing).toBeVisible();
   await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
-  await bearing.getByRole('button', { name: 'Hide field bearing' }).click();
+  // Keyboard Space must activate focused controls instead of being captured
+  // by the 3D movement listener.
+  await bearing.getByRole('button', { name: 'Hide field bearing' }).focus();
+  await page.keyboard.press('Space');
   await expect(bearing).toContainText('Guide hidden');
   await bearing.getByRole('button', { name: 'Track next known site' }).click();
   await expect(bearing.getByTestId('field-waypoint-name')).toContainText(/Unidentified.*contact/);
@@ -47,6 +50,16 @@ test.describe('immersive 3D gameplay', () => {
     await expect.poll(() => coordinates.innerText(), { timeout: 20_000 }).not.toBe(initial);
   } finally {
     await page.keyboard.up('w');
+  }
+  // Touch-facing movement buttons are also operable from keyboard focus;
+  // Space must move only while held and release cleanly.
+  const beforeButtonMove=await coordinates.innerText();
+  await explorer.getByRole('button', { name:'Forward' }).focus();
+  await page.keyboard.down('Space');
+  try {
+    await expect.poll(() => coordinates.innerText(), {timeout:20_000}).not.toBe(beforeButtonMove);
+  } finally {
+    await page.keyboard.up('Space');
   }
 
   // Recenter using the already-created world on the next enter. The default
