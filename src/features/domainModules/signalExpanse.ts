@@ -1,144 +1,156 @@
-import {
-  ActionExecutionReceipt,
-  ActionValidationResult,
-  FeatureCapability,
-  ValidatedAction,
-  WorldFeatureModule,
-} from '../contracts';
-import { createBaseVisibleState } from '../projections';
+import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { StandardWorldFeatureModule } from './domainHelper';
 
-export const SIGNALEXPANSE_CAPABILITIES: readonly FeatureCapability[] = [
+export const SIGNAL_EXPANSE_CAPABILITIES: readonly FeatureCapability[] = [
   {
-    "id": "signal-expanse.action.array_calibration",
-    "featureId": "P001",
-    "name": "Array Calibration",
-    "description": "Native action family 1 for signal-expanse: array calibration.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "signal",
-      "noise",
-      "coverage"
-    ],
-    "costResource": "supplies"
+    id: 'signalExpanse.action.rf_notch_filtering',
+    featureId: 'P001',
+    name: 'RF Notch Filtering',
+    description: 'Tune digital notch filters to cancel out ambient radio frequency noise spikes.',
+    minRulesVersion: 1,
+    domainUnits: ['noise'],
+    costResource: 'calibration_power',
   },
   {
-    "id": "signal-expanse.action.interference_suppression",
-    "featureId": "P001",
-    "name": "Interference Suppression",
-    "description": "Native action family 2 for signal-expanse: interference suppression.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "signal",
-      "noise",
-      "coverage"
-    ],
-    "costResource": "supplies"
+    id: 'signalExpanse.action.gimbal_servo_recalibration',
+    featureId: 'P001',
+    name: 'Gimbal Servo Recalibration',
+    description: 'Realign parabolic dish steerers to maximize cross-array signal coverage.',
+    minRulesVersion: 1,
+    domainUnits: ['coverage'],
+    costResource: 'relay_parts',
   },
   {
-    "id": "signal-expanse.action.signal_reconstruction",
-    "featureId": "P001",
-    "name": "Signal Reconstruction",
-    "description": "Native action family 3 for signal-expanse: signal reconstruction.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "signal",
-      "noise",
-      "coverage"
-    ],
-    "costResource": "supplies"
+    id: 'signalExpanse.action.coherent_integrator_lock',
+    featureId: 'P001',
+    name: 'Coherent Integrator Lock',
+    description: 'Synchronize cryogenic local oscillators to lock onto degraded interstellar carrier signals.',
+    minRulesVersion: 1,
+    domainUnits: ['signal'],
+    costResource: 'processing_capacity',
   },
   {
-    "id": "signal-expanse.hazard.monitoring",
-    "featureId": "P002",
-    "name": "Signal-Expanse Hazard Monitoring",
-    "description": "Ordered hazard dependency graph for signal-expanse: interference -> coverage loss -> false/fragmented observations.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "hazard-index"
-    ]
+    id: 'signalExpanse.hazard.monitoring',
+    featureId: 'P002',
+    name: 'Signal Expanse Hazard Monitoring',
+    description: 'Ordered hazard dependency graph for signal-expanse: interference -> coverage loss -> false/fragmented observations.',
+    minRulesVersion: 1,
+    domainUnits: ['hazard-index'],
   },
   {
-    "id": "signal-expanse.conservation.ledger",
-    "featureId": "P003",
-    "name": "Signal-Expanse Conservation Ledger",
-    "description": "Resource-accountable conservation ledger enforcing finite non-negative balances for signal-expanse.",
-    "minRulesVersion": 1,
-    "costResource": "supplies"
+    id: 'signalExpanse.conservation.ledger',
+    featureId: 'P003',
+    name: 'Signal Expanse Conservation Ledger',
+    description: 'Resource-accountable conservation ledger enforcing finite non-negative balances for signal-expanse.',
+    minRulesVersion: 1,
+    costResource: 'calibration_power',
   },
   {
-    "id": "signal-expanse.signature.destination",
-    "featureId": "P011",
-    "name": "Last Transmission",
-    "description": "Authored signature destination for signal-expanse: Last Transmission.",
-    "minRulesVersion": 1
-  }
+    id: 'signalExpanse.signature.destination',
+    featureId: 'P011',
+    name: 'Last Transmission',
+    description: 'Authored signature destination for signal-expanse: Last Transmission.',
+    minRulesVersion: 1,
+  },
 ];
 
-export const signalExpanseFeatureModule: WorldFeatureModule = {
+export const SIGNAL_EXPANSE_HAZARD_NODES: readonly HazardNode[] = [
+  {
+    id: 'atmospheric_flutter',
+    label: 'Atmospheric Flutter',
+    worldId: 'signal-expanse',
+    sourceMetric: 'noise',
+    targetMetric: 'noise',
+    threshold: 70,
+    operator: '>',
+    severity: 'warning',
+    upstreamNodeIds: [],
+    mitigationActionFamily: 'signalExpanse.action.rf_notch_filtering',
+    description: 'Ionospheric scintillation generates severe RF background interference',
+    observedTriggerTemplate: 'RF spectrum noise floor ({value} dBm) exceeded {threshold} dBm',
+    hypothesizedExplanation: 'High-altitude plasma storms scattering radio telescope reception beams',
+  },
+  {
+    id: 'dish_misalignment',
+    label: 'Dish Misalignment',
+    worldId: 'signal-expanse',
+    sourceMetric: 'coverage',
+    targetMetric: 'coverage',
+    threshold: 30,
+    operator: '<',
+    severity: 'critical',
+    upstreamNodeIds: ['atmospheric_flutter'],
+    mitigationActionFamily: 'signalExpanse.action.gimbal_servo_recalibration',
+    description: 'Interferometer array loses phase lock, dropping spatial baseline coverage',
+    observedTriggerTemplate: 'Interferometer baseline coverage ({value}%) fell below {threshold}%',
+    hypothesizedExplanation: 'Thermal expansion and mechanical drift throwing antenna gimbals out of phase alignment',
+  },
+  {
+    id: 'telemetry_loss',
+    label: 'Telemetry Loss',
+    worldId: 'signal-expanse',
+    sourceMetric: 'signal',
+    targetMetric: 'signal',
+    threshold: 25,
+    operator: '<',
+    severity: 'catastrophic',
+    upstreamNodeIds: ['dish_misalignment'],
+    mitigationActionFamily: 'signalExpanse.action.coherent_integrator_lock',
+    description: 'Decoded transmission carrier signal collapses into noise, losing all data',
+    observedTriggerTemplate: 'Decoded signal SNR ({value} dB) fell below {threshold} dB',
+    hypothesizedExplanation: 'Severe phase jitter and carrier loss causing irreversible frame synchronization collapse',
+  },
+];
+
+export const SIGNAL_EXPANSE_HAZARD_LINKS: readonly HazardLink[] = [
+  {
+    fromNodeId: 'atmospheric_flutter',
+    toNodeId: 'dish_misalignment',
+    causalLinkType: 'direct',
+    description: 'Noise spikes degrade tracking telemetry, causing dish pointing servos to drift',
+  },
+  {
+    fromNodeId: 'dish_misalignment',
+    toNodeId: 'telemetry_loss',
+    causalLinkType: 'dependency',
+    description: 'Phase misalignment drops array gain below the threshold needed to lock onto the signal',
+  },
+];
+
+export const signalExpanseFeatureModule = new StandardWorldFeatureModule({
   worldId: 'signal-expanse',
-  rulesVersion: 1,
-  capabilities: SIGNALEXPANSE_CAPABILITIES,
-
-  validateAction(raw: unknown, _state: Readonly<Record<string, unknown>>): ActionValidationResult {
-    if (!raw || typeof raw !== 'object') {
-      return { valid: false, error: 'Malformed action payload' };
-    }
-    const r = raw as Record<string, unknown>;
-    const cap = SIGNALEXPANSE_CAPABILITIES.find((c) => c.id === r.capabilityId);
-    if (!cap) {
-      return {
-        valid: false,
-        error: `Capability ${String(r.capabilityId)} not supported on world signal-expanse`,
-      };
-    }
-    return {
-      valid: true,
-      action: {
-        actionFamily: cap.featureId,
-        worldId: 'signal-expanse',
-        capabilityId: cap.id,
-        payload: (r.payload as Record<string, unknown>) ?? {},
-        cost: cap.costResource ? { resource: cap.costResource, amount: 2 } : undefined,
-      },
-    };
+  capabilities: SIGNAL_EXPANSE_CAPABILITIES,
+  hazardNodes: SIGNAL_EXPANSE_HAZARD_NODES,
+  hazardLinks: SIGNAL_EXPANSE_HAZARD_LINKS,
+  initialBudget: {
+    calibration_power: { balance: 60, capacity: 120, replenishmentRate: 1.5 },
+    relay_parts: { balance: 40, capacity: 80, replenishmentRate: 0.5 },
+    processing_capacity: { balance: 50, capacity: 100, replenishmentRate: 1.0 },
   },
-
-  applyAction(_state: Record<string, unknown>, action: ValidatedAction, ctx): ActionExecutionReceipt {
-    const event = ctx.emitEvent({
-      type: `${action.worldId}.action_executed`,
-      severity: 'info',
-      title: `${action.capabilityId} Executed`,
-      description: `Executed ${action.capabilityId} on ${action.worldId} at tick ${ctx.tick}.`,
-      sourceSystem: 'feature-module',
-      payload: action.payload,
-    });
-
-    return {
-      actionId: `${action.capabilityId}-${ctx.tick}`,
-      worldId: 'signal-expanse',
-      tick: ctx.tick,
-      executedAtTick: ctx.tick,
-      status: 'success',
-      debits: action.cost ? [action.cost] : [],
-      deltas: [],
-      eventsEmitted: [event.id],
-    };
+  actionCosts: {
+    'signalExpanse.action.rf_notch_filtering': [
+      { resource: 'calibration_power', amount: 10 },
+      { resource: 'processing_capacity', amount: 6 },
+    ],
+    'signalExpanse.action.gimbal_servo_recalibration': [
+      { resource: 'relay_parts', amount: 8 },
+      { resource: 'calibration_power', amount: 12 },
+    ],
+    'signalExpanse.action.coherent_integrator_lock': [
+      { resource: 'processing_capacity', amount: 15 },
+      { resource: 'calibration_power', amount: 8 },
+    ],
   },
-
-  projectVisibleState(state: Readonly<Record<string, unknown>>, _viewer) {
-    const metricKeys = ["signal", "noise", "coverage"];
-    const metrics: Record<string, number | string> = {};
-    for (const k of metricKeys) {
-      if (k in state && (typeof state[k] === 'number' || typeof state[k] === 'string')) {
-        metrics[k] = state[k] as number | string;
-      }
-    }
-    return createBaseVisibleState(
-      'signal-expanse',
-      1,
-      SIGNALEXPANSE_CAPABILITIES.map((c) => c.id),
-      metrics,
-      [],
-    );
+  actionDeltas: {
+    'signalExpanse.action.rf_notch_filtering': [
+      { field: 'noise', delta: -30, unit: 'dBm' },
+    ],
+    'signalExpanse.action.gimbal_servo_recalibration': [
+      { field: 'coverage', delta: 25, unit: '%' },
+    ],
+    'signalExpanse.action.coherent_integrator_lock': [
+      { field: 'signal', delta: 30, unit: 'dB' },
+    ],
   },
-};
+  metricKeys: ['noise', 'coverage', 'signal'],
+});

@@ -1,144 +1,156 @@
-import {
-  ActionExecutionReceipt,
-  ActionValidationResult,
-  FeatureCapability,
-  ValidatedAction,
-  WorldFeatureModule,
-} from '../contracts';
-import { createBaseVisibleState } from '../projections';
+import { FeatureCapability, HazardLink, HazardNode } from '../contracts';
+import { StandardWorldFeatureModule } from './domainHelper';
 
-export const HOLLOWDEEP_CAPABILITIES: readonly FeatureCapability[] = [
+export const HOLLOW_DEEP_CAPABILITIES: readonly FeatureCapability[] = [
   {
-    "id": "hollow-deep.action.aquifer_regulation",
-    "featureId": "P001",
-    "name": "Aquifer Regulation",
-    "description": "Native action family 1 for hollow-deep: aquifer regulation.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "water",
-      "gas",
-      "stress"
-    ],
-    "costResource": "supplies"
+    id: 'hollowDeep.action.aquifer_sump_drainage',
+    featureId: 'P001',
+    name: 'Aquifer Sump Drainage',
+    description: 'Engage high-pressure submersible pumps to clear flooded cavern levels.',
+    minRulesVersion: 1,
+    domainUnits: ['water'],
+    costResource: 'vent_energy',
   },
   {
-    "id": "hollow-deep.action.gas_venting",
-    "featureId": "P001",
-    "name": "Gas Venting",
-    "description": "Native action family 2 for hollow-deep: gas venting.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "water",
-      "gas",
-      "stress"
-    ],
-    "costResource": "supplies"
+    id: 'hollowDeep.action.methane_vent_flaring',
+    featureId: 'P001',
+    name: 'Methane Vent Flaring',
+    description: 'Ignite controlled vent flares to dispel explosive chokedamp pockets.',
+    minRulesVersion: 1,
+    domainUnits: ['gas'],
+    costResource: 'vent_energy',
   },
   {
-    "id": "hollow-deep.action.tunnel_reinforcement",
-    "featureId": "P001",
-    "name": "Tunnel Reinforcement",
-    "description": "Native action family 3 for hollow-deep: tunnel reinforcement.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "water",
-      "gas",
-      "stress"
-    ],
-    "costResource": "supplies"
+    id: 'hollowDeep.action.acoustic_rockbolt_installation',
+    featureId: 'P001',
+    name: 'Acoustic Rockbolt Installation',
+    description: 'Drive hydraulic expansion rockbolts to brace fractured ceiling pillars.',
+    minRulesVersion: 1,
+    domainUnits: ['stress'],
+    costResource: 'bracing',
   },
   {
-    "id": "hollow-deep.hazard.monitoring",
-    "featureId": "P002",
-    "name": "Hollow-Deep Hazard Monitoring",
-    "description": "Ordered hazard dependency graph for hollow-deep: aquifer pressure -> gas buildup -> structural collapse.",
-    "minRulesVersion": 1,
-    "domainUnits": [
-      "hazard-index"
-    ]
+    id: 'hollowDeep.hazard.monitoring',
+    featureId: 'P002',
+    name: 'Hollow Deep Hazard Monitoring',
+    description: 'Ordered hazard dependency graph for hollow-deep: aquifer pressure -> gas buildup -> structural collapse.',
+    minRulesVersion: 1,
+    domainUnits: ['hazard-index'],
   },
   {
-    "id": "hollow-deep.conservation.ledger",
-    "featureId": "P003",
-    "name": "Hollow-Deep Conservation Ledger",
-    "description": "Resource-accountable conservation ledger enforcing finite non-negative balances for hollow-deep.",
-    "minRulesVersion": 1,
-    "costResource": "supplies"
+    id: 'hollowDeep.conservation.ledger',
+    featureId: 'P003',
+    name: 'Hollow Deep Conservation Ledger',
+    description: 'Resource-accountable conservation ledger enforcing finite non-negative balances for hollow-deep.',
+    minRulesVersion: 1,
+    costResource: 'bracing',
   },
   {
-    "id": "hollow-deep.signature.destination",
-    "featureId": "P011",
-    "name": "Cathedral Below",
-    "description": "Authored signature destination for hollow-deep: Cathedral Below.",
-    "minRulesVersion": 1
-  }
+    id: 'hollowDeep.signature.destination',
+    featureId: 'P011',
+    name: 'Cathedral Below',
+    description: 'Authored signature destination for hollow-deep: Cathedral Below.',
+    minRulesVersion: 1,
+  },
 ];
 
-export const hollowDeepFeatureModule: WorldFeatureModule = {
+export const HOLLOW_DEEP_HAZARD_NODES: readonly HazardNode[] = [
+  {
+    id: 'aquifer_inundation',
+    label: 'Aquifer Inundation',
+    worldId: 'hollow-deep',
+    sourceMetric: 'water',
+    targetMetric: 'water',
+    threshold: 75,
+    operator: '>',
+    severity: 'warning',
+    upstreamNodeIds: [],
+    mitigationActionFamily: 'hollowDeep.action.aquifer_sump_drainage',
+    description: 'Subterranean water tables overwhelm sump drainage capacity',
+    observedTriggerTemplate: 'Cavern water level ({value}) exceeded {threshold}',
+    hypothesizedExplanation: 'Breached subterranean karst aquifers flooding lower galleries',
+  },
+  {
+    id: 'choke_damp_accumulation',
+    label: 'Chokedamp Accumulation',
+    worldId: 'hollow-deep',
+    sourceMetric: 'gas',
+    targetMetric: 'gas',
+    threshold: 70,
+    operator: '>',
+    severity: 'critical',
+    upstreamNodeIds: ['aquifer_inundation'],
+    mitigationActionFamily: 'hollowDeep.action.methane_vent_flaring',
+    description: 'Rising water displaces toxic methane and CO2 into transit tunnels',
+    observedTriggerTemplate: 'Toxic gas concentration ({value}) exceeded {threshold}',
+    hypothesizedExplanation: 'Inundation displacing dense pocket gases into ventilation shafts',
+  },
+  {
+    id: 'pillar_crush',
+    label: 'Pillar Crush',
+    worldId: 'hollow-deep',
+    sourceMetric: 'stress',
+    targetMetric: 'stress',
+    threshold: 80,
+    operator: '>',
+    severity: 'catastrophic',
+    upstreamNodeIds: ['choke_damp_accumulation'],
+    mitigationActionFamily: 'hollowDeep.action.acoustic_rockbolt_installation',
+    description: 'Pore pressure and rock fatigue cause massive ceiling collapses',
+    observedTriggerTemplate: 'Ceiling structural stress ({value}) exceeded {threshold}',
+    hypothesizedExplanation: 'Hydrostatic pressure weakening support pillars, inducing rockburst collapses',
+  },
+];
+
+export const HOLLOW_DEEP_HAZARD_LINKS: readonly HazardLink[] = [
+  {
+    fromNodeId: 'aquifer_inundation',
+    toNodeId: 'choke_damp_accumulation',
+    causalLinkType: 'direct',
+    description: 'Rising flood waters force heavy toxic gases into inhabited galleries',
+  },
+  {
+    fromNodeId: 'choke_damp_accumulation',
+    toNodeId: 'pillar_crush',
+    causalLinkType: 'dependency',
+    description: 'Acidic gas pockets and water saturation weaken load-bearing rock pillars',
+  },
+];
+
+export const hollowDeepFeatureModule = new StandardWorldFeatureModule({
   worldId: 'hollow-deep',
-  rulesVersion: 1,
-  capabilities: HOLLOWDEEP_CAPABILITIES,
-
-  validateAction(raw: unknown, _state: Readonly<Record<string, unknown>>): ActionValidationResult {
-    if (!raw || typeof raw !== 'object') {
-      return { valid: false, error: 'Malformed action payload' };
-    }
-    const r = raw as Record<string, unknown>;
-    const cap = HOLLOWDEEP_CAPABILITIES.find((c) => c.id === r.capabilityId);
-    if (!cap) {
-      return {
-        valid: false,
-        error: `Capability ${String(r.capabilityId)} not supported on world hollow-deep`,
-      };
-    }
-    return {
-      valid: true,
-      action: {
-        actionFamily: cap.featureId,
-        worldId: 'hollow-deep',
-        capabilityId: cap.id,
-        payload: (r.payload as Record<string, unknown>) ?? {},
-        cost: cap.costResource ? { resource: cap.costResource, amount: 2 } : undefined,
-      },
-    };
+  capabilities: HOLLOW_DEEP_CAPABILITIES,
+  hazardNodes: HOLLOW_DEEP_HAZARD_NODES,
+  hazardLinks: HOLLOW_DEEP_HAZARD_LINKS,
+  initialBudget: {
+    bracing: { balance: 40, capacity: 80, replenishmentRate: 0.5 },
+    vent_energy: { balance: 50, capacity: 100, replenishmentRate: 1.0 },
+    water_reserve: { balance: 30, capacity: 60, replenishmentRate: 0.4 },
   },
-
-  applyAction(_state: Record<string, unknown>, action: ValidatedAction, ctx): ActionExecutionReceipt {
-    const event = ctx.emitEvent({
-      type: `${action.worldId}.action_executed`,
-      severity: 'info',
-      title: `${action.capabilityId} Executed`,
-      description: `Executed ${action.capabilityId} on ${action.worldId} at tick ${ctx.tick}.`,
-      sourceSystem: 'feature-module',
-      payload: action.payload,
-    });
-
-    return {
-      actionId: `${action.capabilityId}-${ctx.tick}`,
-      worldId: 'hollow-deep',
-      tick: ctx.tick,
-      executedAtTick: ctx.tick,
-      status: 'success',
-      debits: action.cost ? [action.cost] : [],
-      deltas: [],
-      eventsEmitted: [event.id],
-    };
+  actionCosts: {
+    'hollowDeep.action.aquifer_sump_drainage': [
+      { resource: 'vent_energy', amount: 10 },
+      { resource: 'water_reserve', amount: 5 },
+    ],
+    'hollowDeep.action.methane_vent_flaring': [
+      { resource: 'vent_energy', amount: 12 },
+      { resource: 'bracing', amount: 4 },
+    ],
+    'hollowDeep.action.acoustic_rockbolt_installation': [
+      { resource: 'bracing', amount: 15 },
+      { resource: 'vent_energy', amount: 8 },
+    ],
   },
-
-  projectVisibleState(state: Readonly<Record<string, unknown>>, _viewer) {
-    const metricKeys = ["water", "gas", "stress"];
-    const metrics: Record<string, number | string> = {};
-    for (const k of metricKeys) {
-      if (k in state && (typeof state[k] === 'number' || typeof state[k] === 'string')) {
-        metrics[k] = state[k] as number | string;
-      }
-    }
-    return createBaseVisibleState(
-      'hollow-deep',
-      1,
-      HOLLOWDEEP_CAPABILITIES.map((c) => c.id),
-      metrics,
-      [],
-    );
+  actionDeltas: {
+    'hollowDeep.action.aquifer_sump_drainage': [
+      { field: 'water', delta: -25, unit: 'level' },
+    ],
+    'hollowDeep.action.methane_vent_flaring': [
+      { field: 'gas', delta: -30, unit: 'ppm' },
+    ],
+    'hollowDeep.action.acoustic_rockbolt_installation': [
+      { field: 'stress', delta: -35, unit: 'MPa' },
+    ],
   },
-};
+  metricKeys: ['water', 'gas', 'stress'],
+});
