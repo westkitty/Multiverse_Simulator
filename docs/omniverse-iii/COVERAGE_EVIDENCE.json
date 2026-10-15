@@ -87,16 +87,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for watershed drought / nutrient runaway.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: connected wetlands return, dead canopy regrows.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -165,10 +189,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around watershed drought / nutrient runaway and water stores, seed stocks and restoration supplies.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -269,16 +305,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for pressure leakage -> oxygen depletion -> compartment shutdown.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: dark pressure sectors re-illuminate and seal.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -347,10 +407,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around pressure leakage -> oxygen depletion -> compartment shutdown and scrubber cartridges, power and emergency oxygen.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -451,16 +523,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for water shortage -> food scarcity -> civic failure.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: irrigation and civic infrastructure recover.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -529,10 +625,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around water shortage -> food scarcity -> civic failure and cistern inventory, grain, repair materials.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -633,16 +741,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for moisture loss -> storm instability -> monitoring blindness.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: cloud bands and instrument weathering change.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -711,10 +843,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around moisture loss -> storm instability -> monitoring blindness and sensor power, atmospheric reagents, shelters.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -815,16 +959,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for oxygen depletion -> habitat damage -> ecological feedback.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: reef health, water clarity and life return.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -893,10 +1061,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around oxygen depletion -> habitat damage -> ecological feedback and oxygenation capacity, nutrient reserve, ROV power.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -997,16 +1177,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for orbital instability -> high flux exposure -> failed transfers.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: orbital lanes, thermal stress and platforms respond.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1075,10 +1279,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around orbital instability -> high flux exposure -> failed transfers and propellant, orbital hardware and thermal protection.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -1179,16 +1395,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for power failure -> pumping loss -> flood and isolation.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: windows, transit and utility corridors recover.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1257,10 +1497,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around power failure -> pumping loss -> flood and isolation and district fuel, spare parts, municipal stock.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -1361,16 +1613,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for freight interruption -> inventory scarcity -> factory stoppage.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: conveyors, stockyards and assembly lines restart.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1439,10 +1715,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around freight interruption -> inventory scarcity -> factory stoppage and ore, processed goods, freight fuel and spares.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -1543,16 +1831,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for tectonic stress -> rupture -> inaccessible monitoring.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: cracks, reinforcement and monitoring towers react.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1621,10 +1933,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around tectonic stress -> rupture -> inaccessible monitoring and reinforcement material, bore capacity and sensors.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -1725,16 +2049,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for drought -> habitat fragmentation -> wildlife decline.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: corridors reconnect and wildlife populations return.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1803,10 +2151,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around drought -> habitat fragmentation -> wildlife decline and stored water, native seed stock and field energy.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -1907,16 +2267,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for aquifer pressure -> gas buildup -> structural collapse.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: cavern supports, seepage and access passages change.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -1985,10 +2369,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around aquifer pressure -> gas buildup -> structural collapse and bracing materials, vent energy and water reserve.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -2089,16 +2485,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for erosion -> exposure -> irreversible archaeological loss.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: stratified ruins exposed and stabilized over time.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -2167,10 +2587,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around erosion -> exposure -> irreversible archaeological loss and conservation materials, crew time and excavation capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -2271,16 +2703,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for atmospheric deficiency -> poor soil -> biosphere instability.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: greenery expands with genuinely viable habitats.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -2349,10 +2805,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around atmospheric deficiency -> poor soil -> biosphere instability and atmospheric reagents, biological stock and energy.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -2453,16 +2921,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for power failures -> maintenance backlog -> automation collapse.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: mechanical infrastructure transitions between dormant and active.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -2531,10 +3023,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around power failures -> maintenance backlog -> automation collapse and recovered parts, energy and worker capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
@@ -2635,16 +3139,40 @@
         ]
       },
       "P006": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Provide reversible/preventable/escalating emergency stages for interference -> coverage loss -> false/fragmented observations.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P007": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Render real state change: beams reconnect and false signal clutter declines.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P008": {
         "status": "PLANNED",
@@ -2713,10 +3241,22 @@
         "receipts": []
       },
       "P017": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "At least two priced tradeoff policies around interference -> coverage loss -> false/fragmented observations and calibration power, relay parts and processing capacity.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G3",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG3.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG3.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "b16ebc37e96317e671fd53a4cea974528ef2290b",
+            "verifiedAt": "2026-10-15T08:35:00Z"
+          }
+        ]
       },
       "P018": {
         "status": "PLANNED",
