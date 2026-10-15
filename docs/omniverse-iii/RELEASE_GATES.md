@@ -4,7 +4,7 @@
 
 | Gate | Scope | Implementation Focus | Mandatory Exit Criteria | Status |
 |---|---|---|---|---|
-| **G0** | Shared Architecture & 15-World Contracts | Feature registry, `worldRulesVersion`, migration seam, synthetic test fixture, 15 domain contracts | 15/15 domains registered; zero legacy hash regression; stable 300-cell schema; all historical oracles match | **IN PROGRESS** |
+| **G0** | Shared Architecture & 15-World Contracts | Feature registry, `worldRulesVersion`, migration seam, synthetic test fixture, 15 domain contracts | 15/15 domains registered; zero legacy hash regression; stable 300-cell schema; all historical oracles match | **VERIFIED_COMPLETE** |
 | **G1** | Scientific Costs & Catastrophe Causality | P002 (Anatomy of Catastrophe), P003 (Conservation Has Teeth), initial P013 (Causality Detective) | Native hazard chains and real priced science in all 15; matched predictions and route-vantage controls | PLANNED |
 | **G2** | Native Logistics & Functional Construction | P004 (Living Logistics Web), P005 (Build Things That Save World) | 15 legal resource logistics cycles and 15 built installations with upkeep; conservation receipts | PLANNED |
 | **G3** | Cascading Emergencies & Living Environments | P006 (Cascading Emergencies), P007 (World Remembers Your Hands), initial P017 (No Perfect Intervention) | 15 hazard cascades; 15 evidence-driven restorations; 15 priced policies; three-arm trials | PLANNED |
