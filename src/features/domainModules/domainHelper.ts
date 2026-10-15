@@ -33,8 +33,146 @@ import {
   CrewMember,
   CrewRole,
   CREW_ROLE_DEFINITIONS,
+  SignatureDestinationDefinition,
+  SignatureDestinationManager,
+  HistoricalEraDefinition,
+  HistoricalEraManager,
+  ActorMemoryRecord,
+  ActorMemoryManager,
+  MonumentRecord,
 } from '../contracts';
 import { createBaseVisibleState } from '../projections';
+
+export function createDefaultSignatureDestination(worldId: string): SignatureDestinationDefinition {
+  const capWorld = worldId.charAt(0).toUpperCase() + worldId.slice(1);
+  return {
+    id: `${worldId}.destination.primary`,
+    worldId,
+    siteId: 'site-primary',
+    name: `${capWorld} Sanctuary Complex`,
+    epithet: 'The Keystone Installation',
+    lore: `The primary monumental expedition target on ${worldId}, requiring multi-stage survey, structural stabilization, and systemic equilibrium.`,
+    stages: [
+      {
+        stageNumber: 1,
+        title: 'Site Cartography & Baseline Profiling',
+        description: 'Deploy sensor sweeps and map structural foundations to disclose primary access corridors.',
+        targetProgressUnits: 100,
+      },
+      {
+        stageNumber: 2,
+        title: 'Core System Stabilization',
+        description: 'Perform targeted physical interventions and establish localized logistics routing to arrest active degradation.',
+        targetProgressUnits: 100,
+      },
+      {
+        stageNumber: 3,
+        title: 'Permanent Equilibrium Attainment',
+        description: 'Calibrate environmental feedback loops and certify long-term survival metrics.',
+        targetProgressUnits: 100,
+      },
+    ],
+    rewards: {
+      bonusMetric: { field: 'stability', delta: 15 },
+      budgetGrant: { energy: 50, supplies: 30 },
+      legacyLoreRecord: `Recorded historical triumph at ${capWorld} Sanctuary Complex.`,
+    },
+  };
+}
+
+export function createDefaultHistoricalEras(
+  worldId: string,
+): readonly [HistoricalEraDefinition, HistoricalEraDefinition, HistoricalEraDefinition] {
+  const capWorld = worldId.charAt(0).toUpperCase() + worldId.slice(1);
+  return [
+    {
+      eraNumber: 1,
+      id: `${worldId}.era.1`,
+      worldId,
+      name: 'The Pristine Horizon',
+      subtitle: 'Early Exploration & Nascent Settlement',
+      lore: `The formative age of ${capWorld}, characterized by undiscovered frontiers and standard environmental baseline rates.`,
+      catalystCondition: 'Initial historical condition.',
+      transitionThreshold: { minTick: 0 },
+      regimeModifiers: {
+        degradationRateMultiplier: 1.0,
+        consumptionMultiplier: 1.0,
+        hazardEscalationMultiplier: 1.0,
+        restorationEfficiencyMultiplier: 1.0,
+      },
+    },
+    {
+      eraNumber: 2,
+      id: `${worldId}.era.2`,
+      worldId,
+      name: 'The Crucible Epoch',
+      subtitle: 'Systemic Stress & Cascading Trials',
+      lore: `A testing age for ${capWorld} where environmental tensions compound, demanding active intervention and physical logistics support.`,
+      catalystCondition: 'Simulation reaches tick 100 or metric volatility exceeds threshold.',
+      transitionThreshold: { minTick: 100 },
+      regimeModifiers: {
+        degradationRateMultiplier: 1.3,
+        consumptionMultiplier: 1.2,
+        hazardEscalationMultiplier: 1.4,
+        restorationEfficiencyMultiplier: 0.9,
+      },
+    },
+    {
+      eraNumber: 3,
+      id: `${worldId}.era.3`,
+      worldId,
+      name: 'The Ascendant Equilibrium',
+      subtitle: 'Synthesis & Enduring Balance',
+      lore: `The mature era of ${capWorld}, where scientific infrastructure achieves sustained harmony and enhanced restoration efficiency.`,
+      catalystCondition: 'Simulation reaches tick 250 with stabilized core sectors.',
+      transitionThreshold: { minTick: 250 },
+      regimeModifiers: {
+        degradationRateMultiplier: 0.75,
+        consumptionMultiplier: 0.85,
+        hazardEscalationMultiplier: 0.7,
+        restorationEfficiencyMultiplier: 1.35,
+      },
+    },
+  ];
+}
+
+export function createDefaultActorsAndMonuments(worldId: string): {
+  actors: ActorMemoryRecord[];
+  monuments: MonumentRecord[];
+} {
+  const capWorld = worldId.charAt(0).toUpperCase() + worldId.slice(1);
+  return {
+    actors: [
+      {
+        id: `actor-${worldId}-founder`,
+        worldId,
+        name: `Chief Explorer of ${capWorld}`,
+        role: 'Expedition Commander',
+        eraNumber: 1,
+        achievement: `Established first verified refuge node and charted regional transit corridors on ${capWorld}.`,
+        sacrificeOrCost: 'Expended baseline emergency energy caches to protect early survey teams.',
+        recordedTick: 1,
+        sentiment: 'heroic',
+        legacyEffect: {
+          metric: 'supplies',
+          bonus: 10,
+          description: 'Pioneer field protocols improve logistics resupply efficiency.',
+        },
+      },
+    ],
+    monuments: [
+      {
+        id: `monument-${worldId}-keystone`,
+        worldId,
+        siteId: 'site-primary',
+        title: 'The Founding Keystone',
+        inscription: `Dedicated to the pioneers of ${capWorld} who built when the world was uncertain.`,
+        erectedTick: 1,
+        dedicatedToActorId: `actor-${worldId}-founder`,
+      },
+    ],
+  };
+}
 
 export const STANDARD_G2_CAPABILITIES: readonly FeatureCapability[] = [
   {
@@ -146,6 +284,44 @@ export const STANDARD_G5_CAPABILITIES: readonly FeatureCapability[] = [
   },
 ];
 
+export const STANDARD_G6_CAPABILITIES: readonly FeatureCapability[] = [
+  {
+    id: 'destination.start',
+    featureId: 'P011',
+    name: 'Initiate Destination Mission',
+    description: 'Begin multi-stage signature expedition at world legendary destination.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'destination.progress',
+    featureId: 'P011',
+    name: 'Advance Destination Mission Stage',
+    description: 'Contribute certified scientific and physical intervention progress to active destination mission stage.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'era.transition',
+    featureId: 'P012',
+    name: 'Historical Era Transition Catalyst',
+    description: 'Evaluate physical regime shifts and advance historical epoch upon satisfied catalyst conditions.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'memorial.inscribe',
+    featureId: 'P015',
+    name: 'Inscribe Actor Chronicle',
+    description: 'Inscribe named actor achievement or civic memorial into authoritative historical record.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'monument.erect',
+    featureId: 'P015',
+    name: 'Erect Civic Monument',
+    description: 'Construct permanent physical monument dedicated to historical achievement or sacrifice.',
+    minRulesVersion: 1,
+  },
+];
+
 export interface DomainModuleConfig {
   readonly worldId: string;
   readonly capabilities: readonly FeatureCapability[];
@@ -170,6 +346,10 @@ export interface DomainModuleConfig {
   readonly nativeActions?: readonly NativeActionFamilyDefinition[];
   readonly initialCrew?: readonly CrewMember[];
   readonly initialContinuumRoutes?: readonly RouteEdge[];
+  readonly signatureDestination?: SignatureDestinationDefinition;
+  readonly historicalEras?: readonly [HistoricalEraDefinition, HistoricalEraDefinition, HistoricalEraDefinition];
+  readonly initialActors?: readonly ActorMemoryRecord[];
+  readonly initialMonuments?: readonly MonumentRecord[];
 }
 
 export class StandardWorldFeatureModule implements WorldFeatureModule {
@@ -187,13 +367,16 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
   readonly actionRegistry: NativeActionRegistry;
   readonly continuumNavigator: AtlasContinuumNavigator;
   readonly crewManager: CrewManager;
+  readonly destinationManager: SignatureDestinationManager;
+  readonly eraManager: HistoricalEraManager;
+  readonly actorMemoryManager: ActorMemoryManager;
   private readonly config: DomainModuleConfig;
 
   constructor(config: DomainModuleConfig) {
     this.worldId = config.worldId;
     this.config = config;
 
-    // Combine custom and standard G2/G3/G4/G5 capabilities
+    // Combine custom and standard G2/G3/G4/G5/G6 capabilities
     const inputCaps = config.capabilities ?? [];
     const existingCapIds = new Set(inputCaps.map((c) => c.id));
     const mergedCaps = [...inputCaps];
@@ -202,6 +385,7 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       ...STANDARD_G3_CAPABILITIES,
       ...STANDARD_G4_CAPABILITIES,
       ...STANDARD_G5_CAPABILITIES,
+      ...STANDARD_G6_CAPABILITIES,
     ]) {
       if (!existingCapIds.has(stdCap.id)) {
         mergedCaps.push(stdCap);
@@ -331,6 +515,26 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
         });
       });
     }
+
+    // Initialize P011 Destination Manager
+    this.destinationManager = new SignatureDestinationManager(config.worldId);
+    if (config.signatureDestination) {
+      this.destinationManager.registerDestination(config.signatureDestination);
+    } else {
+      this.destinationManager.registerDestination(createDefaultSignatureDestination(config.worldId));
+    }
+
+    // Initialize P012 Historical Era Manager
+    const defaultEras = config.historicalEras ?? createDefaultHistoricalEras(config.worldId);
+    this.eraManager = new HistoricalEraManager(config.worldId, defaultEras);
+
+    // Initialize P015 Actor Memory Manager
+    const defaultMemory = createDefaultActorsAndMonuments(config.worldId);
+    this.actorMemoryManager = new ActorMemoryManager(
+      config.worldId,
+      config.initialActors ?? defaultMemory.actors,
+      config.initialMonuments ?? defaultMemory.monuments,
+    );
   }
 
   previewCost(capabilityId: string): CostPreview {
@@ -582,6 +786,85 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
           worldId: this.worldId,
           capabilityId: cap.id,
           payload: { crewId, amount: Number(payload.amount ?? 25) },
+        },
+      };
+    }
+
+    // P011: Destination Mission Actions
+    if (cap.id === 'destination.start') {
+      const defaultDest = this.destinationManager.getAllDefinitions()[0];
+      const destinationId = String(payload.destinationId ?? defaultDest?.id ?? `${this.worldId}.destination.primary`);
+      const def = this.destinationManager.getDestination(destinationId);
+      if (payload.destinationId && !def) {
+        return { valid: false, error: `Destination ${destinationId} not found on world ${this.worldId}` };
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P011',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { destinationId },
+        },
+      };
+    }
+
+    if (cap.id === 'destination.progress') {
+      const defaultDest = this.destinationManager.getAllDefinitions()[0];
+      const destinationId = String(payload.destinationId ?? defaultDest?.id ?? `${this.worldId}.destination.primary`);
+      const delta = Number(payload.delta ?? 25);
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P011',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { destinationId, delta },
+        },
+      };
+    }
+
+    // P012: Historical Era Actions
+    if (cap.id === 'era.transition') {
+      const targetEra = typeof payload.targetEra === 'number' ? (payload.targetEra as 1 | 2 | 3) : undefined;
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P012',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { targetEra },
+        },
+      };
+    }
+
+    // P015: Actor Memory Actions
+    if (cap.id === 'memorial.inscribe') {
+      const name = String(payload.name ?? 'Honored Pioneer');
+      const role = String(payload.role ?? 'Expedition Specialist');
+      const achievement = String(payload.achievement ?? 'Stabilized crucial sector perimeter');
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P015',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { name, role, achievement },
+        },
+      };
+    }
+
+    if (cap.id === 'monument.erect') {
+      const title = String(payload.title ?? 'Monument to Resilience');
+      const siteId = String(payload.siteId ?? 'site-primary');
+      const inscription = String(payload.inscription ?? 'In honor of enduring courage across the trials.');
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P015',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { title, siteId, inscription },
         },
       };
     }
@@ -1155,6 +1438,166 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       };
     }
 
+    // Handle P011 Destination Commands
+    if (action.capabilityId === 'destination.start') {
+      const destinationId = String(payload.destinationId);
+      const success = this.destinationManager.startMission(destinationId, ctx.tick);
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.destination_started`,
+        severity: 'info',
+        title: `Destination Mission Started: ${destinationId}`,
+        description: `Initiated signature expedition at ${destinationId} on ${this.worldId}.`,
+        sourceSystem: 'signature-destinations',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: success ? 'success' : 'rejected',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'destination.progress') {
+      const destinationId = String(payload.destinationId);
+      const delta = Number(payload.delta ?? 25);
+      const res = this.destinationManager.advanceStageProgress(destinationId, delta, ctx.tick);
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.destination_progressed`,
+        severity: 'info',
+        title: `Destination Progress: ${res.progress} units`,
+        description: `Advanced stage ${res.currentStage} of ${destinationId} (completed: ${res.stageCompleted}).`,
+        sourceSystem: 'signature-destinations',
+        payload: { destinationId, ...res },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: res.success ? 'success' : 'rejected',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P012 Era Commands
+    if (action.capabilityId === 'era.transition') {
+      let transitioned = false;
+      if (typeof payload.targetEra === 'number') {
+        this.eraManager.forceEra(payload.targetEra as 1 | 2 | 3, ctx.tick);
+        transitioned = true;
+      } else {
+        const numericMetrics: Record<string, number> = {};
+        for (const [k, v] of Object.entries(state)) {
+          if (typeof v === 'number') numericMetrics[k] = v;
+        }
+        const check = this.eraManager.evaluateTransition(ctx.tick, numericMetrics);
+        transitioned = check.transitioned;
+      }
+
+      const currentEra = this.eraManager.getCurrentEra();
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.era_transitioned`,
+        severity: 'info',
+        title: `Historical Era: ${currentEra.name}`,
+        description: `World ${this.worldId} active era: ${currentEra.name} (${currentEra.subtitle}).`,
+        sourceSystem: 'historical-eras',
+        payload: { era: currentEra, transitioned },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P015 Actor Memory Commands
+    if (action.capabilityId === 'memorial.inscribe') {
+      const name = String(payload.name);
+      const role = String(payload.role);
+      const achievement = String(payload.achievement);
+      this.actorMemoryManager.registerActor({
+        id: `actor-${this.worldId}-${ctx.tick}`,
+        worldId: this.worldId,
+        name,
+        role,
+        eraNumber: this.eraManager.getCurrentEraNumber(),
+        achievement,
+        sacrificeOrCost: 'Dedicated personal endurance to civic survival',
+        recordedTick: ctx.tick,
+        sentiment: 'revered',
+      });
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.actor_inscribed`,
+        severity: 'info',
+        title: `Memory Inscribed: ${name}`,
+        description: `Inscribed ${name} (${role}) in civic chronicle.`,
+        sourceSystem: 'actor-memory',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'monument.erect') {
+      const title = String(payload.title);
+      const siteId = String(payload.siteId);
+      const inscription = String(payload.inscription);
+      this.actorMemoryManager.erectMonument({
+        id: `monument-${this.worldId}-${ctx.tick}`,
+        worldId: this.worldId,
+        siteId,
+        title,
+        inscription,
+        erectedTick: ctx.tick,
+      });
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.monument_erected`,
+        severity: 'info',
+        title: `Monument Erected: ${title}`,
+        description: `Erected ${title} at ${siteId}: "${inscription}"`,
+        sourceSystem: 'actor-memory',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
     // Handle P001 Native Action Execution
     const nativeDef = this.actionRegistry.getAction(action.capabilityId);
     if (nativeDef) {
@@ -1306,6 +1749,9 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       budgetLedger: this.budgetLedger,
       hazardGraph: this.hazardGraph,
     });
+
+    // Step historical era transitions
+    this.eraManager.evaluateTransition(ctx.tick, numericMetrics);
   }
 
   projectVisibleState(
@@ -1340,6 +1786,10 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     const actionFamilies = this.actionRegistry.getAllActions();
     const crewMembers = this.crewManager.getCrewSummaries();
     const navigationScale = this.continuumNavigator.getCurrentScale();
+    const destinationMissions = this.destinationManager.getAllMissionStates();
+    const currentEra = this.eraManager.getCurrentEra();
+    const memorializedActors = this.actorMemoryManager.getAllActors();
+    const monuments = this.actorMemoryManager.getAllMonuments();
 
     return createBaseVisibleState(
       this.worldId,
@@ -1357,6 +1807,10 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       actionFamilies,
       crewMembers,
       navigationScale,
+      destinationMissions,
+      currentEra,
+      memorializedActors,
+      monuments,
     );
   }
 }

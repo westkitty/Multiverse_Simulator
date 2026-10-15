@@ -214,3 +214,50 @@ Gate G5 introduces:
 ### Consequences
 - **Positive**: Seamless multi-scale continuum navigation; meaningful specialist personnel management; robust risk previewing before expedition dispatch.
 - **Negative / Constraints**: Players must manage fuel for transits, rest fatigued crew, and ensure correct specialist allocation for hazardous tasks.
+
+## ADR 0007: Signature Destinations, Three Historical Eras, and Civic Actor Memory
+
+### Status
+Accepted (Wave G6 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G6 introduces:
+1. P011 (Fifteen Legendary Destinations):
+   - 15 signature narrative and scientific landmarks (one unique destination per universe).
+   - Structured 3-stage progression missions: `Stage 1: Survey & Cartography -> Stage 2: Core Stabilization -> Stage 3: Equilibrium Verification`.
+   - Each stage requires active expedition dispatch, field observations, resource investment, and specialist crew assignments rather than passive time-delayed unlocks.
+2. P012 (Three Genuine Ages of History):
+   - 45 authored historical eras (3 distinct chronological ages per universe): Era 1 (Pristine / Founding Epoch), Era 2 (Crisis / Crucible Epoch), and Era 3 (Ascendant / Transcendent Equilibrium).
+   - Each era applies genuine physical regime modifiers: varying base degradation rates, resource consumption factors, hazard escalation velocity, and scientific restoration multipliers.
+   - Era transitions are driven by cumulative catalyst metrics and simulation duration thresholds.
+3. P015 (Civilizations That Remember People):
+   - In-simulation actor records immortalizing pioneering specialists, leaders, and scientists who resolved crises or completed signature milestones.
+   - Dedicated physical monuments anchored at specific geographical sites with custom inscriptions.
+   - Bounded civic chronicle records generating measurable cultural legacy modifiers (e.g. morale boosts, reduced fatigue, enhanced public support).
+
+### Decision
+1. **SignatureDestinationManager (`src/features/signatureDestinations.ts`)**:
+   - Manages authored `SignatureDestinationDefinition` entries and runtime `DestinationMissionState`.
+   - Tracks 3 discrete mission stages with completion criteria, required specialists, and resource budgets.
+   - Issues audited completion events and bestows lasting scientific and operational accolades upon final stage resolution.
+2. **HistoricalEraManager (`src/features/historicalEras.ts`)**:
+   - Manages 3 chronological `HistoricalEraDefinition` configurations per universe.
+   - Evaluates transition criteria monotonically: transitions cannot regress.
+   - Exports active `EraRegimeModifiers` to scale physical simulation parameters across hazards, resource burns, and restoration yields.
+3. **ActorMemoryManager (`src/features/actorMemory.ts`)**:
+   - Records named `ActorMemoryRecord` entries with era associations, achievements, and sentiments.
+   - Manages `MonumentRecord` physical dedications at continuum sites.
+   - Generates and maintains `CivicChronicleEntry` logs and calculates aggregate civic legacy bonuses.
+4. **Seam Integration (`src/features/domainModules/domainHelper.ts`)**:
+   - Exposes standard G6 capabilities: `destination.start`, `destination.progress`, `era.transition`, `memorial.inscribe`, `monument.erect`.
+   - Integrates destination, era, and actor memory managers into `StandardWorldFeatureModule`.
+   - Evaluates era transitions in `stepOwnedSystems` and projects mission states, current era definitions, and actor/monument rosters into `VisibleFeatureState`.
+5. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, signature missions, historical eras, and actor memory registries remain inactive, ensuring zero drift for legacy archives.
+
+### Consequences
+- **Positive**: Rich multi-stage narrative journeys at signature landmarks; dynamic macro-scale era transitions with tangible physical simulation shifts; persistent civic recognition of player and crew accomplishments.
+- **Negative / Constraints**: Physical regime modifiers in late-stage eras demand higher resource stewardship and resilience planning from players.

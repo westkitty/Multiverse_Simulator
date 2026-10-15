@@ -19,6 +19,9 @@ import type { ScientificInstrumentManager, SampleObservation, ScientificInstrume
 import type { NativeActionRegistry, NativeActionFamilyDefinition } from './nativeActions';
 import type { AtlasContinuumNavigator, ViewScale } from './atlasContinuum';
 import type { CrewManager, CrewMemberSummary } from './crewSpecializations';
+import type { SignatureDestinationManager, DestinationMissionState } from './signatureDestinations';
+import type { HistoricalEraManager, HistoricalEraDefinition } from './historicalEras';
+import type { ActorMemoryManager, ActorMemoryRecord, MonumentRecord } from './actorMemory';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
@@ -31,6 +34,9 @@ export * from './scientificInstruments';
 export * from './nativeActions';
 export * from './atlasContinuum';
 export * from './crewSpecializations';
+export * from './signatureDestinations';
+export * from './historicalEras';
+export * from './actorMemory';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -139,6 +145,10 @@ export interface VisibleFeatureState {
   actionFamilies?: readonly NativeActionFamilyDefinition[];
   crewMembers?: readonly CrewMemberSummary[];
   navigationScale?: ViewScale;
+  destinationMissions?: readonly DestinationMissionState[];
+  currentEra?: HistoricalEraDefinition;
+  memorializedActors?: readonly ActorMemoryRecord[];
+  monuments?: readonly MonumentRecord[];
 }
 
 export interface WorldFeatureModule<
@@ -159,6 +169,9 @@ export interface WorldFeatureModule<
   readonly actionRegistry?: NativeActionRegistry;
   readonly continuumNavigator?: AtlasContinuumNavigator;
   readonly crewManager?: CrewManager;
+  readonly destinationManager?: SignatureDestinationManager;
+  readonly eraManager?: HistoricalEraManager;
+  readonly actorMemoryManager?: ActorMemoryManager;
 
   validateAction(
     raw: unknown,

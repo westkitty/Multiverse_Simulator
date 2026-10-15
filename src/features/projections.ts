@@ -76,6 +76,10 @@ export function createBaseVisibleState(
   actionFamilies?: readonly any[],
   crewMembers?: readonly any[],
   navigationScale?: any,
+  destinationMissions?: readonly any[],
+  currentEra?: any,
+  memorializedActors?: readonly any[],
+  monuments?: readonly any[],
 ): VisibleFeatureState {
   return {
     worldId,
@@ -93,5 +97,9 @@ export function createBaseVisibleState(
     actionFamilies,
     crewMembers,
     navigationScale,
+    destinationMissions,
+    currentEra,
+    memorializedActors,
+    monuments,
   };
 }
