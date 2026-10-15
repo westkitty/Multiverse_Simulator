@@ -17,7 +17,7 @@
 
 - `fieldWaypoints`, `fieldBearing`, and `fieldBeaconState` are pure presentation helpers. No new persistent fields, action types, unsafe bypass, fake coordinates, telemetry sources or physical route claims.
 - Project only `discovery !== UNKNOWN` into the selectable bearing target list. Early DETECTED labels must continue using `presentSite` redaction; hidden names, origins, and hazards never enter wayfinding.
-- Scene positions, yaw, and distances are **presentation-space** and never imply validated travel cost or safety. Actual travel remains kernel-validated with hazard cap 70, native route fuel, supplies and tick-driven arrival.
+- Scene positions, yaw, and distances are **presentation-space** and never imply validated travel cost or safety. The displayed distance is explicitly in **scene units**, because coordinates are normalized from multiple native world scales; it is NOT a literal metre measurement. Actual travel remains kernel-validated with hazard cap 70, native route fuel, supplies and tick-driven arrival.
 - Native site condition and hazards are exposed visually only at discovery levels where the existing presentational contract permits them (SURVEYED onward).
 - Every Three.js material created by this change must be disposed during scene teardown. One existing requestAnimationFrame loop and normal world-switch cleanup remain intact.
 - Controls remain keyboard focusable and touch operable. Reduced-motion preferences are unaffected; bearing is static text, not flashing animation.
