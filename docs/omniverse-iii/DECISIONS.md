@@ -65,3 +65,37 @@ Gate G1 introduces:
 ### Consequences
 - **Positive**: Complete causal transparency for all 15 failure sequences; rigorously bounded resource economics without infinite free actions.
 - **Negative / Constraints**: Interventions must specify valid resource debits that fit within available stocks; tests must assert atomic rollback on insufficient balances.
+
+## ADR 0003: Living Logistics Web and Bounded Functional Facilities
+
+### Status
+Accepted (Wave G2 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G2 introduces:
+1. P004 (The Living Logistics Web): Real production, inventory, logistics capacity, and courier transit. No resource duplication; transfers move from source depot to courier cargo custody to destination depot. Local resupply draws from finite depots with zero phantom generation.
+2. P005 (Build the Things That Save the World): Persistent, specialized, and costed installations on validated placement sockets. Requires timed multi-tick construction, periodic upkeep, maintenance degradation on supply loss, operating rate adjustments, and direct domain metric benefits.
+
+### Decision
+1. **LogisticsNetwork (`src/features/logisticsWeb.ts`)**:
+   - Manages `DepotState` instances with hard capacity limits and reservation tracking (`reservedOutbound`, `reservedInbound`).
+   - Couriers take physical custody of dispatched cargo (`currentCargo`), ensuring the conservation invariant:
+     $$\sum \text{Depot stocks} + \sum \text{Courier cargo} = \text{Initial} + \text{Produced} - \text{Consumed}$$
+   - Route blockage aborts in-transit orders and safely returns cargo to source depots without loss or multiplication.
+   - Local resupply is backed by finite depot stocks; exhausted depots reject extraction.
+2. **FacilityManager (`src/features/facilitySystem.ts`)**:
+   - Manages branch-owned `FacilityState` across validated site sockets.
+   - Requires verified materials from local depot or budget ledger to begin construction.
+   - Construction takes native ticks; facilities become active only upon completion.
+   - Periodic upkeep debits sustain `maintenanceState` (0–100); unpaid upkeep degrades maintenance by 5/tick. Facilities below 25 condition become `degraded` and operate at reduced effectiveness.
+   - `maintainFacility` pays upkeep and restores full operation; `retireFacility` frees the socket and reclaims 50% salvage materials.
+   - Active facilities deliver domain metric benefits proportional to their `operatingRate`.
+3. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, simulation runs execute without logistics constraints or facility requirements, maintaining exact deterministic hash identity and historical save replay.
+
+### Consequences
+- **Positive**: Exact physical conservation of cargo across all transport routes; authentic strategic trade-offs between construction, maintenance, and regional survival.
+- **Negative / Constraints**: Facilities require persistent upkeep supply chains; neglecting maintenance directly degrades domain benefits.

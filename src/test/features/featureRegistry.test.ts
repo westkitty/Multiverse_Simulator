@@ -253,7 +253,9 @@ describe('Omniverse III Feature Registry & Seam Architecture (Gate G0 Checkpoint
         expect(isFeatureId(featId)).toBe(true);
         const cell = worldCells[featId];
         expect(cell).toBeDefined();
-        expect(cell.status).toBe('PLANNED');
+        expect(['PLANNED', 'IN_PROGRESS', 'VERIFIED_CANDIDATE', 'VERIFIED']).toContain(
+          cell.status,
+        );
         count++;
       }
     }

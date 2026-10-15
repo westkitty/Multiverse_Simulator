@@ -10,9 +10,13 @@ import type {
   CostPreview,
   ScientificBudgetLedger,
 } from './budgetLedger';
+import type { LogisticsNetwork } from './logisticsWeb';
+import type { FacilityManager } from './facilitySystem';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
+export * from './logisticsWeb';
+export * from './facilitySystem';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -124,6 +128,8 @@ export interface WorldFeatureModule<
   readonly capabilities: readonly FeatureCapability[];
   readonly hazardGraph?: HazardDependencyGraph;
   readonly budgetLedger?: ScientificBudgetLedger;
+  readonly logisticsNetwork?: LogisticsNetwork;
+  readonly facilityManager?: FacilityManager;
 
   validateAction(
     raw: unknown,
