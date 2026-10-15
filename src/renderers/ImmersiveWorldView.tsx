@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { ExplorationAtlas, ExplorationState } from '../exploration/contracts';
 import { ExplorationCommand, presentSite } from '../exploration/engine';
 import { suggestedAction } from '../exploration/dossier';
+import { fieldBeaconState, fieldBearing, fieldWaypoints, type FieldBearing, type FieldBeaconState } from '../exploration/fieldWayfinding';
 import { ImmersiveActorMarker, ImmersiveLayout, makeImmersiveLayout, movementBasis, sceneHash, SceneProfile, spawnViewAngles, yawToward } from '../exploration/immersiveLayout';
 import { addImmersiveScenery, addImmersiveFlora } from './immersiveScenery';
 import { addImmersiveAtmosphere } from './immersiveAtmosphere';
@@ -116,6 +117,24 @@ export const ImmersiveWorldView: React.FC<Props> = ({
   const [webglFailed, setWebglFailed] = useState(false);
   const [contextGeneration, setContextGeneration] = useState(0);
   const [location, setLocation] = useState({ x: player.current.x, z: player.current.z });
+  const [manualWaypoint, setManualWaypoint] = useState<string | null>(null);
+  const [guideVisible, setGuideVisible] = useState(true);
+  const [bearingReadout, setBearingReadout] = useState<FieldBearing | null>(null);
+  // Known-only, deterministic waypoint order. A visual pointer never authorizes
+  // simulation travel or reveals unlocated sites.
+  const waypoints = useMemo(() => fieldWaypoints(layout.points, layout.spawn), [layout]);
+  const guidedWaypoint = guideVisible
+    ? (waypoints.find(site => site.id === manualWaypoint) ?? waypoints[0] ?? null)
+    : null;
+  const liveWaypoint = useRef(guidedWaypoint);
+  liveWaypoint.current = guidedWaypoint;
+  const cycleWaypoint = () => {
+    if (!waypoints.length) return;
+    const index = waypoints.findIndex(site => site.id === guidedWaypoint?.id);
+    setManualWaypoint(waypoints[(index + 1) % waypoints.length].id);
+    setGuideVisible(true);
+    setBearingReadout(null);
+  };
 
   // Re-arm only on run/world entry. Discovery updates must never teleport the
   // player back to spawn mid-exploration.
@@ -126,6 +145,9 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     setTarget(null);
     setInspectedSiteId(null);
     setInteractionResult('');
+    setManualWaypoint(null);
+    setGuideVisible(true);
+    setBearingReadout(null);
   }, [runId, atlas.worldId]);
 
   // The simulation, not the camera, decides when an expedition actually
@@ -189,6 +211,14 @@ export const ImmersiveWorldView: React.FC<Props> = ({
     const accentMaterial = new THREE.MeshStandardMaterial({ color: profile.accent, roughness: .48, emissive: profile.accent, emissiveIntensity: .24 });
     const unknownMaterial = new THREE.MeshStandardMaterial({ color: 0x7c8795, roughness: .78, metalness: .22 });
     const resolvedMaterial = new THREE.MeshStandardMaterial({ color: 0xffe2a2, emissive: 0xc18b31, emissiveIntensity: .52, roughness: .38 });
+    const unsafeMaterial = new THREE.MeshStandardMaterial({ color: 0xff627a, emissive: 0xb02544, emissiveIntensity: .65, roughness: .42 });
+    const criticalMaterial = new THREE.MeshStandardMaterial({ color: 0xff8359, emissive: 0x9e3320, emissiveIntensity: .55, roughness: .45 });
+    const serviceMaterial = new THREE.MeshStandardMaterial({ color: 0xf2c678, emissive: 0x906021, emissiveIntensity: .4, roughness: .52 });
+    const beaconMaterials: Record<FieldBeaconState, THREE.Material> = {
+      unidentified: unknownMaterial, signal: accentMaterial,
+      unsafe: unsafeMaterial, critical: criticalMaterial, service: serviceMaterial,
+      stable: accentMaterial, resolved: resolvedMaterial,
+    };
     const objects = new THREE.Group();
     scene.add(objects);
     const collision: Array<{ x: number; z: number; radius: number }> = [];
@@ -198,7 +228,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       const discovered = site.discovery !== 'UNKNOWN';
       const material = discovered ? mainMaterial : unknownMaterial;
       landmarkShape(objects, profile, site.visualSeed, site.x, site.z, material, accentMaterial, collision);
-      const beacon = new THREE.Mesh(new THREE.OctahedronGeometry(.8, 0), discovered ? accentMaterial : unknownMaterial);
+      const beacon = new THREE.Mesh(new THREE.OctahedronGeometry(.8, 0), beaconMaterials[fieldBeaconState(site)]);
       beacon.position.set(site.x, 13.5 + site.visualSeed % 6, site.z);
       beacon.userData.siteId = site.id;
       objects.add(beacon);
@@ -383,10 +413,11 @@ export const ImmersiveWorldView: React.FC<Props> = ({
       actorMeshes.instanceMatrix.needsUpdate = true;
       if (actorMeshes.instanceColor) actorMeshes.instanceColor.needsUpdate = true;
       actorMeshes.computeBoundingSphere();
-      for (const site of layout.points) {
+      // Project the latest surveyed state, not the original scene snapshot.
+      // Repairs, disasters and science appear as genuinely changing beacons.
+      for (const site of liveLayout.current.points) {
         const marker = beacons.get(site.id);
-        const progress = liveExploration.current.sites[site.id]?.discoveryState;
-        if (marker) marker.material = progress === 'RESOLVED' ? resolvedMaterial : progress && progress !== 'UNKNOWN' ? accentMaterial : unknownMaterial;
+        if (marker) marker.material = beaconMaterials[fieldBeaconState(site)];
       }
       }
       if (time - stamp > 200) {
@@ -398,6 +429,10 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         nearbyId = inRange?.id ?? '';
         setTarget(previous => previous === (inRange?.id ?? null) ? previous : (inRange?.id ?? null));
         setLocation({ x: Math.round(p.x), z: Math.round(p.z) });
+        const waypoint = liveWaypoint.current;
+        setBearingReadout(waypoint
+          ? fieldBearing(p.x, p.z, orientation.yaw, waypoint.x, waypoint.z)
+          : null);
         const observed = liveLayout.current.points.find(site => site.id === inRange?.id);
         setReadout(inRange
           ? `${observed?.label ?? 'Unidentified contact'} · ${Math.round(inRange.distance)} m · E / INSPECT`
@@ -412,6 +447,8 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         pointer.dataset.drawCalls = String(renderer.info.render.calls);
         pointer.dataset.worldSites = String(layout.points.length);
         pointer.dataset.simulatedActors = String(actorMeshes.count);
+        pointer.dataset.serviceBeacons = String([...beacons.values()]
+          .filter(beacon => beacon.material === serviceMaterial || beacon.material === criticalMaterial).length);
       }
     };
     // Hidden tabs suspend GPU work entirely; the loop keeps scheduling so state
@@ -449,7 +486,7 @@ export const ImmersiveWorldView: React.FC<Props> = ({
         }
         if (node instanceof THREE.InstancedMesh) node.dispose();
       });
-      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, actorMaterial,
+      [mainMaterial, accentMaterial, unknownMaterial, resolvedMaterial, unsafeMaterial, criticalMaterial, serviceMaterial, actorMaterial,
         ...scenery.materials, ...flora.materials, ...atmosphere.materials, ...terrain.materials,
       ].forEach(m => m.dispose());
       atmosphere.textures.forEach(texture => texture.dispose());
@@ -483,6 +520,32 @@ export const ImmersiveWorldView: React.FC<Props> = ({
           <small style={{ display:'block', color:'#bdd0dc' }}>{layout.profile.description}</small>
           <small style={{ display:'block', color:'#bdd0dc' }}>{layout.points.length} mapped places · {actors.length} simulated field units</small>
           <small style={{ display:'block', color:'#bdd0dc' }}>{readout}</small>
+          <div role="group" aria-label="Visual field bearing" data-testid="field-bearing-guide"
+            style={{ marginTop:7, paddingTop:6, borderTop:'1px solid #506c78', display:'grid', gap:3 }}>
+            <small style={{ color:'#accbd6', letterSpacing:'.06em' }}>FIELD BEARING · VISUAL ONLY</small>
+            {guidedWaypoint ? <>
+              <strong data-testid="field-waypoint-name" style={{ fontSize:12 }}>{guidedWaypoint.label}</strong>
+              <output data-testid="field-bearing-readout" style={{ fontSize:12, color:'#ffe6a8' }}>
+                {bearingReadout
+                  ? `${bearingReadout.arrow} ${bearingReadout.direction} · ${Math.round(bearingReadout.distance)} scene metres`
+                  : 'Acquiring visual bearing…'}
+              </output>
+              {guidedWaypoint.hazard !== null && guidedWaypoint.hazard > 70 &&
+                <small style={{ color:'#ffb6ba' }}>Unsafe site hazard; expedition access is not guaranteed.</small>}
+            </> : <small style={{ color:'#bdd0dc' }}>
+              {waypoints.length ? 'Guide hidden · free exploration' : 'No recognized destination yet'}
+            </small>}
+            <div style={{ display:'flex', flexWrap:'wrap', gap:6, pointerEvents:'auto' }}>
+              <button type="button" aria-label="Track next known site" disabled={!waypoints.length} onClick={cycleWaypoint}
+                style={{ minHeight:44, border:'1px solid #88bac9', borderRadius:5, color:'white', background:'#274359', padding:'5px 11px' }}>
+                {guidedWaypoint ? 'Next site' : 'Track a site'}
+              </button>
+              {guidedWaypoint && <button type="button" aria-label="Hide field bearing" onClick={() => { setGuideVisible(false); setBearingReadout(null); }}
+                style={{ minHeight:44, border:'1px solid #718895', borderRadius:5, color:'white', background:'#1b2b38', padding:'5px 11px' }}>
+                Hide guide
+              </button>}
+            </div>
+          </div>
         </div>
         <div style={{ background:'#07111ad9', padding:8, font:'11px monospace', color:'#d2ecf0' }}>X {location.x} / Z {location.z}</div>
       </div>
