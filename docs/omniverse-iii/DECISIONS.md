@@ -172,3 +172,45 @@ Gate G4 introduces:
 ### Consequences
 - **Positive**: 45 authentic, mechanically differentiated gameplay actions; rigorous physical instrument sampling replacing passive telemetry; complete auditability of scientific measurements.
 - **Negative / Constraints**: Scientists must position expeditions within range of disclosed sites and maintain instrument calibration to acquire high-confidence scientific observations.
+
+## ADR 0006: Identity-Preserving Continuum Navigation and Crew Specialization Roster
+
+### Status
+Accepted (Wave G5 Baseline)
+
+### Date
+2026-10-15
+
+### Context
+Gate G5 introduces:
+1. P008 (The Atlas-to-World Continuum):
+   - Multi-scale navigation across 4 continuous zoom scales (`universe -> region -> site -> field`).
+   - Undiscovered sites are strictly redacted to maintain genuine fog-of-discovery; camera zoom transitions cannot bypass physical route travel, fuel consumption, or simulation ticks.
+   - Coordinates translate deterministically across macro, regional, and micro field scopes.
+2. P009 (Expeditions with Real Crew Specializations):
+   - Field expeditions require assignable crew members spanning 6 certified specialization roles: Field Surveyor, Systems Engineer, Biosphere Ecologist, Logistics Courier, Heavy Constructor, Hazard Specialist.
+   - Roles grant distinct operational modifiers, energy consumption and fatigue debits per deployment, and rest requirements.
+   - Hazardous actions require certified specialists to execute legally; mission risk previews calculate expected hazard mitigation.
+3. Complete P010 (A Scientist's Hands):
+   - Full integration of instrument observation capabilities with crew field assignments and continuum coordinates.
+
+### Decision
+1. **AtlasContinuumNavigator (`src/features/atlasContinuum.ts`)**:
+   - Manages zoom scales (`universe`, `region`, `site`, `field`) with monotonic clamp boundaries.
+   - Redacts undisclosed sites in regional and site views until surveyed or discovered.
+   - Enforces physical transit verification: inter-regional journeys require connected routes, sufficient fuel, and advance simulation ticks.
+   - Provides coordinate conversion across relative and absolute scales.
+2. **CrewManager & CrewMember (`src/features/crewSpecializations.ts`)**:
+   - Models individual specialist crew members with assigned roles, energy levels (0-100), assignments, and accumulated work.
+   - Enforces legality checks: disallows dispatching exhausted crew members (energy < 10) and mandates certified roles for specialized/hazardous assignments.
+   - Calculates mission risk previews incorporating baseline site danger and specialist mitigation bonuses.
+3. **Seam Integration (`src/features/domainModules/domainHelper.ts`)**:
+   - Exposes standard G5 capabilities: `navigation.zoom`, `navigation.transit`, `crew.assign`, and `crew.rest`.
+   - Initializes 6 specialist crew members per world in `StandardWorldFeatureModule`.
+   - Projects active navigation scale and crew roster summaries into `VisibleFeatureState`.
+4. **Legacy Preservation**:
+   - Under `worldRulesVersion: 0`, navigation scaling, route fuel checks, and crew specialization requirements remain bypassed, maintaining full backward compatibility.
+
+### Consequences
+- **Positive**: Seamless multi-scale continuum navigation; meaningful specialist personnel management; robust risk previewing before expedition dispatch.
+- **Negative / Constraints**: Players must manage fuel for transits, rest fatigued crew, and ensure correct specialist allocation for hazardous tasks.

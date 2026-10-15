@@ -17,6 +17,8 @@ import type { VisualRestorationManager, VisualRestorationSnapshot } from './visu
 import type { PolicyDefinition, PolicyManager } from './policyTrial';
 import type { ScientificInstrumentManager, SampleObservation, ScientificInstrumentConfig } from './scientificInstruments';
 import type { NativeActionRegistry, NativeActionFamilyDefinition } from './nativeActions';
+import type { AtlasContinuumNavigator, ViewScale } from './atlasContinuum';
+import type { CrewManager, CrewMemberSummary } from './crewSpecializations';
 
 export * from './hazardGraph';
 export * from './budgetLedger';
@@ -27,6 +29,8 @@ export * from './visualRestoration';
 export * from './policyTrial';
 export * from './scientificInstruments';
 export * from './nativeActions';
+export * from './atlasContinuum';
+export * from './crewSpecializations';
 
 export const ALL_FEATURE_IDS = [
   'P001',
@@ -133,6 +137,8 @@ export interface VisibleFeatureState {
   instruments?: readonly ScientificInstrumentConfig[];
   recentObservations?: readonly SampleObservation[];
   actionFamilies?: readonly NativeActionFamilyDefinition[];
+  crewMembers?: readonly CrewMemberSummary[];
+  navigationScale?: ViewScale;
 }
 
 export interface WorldFeatureModule<
@@ -151,6 +157,8 @@ export interface WorldFeatureModule<
   readonly policyManager?: PolicyManager;
   readonly instrumentManager?: ScientificInstrumentManager;
   readonly actionRegistry?: NativeActionRegistry;
+  readonly continuumNavigator?: AtlasContinuumNavigator;
+  readonly crewManager?: CrewManager;
 
   validateAction(
     raw: unknown,

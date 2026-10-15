@@ -74,6 +74,8 @@ export function createBaseVisibleState(
   instruments?: readonly any[],
   recentObservations?: readonly any[],
   actionFamilies?: readonly any[],
+  crewMembers?: readonly any[],
+  navigationScale?: any,
 ): VisibleFeatureState {
   return {
     worldId,
@@ -89,5 +91,7 @@ export function createBaseVisibleState(
     instruments,
     recentObservations,
     actionFamilies,
+    crewMembers,
+    navigationScale,
   };
 }

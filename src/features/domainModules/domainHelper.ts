@@ -26,6 +26,13 @@ import {
   NativeActionRegistry,
   ScientificInstrumentConfig,
   ScientificInstrumentManager,
+  AtlasContinuumNavigator,
+  RouteEdge,
+  ViewScale,
+  CrewManager,
+  CrewMember,
+  CrewRole,
+  CREW_ROLE_DEFINITIONS,
 } from '../contracts';
 import { createBaseVisibleState } from '../projections';
 
@@ -108,6 +115,37 @@ export const STANDARD_G4_CAPABILITIES: readonly FeatureCapability[] = [
   },
 ];
 
+export const STANDARD_G5_CAPABILITIES: readonly FeatureCapability[] = [
+  {
+    id: 'navigation.zoom',
+    featureId: 'P008',
+    name: 'Continuum Navigation Zoom',
+    description: 'Transition presentation view scale between universe, region, site, and field.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'navigation.transit',
+    featureId: 'P008',
+    name: 'Regional Route Transit',
+    description: 'Dispatch physical expedition traversal along legal verified routes with fuel and tick accounting.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'crew.assign',
+    featureId: 'P009',
+    name: 'Assign Crew Specialist',
+    description: 'Deploy certified specialist crew member to a designated site or facility task.',
+    minRulesVersion: 1,
+  },
+  {
+    id: 'crew.rest',
+    featureId: 'P009',
+    name: 'Rest Crew Specialist',
+    description: 'Rest crew member at local refuge or depot to recover expedition energy.',
+    minRulesVersion: 1,
+  },
+];
+
 export interface DomainModuleConfig {
   readonly worldId: string;
   readonly capabilities: readonly FeatureCapability[];
@@ -130,6 +168,8 @@ export interface DomainModuleConfig {
   readonly policies?: readonly PolicyDefinition[];
   readonly instruments?: readonly ScientificInstrumentConfig[];
   readonly nativeActions?: readonly NativeActionFamilyDefinition[];
+  readonly initialCrew?: readonly CrewMember[];
+  readonly initialContinuumRoutes?: readonly RouteEdge[];
 }
 
 export class StandardWorldFeatureModule implements WorldFeatureModule {
@@ -145,19 +185,23 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
   readonly policyManager: PolicyManager;
   readonly instrumentManager: ScientificInstrumentManager;
   readonly actionRegistry: NativeActionRegistry;
+  readonly continuumNavigator: AtlasContinuumNavigator;
+  readonly crewManager: CrewManager;
   private readonly config: DomainModuleConfig;
 
   constructor(config: DomainModuleConfig) {
     this.worldId = config.worldId;
     this.config = config;
 
-    // Combine custom and standard G2/G3/G4 capabilities
-    const existingCapIds = new Set(config.capabilities.map((c) => c.id));
-    const mergedCaps = [...config.capabilities];
+    // Combine custom and standard G2/G3/G4/G5 capabilities
+    const inputCaps = config.capabilities ?? [];
+    const existingCapIds = new Set(inputCaps.map((c) => c.id));
+    const mergedCaps = [...inputCaps];
     for (const stdCap of [
       ...STANDARD_G2_CAPABILITIES,
       ...STANDARD_G3_CAPABILITIES,
       ...STANDARD_G4_CAPABILITIES,
+      ...STANDARD_G5_CAPABILITIES,
     ]) {
       if (!existingCapIds.has(stdCap.id)) {
         mergedCaps.push(stdCap);
@@ -167,8 +211,8 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
 
     this.hazardGraph = new HazardDependencyGraph(
       config.worldId,
-      config.hazardNodes,
-      config.hazardLinks,
+      config.hazardNodes ?? [],
+      config.hazardLinks ?? [],
     );
     this.budgetLedger = new ScientificBudgetLedger(config.worldId, config.initialBudget);
 
@@ -236,6 +280,56 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       for (const act of config.nativeActions) {
         this.actionRegistry.registerAction(act);
       }
+    }
+
+    // Initialize continuum navigator (P008)
+    this.continuumNavigator = new AtlasContinuumNavigator(config.worldId);
+    if (config.initialRoutes) {
+      for (const r of config.initialRoutes) {
+        this.continuumNavigator.registerRoute({
+          id: `route-${r.fromSiteId}-${r.toSiteId}`,
+          from: r.fromSiteId,
+          to: r.toSiteId,
+          travelTicks: r.travelTicks,
+          fuel: r.fuelCost,
+          blocked: false,
+        });
+      }
+    }
+    if (config.initialContinuumRoutes) {
+      for (const r of config.initialContinuumRoutes) {
+        this.continuumNavigator.registerRoute(r);
+      }
+    }
+
+    // Initialize crew manager (P009)
+    this.crewManager = new CrewManager(config.worldId);
+    if (config.initialCrew && config.initialCrew.length > 0) {
+      for (const c of config.initialCrew) {
+        this.crewManager.registerCrew({ ...c });
+      }
+    } else {
+      // Register standard 6 specialist crew members per world
+      const roles = [
+        CrewRole.FIELD_SURVEYOR,
+        CrewRole.SYSTEMS_ENGINEER,
+        CrewRole.BIOSPHERE_ECOLOGIST,
+        CrewRole.LOGISTICS_COURIER,
+        CrewRole.HEAVY_CONSTRUCTOR,
+        CrewRole.HAZARD_SPECIALIST,
+      ];
+      roles.forEach((role, idx) => {
+        this.crewManager.registerCrew({
+          id: `crew-${config.worldId}-${idx}`,
+          worldId: config.worldId,
+          name: `${CREW_ROLE_DEFINITIONS[role].roleName} ${idx + 1}`,
+          role,
+          energy: 80,
+          assignedRegionId: 'region-primary',
+          assignedSiteId: null,
+          work: 0,
+        });
+      });
     }
   }
 
@@ -401,6 +495,93 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
           worldId: this.worldId,
           capabilityId: cap.id,
           payload: { ...payload, instrumentId },
+        },
+      };
+    }
+
+    // P008: Continuum Navigation Actions
+    if (cap.id === 'navigation.zoom') {
+      const scale = payload.scale as ViewScale | undefined;
+      const direction = payload.direction as 'in' | 'out' | undefined;
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P008',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { scale, direction },
+        },
+      };
+    }
+
+    if (cap.id === 'navigation.transit') {
+      const fromRegionId = String(payload.fromRegionId ?? 'region-primary');
+      if (payload.toRegionId) {
+        const toRegionId = String(payload.toRegionId);
+        const fuelAvailable = Number(payload.fuelAvailable ?? 10);
+        const check = this.continuumNavigator.verifyTransit(fromRegionId, toRegionId, fuelAvailable);
+        if (!check.legal) {
+          return { valid: false, error: check.reason };
+        }
+        return {
+          valid: true,
+          action: {
+            actionFamily: 'P008',
+            worldId: this.worldId,
+            capabilityId: cap.id,
+            payload: { fromRegionId, toRegionId, fuelCost: check.fuelCost, travelTicks: check.travelTicks },
+          },
+        };
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P008',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { fromRegionId, toRegionId: fromRegionId, fuelCost: 0, travelTicks: 0 },
+        },
+      };
+    }
+
+    // P009: Crew Specialization Actions
+    if (cap.id === 'crew.assign') {
+      const defaultCrewId = this.crewManager.getAllCrew()[0]?.id ?? 'crew-01';
+      const crewId = String(payload.crewId ?? defaultCrewId);
+      if (payload.crewId) {
+        const requiredRole = typeof payload.requiredRole === 'number' ? (payload.requiredRole as CrewRole) : undefined;
+        const legality = this.crewManager.checkExpeditionLegality([crewId], requiredRole);
+        if (!legality.legal) {
+          return { valid: false, error: legality.reason };
+        }
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P009',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { crewId, targetSiteId: payload.targetSiteId ? String(payload.targetSiteId) : undefined },
+        },
+      };
+    }
+
+    if (cap.id === 'crew.rest') {
+      const defaultCrewId = this.crewManager.getAllCrew()[0]?.id ?? 'crew-01';
+      const crewId = String(payload.crewId ?? defaultCrewId);
+      if (payload.crewId) {
+        const member = this.crewManager.getCrew(crewId);
+        if (!member) {
+          return { valid: false, error: `Crew member ${crewId} not found on world ${this.worldId}` };
+        }
+      }
+      return {
+        valid: true,
+        action: {
+          actionFamily: 'P009',
+          worldId: this.worldId,
+          capabilityId: cap.id,
+          payload: { crewId, amount: Number(payload.amount ?? 25) },
         },
       };
     }
@@ -856,6 +1037,124 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       };
     }
 
+    // Handle P008 Navigation Commands
+    if (action.capabilityId === 'navigation.zoom') {
+      const scale = payload.scale as ViewScale | undefined;
+      const direction = payload.direction as 'in' | 'out' | undefined;
+      if (scale) {
+        this.continuumNavigator.setScale(scale);
+      } else if (direction === 'in') {
+        this.continuumNavigator.zoomIn();
+      } else if (direction === 'out') {
+        this.continuumNavigator.zoomOut();
+      }
+      const newScale = this.continuumNavigator.getCurrentScale();
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.navigation_zoomed`,
+        severity: 'info',
+        title: `Navigation Zoom: ${newScale}`,
+        description: `Adjusted continuum viewport scale to ${newScale} on ${this.worldId}.`,
+        sourceSystem: 'atlas-continuum',
+        payload: { scale: newScale },
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'navigation.transit') {
+      const toRegionId = String(payload.toRegionId);
+      const fuelCost = Number(payload.fuelCost ?? 0);
+      this.continuumNavigator.selectRegion(toRegionId);
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.expedition_transited`,
+        severity: 'info',
+        title: `Expedition Transited to ${toRegionId}`,
+        description: `Traversed regional route to ${toRegionId} on ${this.worldId} (fuel cost: ${fuelCost}).`,
+        sourceSystem: 'atlas-continuum',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: fuelCost > 0 ? [{ resource: 'fuel', amount: fuelCost }] : [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    // Handle P009 Crew Commands
+    if (action.capabilityId === 'crew.assign') {
+      const crewId = String(payload.crewId);
+      const targetSiteId = payload.targetSiteId ? String(payload.targetSiteId) : null;
+      const member = this.crewManager.getCrew(crewId);
+      if (member) {
+        member.assignedSiteId = targetSiteId;
+        this.crewManager.debitEnergy(crewId, 10);
+        this.crewManager.incrementWork(crewId, 1);
+      }
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.crew_assigned`,
+        severity: 'info',
+        title: `Crew Assigned: ${crewId}`,
+        description: `Assigned specialist ${crewId} to site ${targetSiteId ?? 'field'} on ${this.worldId}.`,
+        sourceSystem: 'crew-manager',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
+    if (action.capabilityId === 'crew.rest') {
+      const crewId = String(payload.crewId);
+      const amount = Number(payload.amount ?? 25);
+      this.crewManager.restCrew(crewId, amount);
+
+      const event = ctx.emitEvent({
+        type: `${this.worldId}.crew_rested`,
+        severity: 'info',
+        title: `Crew Rested: ${crewId}`,
+        description: `Rested crew member ${crewId} to restore ${amount}% energy on ${this.worldId}.`,
+        sourceSystem: 'crew-manager',
+        payload,
+      });
+
+      return {
+        actionId: `${action.capabilityId}-${ctx.tick}`,
+        worldId: this.worldId,
+        tick: ctx.tick,
+        executedAtTick: ctx.tick,
+        status: 'success',
+        debits: [],
+        deltas: [],
+        eventsEmitted: [event.id],
+      };
+    }
+
     // Handle P001 Native Action Execution
     const nativeDef = this.actionRegistry.getAction(action.capabilityId);
     if (nativeDef) {
@@ -908,7 +1207,7 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     }
 
     // Standard priced action execution
-    const debits = this.config.actionCosts[action.capabilityId] ?? [];
+    const debits = this.config.actionCosts?.[action.capabilityId] ?? [];
     const tx = this.budgetLedger.applyTransaction(action.capabilityId, debits, [], ctx.tick);
 
     if (tx.status === 'rejected') {
@@ -926,7 +1225,7 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     }
 
     // Apply native deltas to state
-    const plannedDeltas = this.config.actionDeltas[action.capabilityId] ?? [];
+    const plannedDeltas = this.config.actionDeltas?.[action.capabilityId] ?? [];
     const executedDeltas: Array<{
       field: string;
       before: number | string;
@@ -1039,6 +1338,8 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
     }));
     const recentObservations = this.instrumentManager.getRecentObservations();
     const actionFamilies = this.actionRegistry.getAllActions();
+    const crewMembers = this.crewManager.getCrewSummaries();
+    const navigationScale = this.continuumNavigator.getCurrentScale();
 
     return createBaseVisibleState(
       this.worldId,
@@ -1054,6 +1355,8 @@ export class StandardWorldFeatureModule implements WorldFeatureModule {
       instruments,
       recentObservations,
       actionFamilies,
+      crewMembers,
+      navigationScale,
     );
   }
 }
