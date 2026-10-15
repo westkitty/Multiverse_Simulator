@@ -189,16 +189,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Glasswater Refuge: Can the watershed recover without nutrient overshoot?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Glasswater Refuge.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -225,10 +249,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual ecosystem crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -455,16 +491,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Dark Habitation Ring: Which compartments can remain habitable?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Dark Habitation Ring.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -491,10 +551,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual station crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -721,16 +793,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Abandoned River Capital: Can water and food be stabilized together?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Abandoned River Capital.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -757,10 +853,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual civilization crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -987,16 +1095,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Station Beneath the Storm: Which pressure transition precedes the storm?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Station Beneath the Storm.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -1023,10 +1155,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual atmosphere crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -1253,16 +1397,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Drowned Listening Garden: Can oxygen recovery persist at depth?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Drowned Listening Garden.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -1289,10 +1457,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual ocean crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -1519,16 +1699,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Lost Transit Observatory: Is there a safe scientific transit window?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Lost Transit Observatory.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -1555,10 +1759,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual celestial crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -1785,16 +2001,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Blackout Quarter: Can repairs prevent recurring district inaccessibility?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Blackout Quarter.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -1821,10 +2061,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual megacity crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -2051,16 +2303,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Factory Without Deliveries: Where is the bottleneck causing undelivered output?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Factory Without Deliveries.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -2087,10 +2363,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual industrial crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -2317,16 +2605,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at The Buried Seismic Array: Which intervention reduces the predicted local failure?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at The Buried Seismic Array.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -2353,10 +2665,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual geology crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -2583,16 +2907,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at Silent Valley: What restores sustainable migration?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Silent Valley.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -2619,10 +2967,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual wild-meridian crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -2849,16 +3209,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at Cathedral Below: Can a stable, scientifically observable passage be opened?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Cathedral Below.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -2885,10 +3269,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual hollow-deep crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -3115,16 +3511,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at City of Three Foundations: Can the three city eras be distinguished from evidence?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at City of Three Foundations.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -3151,10 +3571,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual timeworn-empire crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -3381,16 +3813,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at First Green: Can local life maintain itself without perpetual intervention?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at First Green.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -3417,10 +3873,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual terraforming-frontier crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -3647,16 +4115,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at Unfinished City: Can the automated city be made self-maintaining?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Unfinished City.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -3683,10 +4175,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual machine-wilderness crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
@@ -3913,16 +4417,40 @@
         ]
       },
       "P011": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Unique three-stage native mission at Last Transmission: Can the transmission source be localized defensibly?",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P012": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Three distinct authored, provenance-typed historical ages at Last Transmission.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P013": {
         "status": "VERIFIED_CANDIDATE",
@@ -3949,10 +4477,22 @@
         "receipts": []
       },
       "P015": {
-        "status": "PLANNED",
-        "rulesVersion": null,
+        "status": "VERIFIED_CANDIDATE",
+        "rulesVersion": 1,
         "intendedNativeDeliverable": "Persist actual signal-expanse crew/actor responsibilities, wear, assignments and recorded events with bounded history.",
-        "receipts": []
+        "receipts": [
+          {
+            "gate": "G6",
+            "rulesVersion": 1,
+            "status": "VERIFIED_CANDIDATE",
+            "nativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "negativeTest": "src/test/features/fifteenDomainsG6.test.ts",
+            "replayCheck": "src/test/features/fifteenDomainsG6.test.ts",
+            "browserJourney": "e2e/exploration.spec.ts",
+            "releaseCommit": "0873198d897fad0c6121c29d38686fe80933c6a6",
+            "verifiedAt": "2026-10-15T10:30:00Z"
+          }
+        ]
       },
       "P016": {
         "status": "PLANNED",
