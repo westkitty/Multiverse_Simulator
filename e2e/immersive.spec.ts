@@ -12,6 +12,13 @@ test.describe('immersive 3D gameplay', () => {
   await page.getByRole('button', { name: /Enter this universe in 3D/ }).click();
   const explorer = page.getByRole('region', { name: 'Immersive 3D world explorer' });
   await expect(explorer).toBeVisible();
+  const bearing = explorer.getByRole('group', { name: 'Visual field bearing' });
+  await expect(bearing).toBeVisible();
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText('Unidentified contact');
+  await bearing.getByRole('button', { name: 'Hide field bearing' }).click();
+  await expect(bearing).toContainText('Guide hidden');
+  await bearing.getByRole('button', { name: 'Track next known site' }).click();
+  await expect(bearing.getByTestId('field-waypoint-name')).toContainText('Unidentified contact');
   const protocol = page.getByRole('region', { name: 'World field protocol' });
   await expect(protocol).toBeVisible();
   await expect(protocol).toContainText('The watershed question');
@@ -104,12 +111,23 @@ test('player can visit a real installation and pay its repair bill from the 3D s
     await page.getByRole('button',{name:'Step one tick'}).click();
   }
   await expect(dossier).toContainText('VISITED');
+  const canvas=explorer.getByLabel('Three.js playable universe').locator('canvas');
+  // Renderer telemetry is taken from actual beacon material assignments,
+  // rather than counting a new fake DOM badge.
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons ?? 0)), {timeout:20_000}).toBeGreaterThan(0);
+  const damagedBefore=await canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons));
   const repair=order.getByRole('button',{name:/Repair visited installation/});
   await expect(repair).toBeVisible();
   await expect(order.getByTestId('service-damaged-count')).toHaveText('1');
   await repair.click();
   await expect(order.getByTestId('field-service-feedback')).toContainText('repair accepted at tick');
   await expect(order).toContainText('Repairs charge 2 supplies');
+  // Two real native two-supply repairs take the first visited installation
+  // from its initial ~40% condition to the stable >=75% visual category.
+  await repair.click();
+  await expect(order.getByTestId('service-damaged-count')).toHaveText('0');
+  await expect.poll(() => canvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.serviceBeacons ?? -1)), {timeout:20_000})
+    .toBeLessThan(damagedBefore);
   expect(errors).toEqual([]);
 });
 
@@ -155,6 +173,8 @@ test('all fifteen universes open real Three.js canvases without leaving explorat
     const activeCanvas = explorer.getByLabel('Three.js playable universe').locator('canvas');
     await expect(activeCanvas).toHaveCount(1);
     await expect.poll(() => activeCanvas.evaluate(el => Number((el as HTMLCanvasElement).dataset.drawCalls ?? 0))).toBeGreaterThan(20);
+    await expect(explorer.getByRole('group', { name: 'Visual field bearing' })).toBeVisible();
+    await expect(explorer.getByRole('button', { name: 'Track next known site' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Forward' })).toBeVisible();
     await expect(explorer.getByRole('button', { name: 'Return to Atlas' })).toBeVisible();
   }
