@@ -4,6 +4,7 @@ import type { ImmersiveLandmark } from '../exploration/immersiveLayout';
 import { makeImmersiveLayout } from '../exploration/immersiveLayout';
 import { CORE_WORLD_PLUGINS } from '../worlds';
 import { SimulationKernel } from '../core/kernel';
+import { isFrontierState } from '../worlds/frontiers/frontierPlugin';
 
 const point = (
   id: string, discovery: ImmersiveLandmark['discovery'],
@@ -73,7 +74,7 @@ describe('read-only visual field bearing and live site beacons', () => {
       });
       const before=kernel.getStateHash();
       const state=kernel.getState();
-      if (!state.atlas || !state.exploration || !state.regions)
+      if (!isFrontierState(state))
         throw new Error('Expected real Atlas for '+plugin.id);
       const layout=makeImmersiveLayout(state.atlas,state.exploration,state.regions);
       const projected=fieldWaypoints(layout.points,layout.spawn);
